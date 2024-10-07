@@ -78,7 +78,7 @@ export default function Signup() {
         <CardFooter className="flex flex-wrap items-center justify-between gap-2">
           <div className="text-sm text-muted-foreground flex flex-wrap">
             <span className="mr-1 hidden sm:inline-block">
-              -You have an account?
+              You have an account?
             </span>
             <div
               className="underline underline-offset-4 hover:text-primary"
