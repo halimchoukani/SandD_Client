@@ -1,7 +1,5 @@
-import React from "react";
-import { Button } from "./ui/index";
-import { Input } from "./ui/index";
-import { Label } from "./ui/index";
+import React, { useState } from "react";
+import { Button, Input, Label } from "./ui/index";
 import {
   Card,
   CardContent,
@@ -10,28 +8,44 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/index";
-import { Gavel, Facebook, Mail } from "lucide-react";
+import { Gavel, Facebook, Mail, SunMoon } from "lucide-react";
 
 export default function Signup() {
+  const [darkMode, setDarkMode] = useState(false);
+
+  // Toggle dark mode
+  const handleDarkModeToggle = () => {
+    setDarkMode((prevMode) => !prevMode);
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white">
-      <Card className="w-full max-w-md">
+    <div
+      className={`min-h-screen flex items-center justify-center ${
+        darkMode ? "bg-gray-900 text-white" : "bg-white"
+      }`}
+    >
+      <Card className={`w-full max-w-md ${darkMode ? "bg-gray-800" : ""}`}>
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-center mb-4">
             <Gavel className="h-6 w-6 mr-2" />
-            <CardTitle className="text-2xl font-bold">AuctionMaster</CardTitle>
+            <CardTitle className="text-2xl font-bold ">AuctionMaster</CardTitle>
           </div>
           <CardDescription>Sign up</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex flex-row  justify-between items-center gap-4">
+          <div className="flex flex-row justify-between items-center gap-4">
             <div>
-              <Label htmlFor="email">Name</Label>
+              <Label htmlFor="name">Name</Label>
               <Input id="name" placeholder="Foulen" required type="text" />
             </div>
             <div>
-              <Label htmlFor="email">Last Name</Label>
-              <Input id="name" placeholder="Ben foulen" required type="text" />
+              <Label htmlFor="lastName">Last Name</Label>
+              <Input
+                id="lastName"
+                placeholder="Ben Foulen"
+                required
+                type="text"
+              />
             </div>
           </div>
           <div className="space-y-2">
@@ -59,7 +73,11 @@ export default function Signup() {
               <span className="w-full border-t" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
+              <span
+                className={`bg-background px-2 ${
+                  darkMode ? "text-gray-400" : "text-muted-foreground"
+                }`}
+              >
                 Or continue with
               </span>
             </div>
@@ -76,12 +94,18 @@ export default function Signup() {
           </div>
         </CardContent>
         <CardFooter className="flex flex-wrap items-center justify-between gap-2">
-          <div className="text-sm text-muted-foreground flex flex-wrap">
+          <div
+            className={`text-sm flex flex-wrap ${
+              darkMode ? "text-gray-400" : "text-muted-foreground"
+            }`}
+          >
             <span className="mr-1 hidden sm:inline-block">
               You have an account?
             </span>
             <div
-              className="underline underline-offset-4 hover:text-primary"
+              className={`underline underline-offset-4 hover:text-primary ${
+                darkMode ? "hover:text-gray-200" : ""
+              }`}
               href="#"
             >
               Login
@@ -89,6 +113,12 @@ export default function Signup() {
           </div>
         </CardFooter>
       </Card>
+      <div
+        className="absolute bottom-0 left-0 p-4 cursor-pointer"
+        onClick={handleDarkModeToggle}
+      >
+        <SunMoon />
+      </div>
     </div>
   );
 }
