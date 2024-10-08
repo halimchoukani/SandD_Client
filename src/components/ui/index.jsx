@@ -1,49 +1,51 @@
-import React from "react";
+import React, { forwardRef } from "react";
+import { cva } from "class-variance-authority";
 
-export const Button = ({
-  children,
-  className = "",
-  variant = "primary",
-  size = "medium",
-  onClick,
-  disabled = false,
-  type = "button",
-}) => {
-  const baseStyle =
-    "font-semibold rounded focus:outline-none focus:ring-2 focus:ring-offset-2";
-  const variants = {
-    primary: "bg-[#161616] hover:bg-[#161616] text-white focus:ring-[#161616]",
-    secondary:
-      "bg-gray-200 hover:bg-gray-300 text-gray-800 focus:ring-gray-500",
-    outline:
-      "border border-gray-300 hover:bg-gray-100 text-gray-800 focus:ring-gray-500",
-  };
-  const sizes = {
-    small: "px-2 py-1 text-sm",
-    medium: "px-4 py-2",
-    large: "px-6 py-3 text-lg",
-  };
+export const Button = forwardRef(
+  ({ className, variant, size, ...props }, ref) => {
+    const buttonVariants = cva(
+      "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none",
+      {
+        variants: {
+          variant: {
+            default: "bg-blue-500 text-white hover:bg-blue-600",
+            destructive: "bg-red-500 text-white hover:bg-red-600",
+            outline:
+              "border border-input hover:bg-accent hover:text-accent-foreground",
+            secondary: "bg-gray-700 text-white hover:bg-gray-600",
+            ghost: "hover:bg-accent hover:text-accent-foreground",
+            link: "underline-offset-4 hover:underline text-blue-500",
+          },
+          size: {
+            default: "h-10 py-2 px-4",
+            sm: "h-9 px-3 rounded-md",
+            lg: "h-11 px-8 rounded-md",
+          },
+        },
+        defaultVariants: {
+          variant: "default",
+          size: "default",
+        },
+      }
+    );
 
-  return (
-    <button
-      className={`${baseStyle} ${variants[variant]} ${
-        sizes[size]
-      } ${className} ${
-        disabled ? "opacity-50 cursor-not-allowed" : ""
-      } flex justify-center items-center`}
-      onClick={onClick}
-      disabled={disabled}
-      type={type}
-    >
-      {children}
-    </button>
-  );
-};
+    return (
+      <button
+        className={buttonVariants({ variant, size, className })}
+        ref={ref}
+        {...props}
+      />
+    );
+  }
+);
 
-export const Input = React.forwardRef(({ className = "", ...props }, ref) => {
+Button.displayName = "Button";
+
+export const Input = forwardRef(({ className, type, ...props }, ref) => {
   return (
     <input
-      className={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-[#161616] focus:border-[#161616] ${className}`}
+      type={type}
+      className={`flex h-10 w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-sm text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
       ref={ref}
       {...props}
     />
@@ -52,153 +54,185 @@ export const Input = React.forwardRef(({ className = "", ...props }, ref) => {
 
 Input.displayName = "Input";
 
-export const Select = React.forwardRef(
-  ({ className = "", options = [], ...props }, ref) => {
+export const Select = forwardRef(({ className, children, ...props }, ref) => {
+  return (
+    <select
+      className={`flex h-10 w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${className}`}
+      ref={ref}
+      {...props}
+    >
+      {children}
+    </select>
+  );
+});
+
+Select.displayName = "Select";
+
+export const Card = forwardRef(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={`rounded-lg border border-gray-700 bg-gray-800 text-gray-100 shadow-sm ${className}`}
+    {...props}
+  />
+));
+
+Card.displayName = "Card";
+
+export const CardHeader = forwardRef(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={`flex flex-col space-y-1.5 p-6 ${className}`}
+    {...props}
+  />
+));
+
+CardHeader.displayName = "CardHeader";
+
+export const CardTitle = forwardRef(({ className, ...props }, ref) => (
+  <h3
+    ref={ref}
+    className={`text-2xl font-semibold leading-none tracking-tight text-blue-400 ${className}`}
+    {...props}
+  />
+));
+
+CardTitle.displayName = "CardTitle";
+
+export const CardDescription = forwardRef(({ className, ...props }, ref) => (
+  <p ref={ref} className={`text-sm text-gray-400 ${className}`} {...props} />
+));
+
+CardDescription.displayName = "CardDescription";
+
+export const CardContent = forwardRef(({ className, ...props }, ref) => (
+  <div ref={ref} className={`p-6 pt-0 ${className}`} {...props} />
+));
+
+CardContent.displayName = "CardContent";
+
+export const CardFooter = forwardRef(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={`flex items-center p-6 pt-0 ${className}`}
+    {...props}
+  />
+));
+
+CardFooter.displayName = "CardFooter";
+
+export const Label = forwardRef(({ className, ...props }, ref) => (
+  <label
+    ref={ref}
+    className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-300 ${className}`}
+    {...props}
+  />
+));
+
+Label.displayName = "Label";
+
+export const Avatar = forwardRef(({ className, src, alt, ...props }, ref) => (
+  <div ref={ref} className={`relative w-10 h-10 ${className}`}>
+    <img
+      src={src}
+      alt={alt}
+      className="rounded-full object-cover w-full h-full"
+      {...props}
+    />
+  </div>
+));
+
+Avatar.displayName = "Avatar";
+
+export const Badge = forwardRef(
+  ({ className, variant = "default", ...props }, ref) => {
+    const variants = {
+      default: "bg-blue-500 text-white",
+      secondary: "bg-gray-700 text-white",
+      destructive: "bg-red-500 text-white",
+      outline: "text-gray-300 border border-gray-600",
+    };
+
     return (
-      <select
-        className={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 ${className}`}
+      <div
         ref={ref}
+        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${variants[variant]} ${className}`}
         {...props}
-      >
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+      />
     );
   }
 );
 
-Select.displayName = "Select";
+Badge.displayName = "Badge";
 
-export const Card = ({ children, className = "" }) => {
-  return (
-    <div
-      className={`bg-white shadow-md rounded-lg overflow-hidden ${className}`}
-    >
-      {children}
-    </div>
-  );
-};
+export const Alert = forwardRef(
+  ({ className, variant = "default", ...props }, ref) => {
+    const variants = {
+      default: "bg-gray-700 text-gray-100",
+      destructive: "bg-red-900 text-red-100 border-red-700",
+    };
 
-export const CardHeader = ({ children, className = "" }) => {
-  return (
-    <div className={`px-6 py-4 border-b border-gray-200 ${className}`}>
-      {children}
-    </div>
-  );
-};
+    return (
+      <div
+        ref={ref}
+        role="alert"
+        className={`rounded-lg border p-4 ${variants[variant]} ${className}`}
+        {...props}
+      />
+    );
+  }
+);
 
-export const CardContent = ({ children, className = "" }) => {
-  return <div className={`px-6 py-4 ${className}`}>{children}</div>;
-};
+Alert.displayName = "Alert";
 
-export const CardFooter = ({ children, className = "" }) => {
-  return (
-    <div className={`px-6 py-4 border-t border-gray-200 ${className}`}>
-      {children}
-    </div>
-  );
-};
+export const AlertTitle = forwardRef(({ className, ...props }, ref) => (
+  <h5
+    ref={ref}
+    className={`mb-1 font-medium leading-none tracking-tight ${className}`}
+    {...props}
+  />
+));
 
-export const Label = ({ children, htmlFor, className = "" }) => {
-  return (
-    <label
-      htmlFor={htmlFor}
-      className={`block text-sm font-medium text-gray-700 mb-1 ${className}`}
-    >
-      {children}
-    </label>
-  );
-};
+AlertTitle.displayName = "AlertTitle";
 
-export const FormGroup = ({ children, className = "" }) => {
-  return <div className={`mb-4 ${className}`}>{children}</div>;
-};
+export const AlertDescription = forwardRef(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={`text-sm [&_p]:leading-relaxed ${className}`}
+    {...props}
+  />
+));
 
-export const Alert = ({ children, variant = "info", className = "" }) => {
-  const variants = {
-    info: "bg-blue-100 text-blue-800 border-blue-500",
-    success: "bg-green-100 text-green-800 border-green-500",
-    warning: "bg-yellow-100 text-yellow-800 border-yellow-500",
-    error: "bg-red-100 text-red-800 border-red-500",
-  };
+AlertDescription.displayName = "AlertDescription";
 
-  return (
-    <div
-      className={`border-l-4 p-4 ${variants[variant]} ${className}`}
-      role="alert"
-    >
-      {children}
-    </div>
-  );
-};
+export const FormGroup = forwardRef(({ className, ...props }, ref) => (
+  <div ref={ref} className={`space-y-2 ${className}`} {...props} />
+));
 
-export const Badge = ({ children, variant = "default", className = "" }) => {
-  const variants = {
-    default: "bg-gray-100 text-gray-800",
-    primary: "bg-blue-100 text-blue-800",
-    success: "bg-green-100 text-green-800",
-    warning: "bg-yellow-100 text-yellow-800",
-    danger: "bg-red-100 text-red-800",
-  };
+FormGroup.displayName = "FormGroup";
 
-  return (
-    <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${variants[variant]} ${className}`}
-    >
-      {children}
-    </span>
-  );
-};
-
-export const Avatar = ({ src, alt, size = "medium", className = "" }) => {
-  const sizes = {
-    small: "w-8 h-8",
-    medium: "w-12 h-12",
-    large: "w-16 h-16",
-  };
-
-  return (
-    <img
-      src={src}
-      alt={alt}
-      className={`rounded-full object-cover ${sizes[size]} ${className}`}
-    />
-  );
-};
-
-export const Spinner = ({ size = "medium", className = "" }) => {
-  const sizes = {
-    small: "w-4 h-4",
-    medium: "w-8 h-8",
-    large: "w-12 h-12",
-  };
-
-  return (
-    <svg
-      className={`animate-spin ${sizes[size]} ${className}`}
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-    >
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-      ></circle>
-      <path
-        className="opacity-75"
-        fill="currentColor"
-        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-      ></path>
-    </svg>
-  );
-};
+export const Spinner = ({ className, ...props }) => (
+  <svg
+    className={`animate-spin h-5 w-5 text-white ${className}`}
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    {...props}
+  >
+    <circle
+      className="opacity-25"
+      cx="12"
+      cy="12"
+      r="10"
+      stroke="currentColor"
+      strokeWidth="4"
+    ></circle>
+    <path
+      className="opacity-75"
+      fill="currentColor"
+      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+    ></path>
+  </svg>
+);
 
 export const Modal = ({ isOpen, onClose, children, className = "" }) => {
   if (!isOpen) return null;
@@ -212,7 +246,7 @@ export const Modal = ({ isOpen, onClose, children, className = "" }) => {
     >
       <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <div
-          className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+          className="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity"
           aria-hidden="true"
           onClick={onClose}
         ></div>
@@ -223,7 +257,7 @@ export const Modal = ({ isOpen, onClose, children, className = "" }) => {
           &#8203;
         </span>
         <div
-          className={`inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full ${className}`}
+          className={`inline-block align-bottom bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full ${className}`}
         >
           {children}
         </div>
@@ -237,11 +271,11 @@ export const Tooltip = ({ children, content, className = "" }) => {
     <div className="relative group">
       {children}
       <div
-        className={`absolute z-10 invisible group-hover:visible bg-gray-800 text-white text-sm rounded py-1 px-2 bottom-full left-1/2 transform -translate-x-1/2 -translate-y-2 ${className}`}
+        className={`absolute z-10 invisible group-hover:visible bg-gray-700 text-white text-sm rounded py-1 px-2 bottom-full left-1/2 transform -translate-x-1/2 -translate-y-2 ${className}`}
       >
         {content}
         <svg
-          className="absolute text-gray-800 h-2 w-full left-0 top-full"
+          className="absolute text-gray-700 h-2 w-full left-0 top-full"
           x="0px"
           y="0px"
           viewBox="0 0 255 255"
@@ -251,16 +285,4 @@ export const Tooltip = ({ children, content, className = "" }) => {
       </div>
     </div>
   );
-};
-
-export const CardTitle = ({ children, className = "" }) => {
-  return (
-    <h2 className={`text-lg font-semibold leading-tight ${className}`}>
-      {children}
-    </h2>
-  );
-};
-
-export const CardDescription = ({ children, className = "" }) => {
-  return <p className={`text-sm text-gray-500 ${className}`}>{children}</p>;
 };

@@ -11,20 +11,13 @@ import {
 import { Gavel, Facebook, Mail, SunMoon } from "lucide-react";
 
 export default function Signup() {
-  const [darkMode, setDarkMode] = useState(false);
-
-  // Toggle dark mode
-  const handleDarkModeToggle = () => {
-    setDarkMode((prevMode) => !prevMode);
-  };
-
   return (
     <div
-      className={`min-h-screen flex items-center justify-center ${
-        darkMode ? "bg-gray-900 text-white" : "bg-white"
-      }`}
+      className={`min-h-screen flex items-center justify-center $
+        bg-[#111827]
+      `}
     >
-      <Card className={`w-full max-w-md ${darkMode ? "bg-gray-800" : ""}`}>
+      <Card className={`w-full max-w-md`}>
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-center mb-4">
             <Gavel className="h-6 w-6 mr-2" />
@@ -73,13 +66,7 @@ export default function Signup() {
               <span className="w-full border-t" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span
-                className={`bg-background px-2 ${
-                  darkMode ? "text-gray-400" : "text-muted-foreground"
-                }`}
-              >
-                Or continue with
-              </span>
+              <span className={`bg-background px-2 `}>Or continue with</span>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -94,18 +81,12 @@ export default function Signup() {
           </div>
         </CardContent>
         <CardFooter className="flex flex-wrap items-center justify-between gap-2">
-          <div
-            className={`text-sm flex flex-wrap ${
-              darkMode ? "text-gray-400" : "text-muted-foreground"
-            }`}
-          >
+          <div className={`text-sm flex flex-wrap`}>
             <span className="mr-1 hidden sm:inline-block">
               You have an account?
             </span>
             <div
-              className={`underline underline-offset-4 hover:text-primary ${
-                darkMode ? "hover:text-gray-200" : ""
-              }`}
+              className={`underline underline-offset-4 hover:text-primary `}
               href="#"
             >
               Login
@@ -113,12 +94,6 @@ export default function Signup() {
           </div>
         </CardFooter>
       </Card>
-      <div
-        className="absolute bottom-0 left-0 p-4 cursor-pointer"
-        onClick={handleDarkModeToggle}
-      >
-        <SunMoon />
-      </div>
     </div>
   );
 }
