@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { Button, Input, Label } from "./ui/index";
 import {
   Card,
@@ -8,9 +8,13 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/index";
-import { Gavel, Facebook, Mail, SunMoon } from "lucide-react";
+import { Gavel } from "lucide-react";
+import { useEffect } from "react";
 
 export default function Signup() {
+  useEffect(() => {
+    document.title = "S&D - SignUp"; // Change the page title
+  }, []);
   return (
     <div
       className={`min-h-screen flex items-center justify-center $
@@ -19,10 +23,12 @@ export default function Signup() {
     >
       <Card className={`w-full max-w-md`}>
         <CardHeader className="space-y-1">
-          <div className="flex items-center justify-center mb-4">
-            <Gavel className="h-6 w-6 mr-2" />
-            <CardTitle className="text-2xl font-bold ">AuctionMaster</CardTitle>
-          </div>
+          <Link to="/">
+            <div className="flex items-center justify-center mb-4">
+              <Gavel className="h-6 w-6 mr-2" />
+              <CardTitle className="text-2xl font-bold ">S&D</CardTitle>
+            </div>
+          </Link>
           <CardDescription>Sign up</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -52,45 +58,30 @@ export default function Signup() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" required type="password" />
+            <Input id="password" required type="password" placeholder="******************" />
           </div>
           <div className="space-y-2">
             <Label htmlFor="cpassword">Confirm Password</Label>
-            <Input id="cpassword" required type="password" />
+            <Input id="cpassword" required type="password" placeholder="******************" />
           </div>
           <Button className="w-full" type="submit">
             Sign Up
           </Button>
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className={`bg-background px-2 `}>Or continue with</span>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <Button variant="outline">
-              <Facebook className="mr-2 h-4 w-4" />
-              Facebook
-            </Button>
-            <Button variant="outline">
-              <Mail className="mr-2 h-4 w-4" />
-              Google
-            </Button>
-          </div>
         </CardContent>
         <CardFooter className="flex flex-wrap items-center justify-between gap-2">
           <div className={`text-sm flex flex-wrap`}>
             <span className="mr-1 hidden sm:inline-block">
               You have an account?
             </span>
-            <div
-              className={`underline underline-offset-4 hover:text-primary `}
-              href="#"
-            >
-              Login
-            </div>
+            <Link to="/login">
+              <div
+                className={`underline underline-offset-4 hover:text-primary cursor-pointer `}
+                href="#"
+              >
+                Sign In
+              </div>
+            
+            </Link>
           </div>
         </CardFooter>
       </Card>

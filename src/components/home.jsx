@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Footer from "./footer";
 import Header from "./header";
 import { Button } from "./ui/index";
@@ -9,13 +10,16 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/index";
-import { Gavel, Search, User, Bell, Menu } from "lucide-react";
+import { Search} from "lucide-react";
 
 export default function Home() {
+  useEffect(() => {
+    document.title = "S&D - Home"; // Change the page title
+  }, []);
   return (
     <div className="flex flex-col min-h-screen bg-gray-900 text-gray-100">
-      <Header />
-      <main className="flex-1 ">
+       <Header />
+      <main className="flex-1">
         <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-gray-800">
           <div className="px-4 md:px-6">
             <div className="flex flex-col items-center space-y-4 text-center">
@@ -99,7 +103,7 @@ export default function Home() {
             <div className="grid gap-10 px-10 md:gap-16 lg:grid-cols-2">
               <div className="space-y-4">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-blue-400">
-                  Why Choose AuctionMaster?
+                  Why Choose S&D?
                 </h2>
                 <p className="max-w-[600px] text-gray-300 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                   We provide a secure platform for buyers and sellers to

@@ -70,7 +70,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-10 border-t border-gray-700 pt-6 text-center">
-          <p>&copy; 2024 AuctionMaster. All rights reserved.</p>
+          <p>&copy; 2024 S&D. All rights reserved.</p>
         </div>
       </div>
     </footer>

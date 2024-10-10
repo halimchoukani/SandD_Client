@@ -1,34 +1,41 @@
-import React from "react";
+import { useState } from "react";
 import { Button } from "./ui/index";
+import { Gavel, User, Bell, Menu } from "lucide-react";
+import { Link } from "react-router-dom"; // Import Link
 
-import { Gavel, Search, User, Bell, Menu } from "lucide-react";
 function Header() {
+  const [toggleNotif, settoggleNotif] = useState(false);
+
+  const toggleVisibility = () => {
+    settoggleNotif(!toggleNotif);
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-800 bg-gray-900/95 backdrop-blur supports-[backdrop-filter]:bg-gray-900/60">
       <div className="flex flex-row h-16 items-center justify-between p-5">
-        <div href="/" className="flex items-center">
+        <Link to="/" className="flex items-center gap-2">
           <Gavel className="h-6 w-6 text-blue-400" />
-          <span className="font-bold text-blue-400">AuctionMaster</span>
-        </div>
+          <span className="font-bold text-blue-400">S&D</span>
+        </Link>
         <nav className="flex gap-10">
-          <div
-            className="text-base font-medium hover:text-blue-400 hover:underline underline-offset-4 cursor-pointer"
-            href="#"
+          <Link
+            className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4 cursor-pointer"
+            to="/auctions"
           >
             Auctions
-          </div>
-          <div
-            className="text-base font-medium hover:text-blue-400 hover:underline underline-offset-4 cursor-pointer"
-            href="#"
+          </Link>
+          <Link
+            className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4 cursor-pointer"
+            to="/sell"
           >
             Sell
-          </div>
-          <div
-            className="text-base font-medium hover:text-blue-400 hover:underline underline-offset-4 cursor-pointer"
-            href="#"
+          </Link>
+          <Link
+            className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4 cursor-pointer"
+            to="/about"
           >
             About
-          </div>
+          </Link>
         </nav>
         <div className="flex items-center gap-3">
           <Button
@@ -36,17 +43,19 @@ function Header() {
             size="icon"
             className="text-gray-300 hover:text-white relative"
           >
-            <Bell className="h-6 w-6" />
+            <Bell className="h-6 w-6" onClick={toggleVisibility} />
             <span className="sr-only">Notifications</span>
-            <div className="hidden absolute origin-center top-12 p-5 right-[150%] bg-gray-900/95 backdrop-blur supports-[backdrop-filter]:bg-gray-900/60 rounded-md border border-gray-600 bg-gray-700">
-              <h3 className="text-lg font-bold text-blue-400">Notifications</h3>
-              <ul>
-                <li>fzefzefzef</li>
-                <li>fzefzefzef</li>
-                <li>fzefzefzef</li>
-                <li>fzefzefzef</li>
-              </ul>
-            </div>
+            {toggleNotif && (
+              <div className="absolute origin-center top-12 p-5 right-0 bg-gray-900/95 backdrop-blur supports-[backdrop-filter]:bg-gray-900/60 rounded-md border border-gray-600 bg-gray-700">
+                <h3 className="text-lg font-bold text-blue-400">Notifications</h3>
+                <ul>
+                  <li>fzefzefzef</li>
+                  <li>fzefzefzef</li>
+                  <li>fzefzefzef</li>
+                  <li>fzefzefzef</li>
+                </ul>
+              </div>
+            )}
           </Button>
           <Button
             variant="ghost"
@@ -54,7 +63,6 @@ function Header() {
             className="text-gray-300 hover:text-white"
           >
             <User className="h-6 w-6" />
-            
             <span className="sr-only">Account</span>
           </Button>
           <Button
