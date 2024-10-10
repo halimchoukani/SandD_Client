@@ -34,17 +34,10 @@ function Header() {
           <Button
             variant="ghost"
             size="icon"
-            className="text-gray-300 hover:text-white"
+            className="text-gray-300 hover:text-white relative"
           >
             <Bell className="h-6 w-6" />
             <span className="sr-only">Notifications</span>
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-gray-300 hover:text-white relative"
-          >
-            <User className="h-6 w-6" />
             <div className="hidden absolute origin-center top-12 p-5 right-[150%] bg-gray-900/95 backdrop-blur supports-[backdrop-filter]:bg-gray-900/60 rounded-md border border-gray-600 bg-gray-700">
               <h3 className="text-lg font-bold text-blue-400">Notifications</h3>
               <ul>
@@ -54,6 +47,14 @@ function Header() {
                 <li>fzefzefzef</li>
               </ul>
             </div>
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-gray-300 hover:text-white"
+          >
+            <User className="h-6 w-6" />
+            
             <span className="sr-only">Account</span>
           </Button>
           <Button
