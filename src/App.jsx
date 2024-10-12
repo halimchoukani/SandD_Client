@@ -2,14 +2,15 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/header";
 import Home from "./components/home";
 import Login from "./components/login";
-import Lenis from 'lenis'
+import Lenis from "lenis";
 import Signup from "./components/signup";
+import ProfileEdit from "./components/profileedit";
 function App() {
   // Initialize Lenis
   const lenis = new Lenis();
 
   // Listen for the scroll event and log the event data
-  lenis.on('scroll', (e) => {
+  lenis.on("scroll", (e) => {
     console.log(e);
   });
 
@@ -26,6 +27,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/profile/edit" element={<ProfileEdit />} />
         <Route path="/signup" element={<Signup />} />
       </Routes>
     </Router>

@@ -9,14 +9,25 @@ import {
   CardTitle,
 } from "./ui/index";
 import { Gavel, Facebook, Mail } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+
 export default function Login() {
+  const [password, setPassword] = useState(""); // Use useState to manage password input
+  const [detail, setDetail] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
   useEffect(() => {
     document.title = "S&D - Login"; // Change the page title
   }, []);
+  useEffect(() => {
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters long");
+    } else {
+      setError("");
+    }
+  }, [password]);
   return (
     <div
-      className={`min-h-screen flex items-center justify-center $
+      className={`min-h-screen flex items-center justify-center 
         bg-[#111827]
       `}
     >
@@ -31,7 +42,6 @@ export default function Login() {
           <CardDescription>Login</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -43,9 +53,19 @@ export default function Login() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" required type="password" placeholder="******************" />
+            <Input
+              id="password"
+              required
+              type="password"
+              placeholder="******************"
+              value={password} // Use the state value for password
+              onChange={(e) => {
+                setPassword(e.target.value); // Update the password state
+              }}
+            />
+            <span>{error}</span>
           </div>
-         
+
           <Button className="w-full" type="submit">
             Sign In
           </Button>
@@ -74,13 +94,11 @@ export default function Login() {
               You do not have an account?
             </span>
             <Link to="/signup">
-            <div
-              className={`underline underline-offset-4 hover:text-primary cursor-pointer `}
-              href="#"
-            >
-              Sign Up
-            </div>
-            
+              <div
+                className={`underline underline-offset-4 hover:text-primary cursor-pointer `}
+              >
+                Sign Up
+              </div>
             </Link>
           </div>
         </CardFooter>
