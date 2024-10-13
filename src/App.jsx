@@ -5,16 +5,10 @@ import Login from "./components/login";
 import Lenis from "lenis";
 import Signup from "./components/signup";
 import ProfileEdit from "./components/profileedit";
+import ProtectedRoutes from "./components/utils/protectedroutes";
+import NotFound from "./components/notfound";
 function App() {
-  // Initialize Lenis
   const lenis = new Lenis();
-
-  // Listen for the scroll event and log the event data
-  lenis.on("scroll", (e) => {
-    console.log(e);
-  });
-
-  // Use requestAnimationFrame to continuously update the scroll
   function raf(time) {
     lenis.raf(time);
     requestAnimationFrame(raf);
@@ -26,9 +20,12 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route element={<ProtectedRoutes />}>
+          <Route path="/profile/edit" element={<ProfileEdit />} />
+        </Route>
         <Route path="/login" element={<Login />} />
-        <Route path="/profile/edit" element={<ProfileEdit />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );
