@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import Footer from "./footer";
 import Header from "./header";
 import { Button } from "./ui/index";
-
 import {
   Card,
   CardContent,
@@ -11,6 +10,7 @@ import {
   CardTitle,
 } from "./ui/index";
 import Hero from "./hero";
+import { Link } from "react-router-dom";
 
 export default function Home() {
   useEffect(() => {
@@ -34,7 +34,7 @@ export default function Home() {
                 >
                   <CardHeader className="p-0">
                     <img
-                      src={`/placeholder.svg?height=200&width=400`}
+                      src={`https://www.bobswatches.com/rolex-blog/wp-content/uploads/2020/12/Rolex_Submariner_5513_5D3_9227-2-1.jpg`}
                       alt={`Featured auction ${i}`}
                       className="object-cover w-full h-48"
                       width={400}
@@ -59,12 +59,15 @@ export default function Home() {
               ))}
             </div>
             <div className="mt-12 text-center">
+              <Link to="/auctions">
               <Button
                 variant="outline"
                 className="border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-gray-900"
               >
                 View All Auctions
               </Button>
+              
+              </Link>
             </div>
           </div>
         </section>

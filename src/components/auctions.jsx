@@ -16,12 +16,12 @@ export default function Auctions() {
 
   // Mock data for auctions
   const auctions = [
-    { id: 1, title: "Vintage Rolex Submariner", category: "Watches", currentBid: 5000, endTime: "2024-03-15T14:00:00Z", image: "/placeholder.svg?height=200&width=200" },
-    { id: 2, title: "Rare First Edition Book", category: "Books", currentBid: 1000, endTime: "2024-03-14T10:00:00Z", image: "/placeholder.svg?height=200&width=200" },
-    { id: 3, title: "Antique Victorian Desk", category: "Furniture", currentBid: 2500, endTime: "2024-03-16T18:00:00Z", image: "/placeholder.svg?height=200&width=200" },
-    { id: 4, title: "1967 Ford Mustang", category: "Cars", currentBid: 25000, endTime: "2024-03-20T12:00:00Z", image: "/placeholder.svg?height=200&width=200" },
-    { id: 5, title: "Original Andy Warhol Print", category: "Art", currentBid: 15000, endTime: "2024-03-18T16:00:00Z", image: "/placeholder.svg?height=200&width=200" },
-    { id: 6, title: "Signed Basketball Jersey", category: "Sports Memorabilia", currentBid: 500, endTime: "2024-03-17T20:00:00Z", image: "/placeholder.svg?height=200&width=200" },
+    { id: 1, title: "Vintage Rolex Submariner", category: "Watches", currentBid: 5000, endTime: "2024-03-15T14:00:00Z", image: "https://www.bobswatches.com/rolex-blog/wp-content/uploads/2020/12/Rolex_Submariner_5513_5D3_9227-2-1.jpg" },
+    { id: 2, title: "Rare First Edition Book", category: "Books", currentBid: 1000, endTime: "2024-03-14T10:00:00Z", image: "https://www.bobswatches.com/rolex-blog/wp-content/uploads/2020/12/Rolex_Submariner_5513_5D3_9227-2-1.jpg" },
+    { id: 3, title: "Antique Victorian Desk", category: "Furniture", currentBid: 2500, endTime: "2024-03-16T18:00:00Z", image: "https://www.bobswatches.com/rolex-blog/wp-content/uploads/2020/12/Rolex_Submariner_5513_5D3_9227-2-1.jpg" },
+    { id: 4, title: "1967 Ford Mustang", category: "Cars", currentBid: 25000, endTime: "2024-03-20T12:00:00Z", image: "https://www.bobswatches.com/rolex-blog/wp-content/uploads/2020/12/Rolex_Submariner_5513_5D3_9227-2-1.jpg" },
+    { id: 5, title: "Original Andy Warhol Print", category: "Art", currentBid: 15000, endTime: "2024-03-18T16:00:00Z", image: "https://www.bobswatches.com/rolex-blog/wp-content/uploads/2020/12/Rolex_Submariner_5513_5D3_9227-2-1.jpg" },
+    { id: 6, title: "Signed Basketball Jersey", category: "Sports Memorabilia", currentBid: 500, endTime: "2024-03-17T20:00:00Z", image: "https://www.bobswatches.com/rolex-blog/wp-content/uploads/2020/12/Rolex_Submariner_5513_5D3_9227-2-1.jpg" },
   ]
 
   const filteredAuctions = auctions

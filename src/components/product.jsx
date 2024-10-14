@@ -35,7 +35,7 @@ export default function ProductPage() {
           {/* Product Image */}
           <div className="bg-gray-800 p-4 rounded-lg shadow">
             <img
-              src="/placeholder.svg?height=400&width=400"
+              src="https://www.bobswatches.com/rolex-blog/wp-content/uploads/2020/12/Rolex_Submariner_5513_5D3_9227-2-1.jpg"
               alt="Vintage Watch"
               className="w-full h-auto object-cover rounded"
             />
