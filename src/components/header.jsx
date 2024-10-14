@@ -62,7 +62,7 @@ function Header() {
               <div className="absolute w-[500px] h-0 opacity-0 origin-center top-12 p-4 right-0   rounded-md border border-gray-600 bg-gray-900" id="notification">
                 <h3 className="text-lg font-bold text-blue-400">Notifications</h3>
                 <ul className="">
-                  <li className="notifications-list opacity-1 mt-9">
+                  <li className="notifications-list opacity-1 mt-9 hover:bg-gray-800 p-2 hover:rounded-md">
                     <div className="flex flex-row items-center justify-between w-full">
                       <div className="w-auto h-full flex ">
                       <img src="https://media.wired.com/photos/5926b0c2af95806129f504df/master/w_2560%2Cc_limit/JohnWick2.jpg" className="rounded-full w-[60px] aspect-square" alt="" />
@@ -74,7 +74,7 @@ function Header() {
                     
                     </div>
                     </li>
-                    <li className="notifications-list opacity-1 mt-9">
+                    <li className="notifications-list opacity-1 mt-9 hover:bg-gray-800 p-2 hover:rounded-md">
                     <div className="flex flex-row items-center justify-between w-full">
                       <div className="w-auto h-full flex ">
                       <img src="https://media.wired.com/photos/5926b0c2af95806129f504df/master/w_2560%2Cc_limit/JohnWick2.jpg" className="rounded-full w-[60px] aspect-square" alt="" />
@@ -86,7 +86,7 @@ function Header() {
                     
                     </div>
                     </li>
-                    <li className="notifications-list opacity-1 mt-9">
+                    <li className="notifications-list opacity-1 mt-9 hover:bg-gray-800 p-2 hover:rounded-md">
                     <div className="flex flex-row items-center justify-between w-full">
                       <div className="w-auto h-full flex ">
                       <img src="https://media.wired.com/photos/5926b0c2af95806129f504df/master/w_2560%2Cc_limit/JohnWick2.jpg" className="rounded-full w-[60px] aspect-square" alt="" />
@@ -98,7 +98,7 @@ function Header() {
                     
                     </div>
                     </li>
-                    <li className="notifications-list opacity-1 mt-9">
+                    <li className="notifications-list opacity-1 mt-9 hover:bg-gray-800 p-2 hover:rounded-md">
                     <div className="flex flex-row items-center justify-between w-full">
                       <div className="w-auto h-full flex ">
                       <img src="https://media.wired.com/photos/5926b0c2af95806129f504df/master/w_2560%2Cc_limit/JohnWick2.jpg" className="rounded-full w-[60px] aspect-square" alt="" />
