@@ -4,6 +4,7 @@ import Home from "./components/home";
 import Login from "./components/login";
 import Lenis from 'lenis'
 import Signup from "./components/signup";
+import ProductPage from "./components/product";
 function App() {
   // Initialize Lenis
   const lenis = new Lenis();
@@ -22,10 +23,12 @@ function App() {
   requestAnimationFrame(raf);
 
   return (
+    
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/product" element={<ProductPage />} />
         <Route path="/signup" element={<Signup />} />
       </Routes>
     </Router>
