@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Gavel, Clock, Eye, Heart, Share2 } from "lucide-react"
+
+import {  Clock, Eye, Heart, Share2 } from "lucide-react"
 import { Button, Input } from './ui/index'
 import Header from './header'
 import Footer from './footer'

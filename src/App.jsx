@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Header from "./components/header";
 import Home from "./components/home";
 import Login from "./components/login";
 import Lenis from "lenis";
@@ -8,6 +7,8 @@ import ProductPage from "./components/product";
 import ProfileEdit from "./components/profileedit";
 import ProtectedRoutes from "./components/utils/protectedroutes";
 import NotFound from "./components/notfound";
+import Dashboard from "./components/dashboard";
+import Auctions from "./components/auctions";
 function App() {
   const lenis = new Lenis();
   function raf(time) {
@@ -27,6 +28,8 @@ function App() {
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/product" element={<ProductPage />} />
+        <Route path="/auctions" element={<Auctions />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
