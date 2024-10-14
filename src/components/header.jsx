@@ -159,14 +159,16 @@ function Header() {
               </div>
             )}
           </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-gray-300 hover:text-white"
-          >
-            <User className="h-6 w-6" />
-            <span className="sr-only">Account</span>
-          </Button>
+          <Link to="/profile">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-gray-300 hover:text-white"
+            >
+              <User className="h-6 w-6" />
+              <span className="sr-only">Account</span>
+            </Button>
+          </Link>
 
           {/* Hamburger Menu for smaller screens */}
           <Button

@@ -10,6 +10,7 @@ import NotFound from "./components/notfound";
 import Dashboard from "./components/dashboard";
 import Auctions from "./components/auctions";
 import AddAuction from "./components/AddAuction";
+import Profile from "./components/Profile";
 function App() {
   const lenis = new Lenis();
   function raf(time) {
@@ -20,12 +21,12 @@ function App() {
   requestAnimationFrame(raf);
 
   return (
-    
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route element={<ProtectedRoutes />}>
           <Route path="/profile/edit" element={<ProfileEdit />} />
+          <Route path="/profile" element={<Profile />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/auction" element={<ProductPage />} />
