@@ -59,13 +59,58 @@ function Header() {
             <Bell className="h-6 w-6" onClick={toggleVisibility} />
             <span className="sr-only">Notifications</span>
             {toggleNotif && (
-              <div className="absolute h-0 opacity-0 origin-center top-12 p-5 right-0 bg-gray-900/95 backdrop-blur-3xl supports-[backdrop-filter]:bg-gray-900/60 rounded-md border border-gray-600 bg-gray-700" id="notification">
+              <div className="absolute w-[500px] h-0 opacity-0 origin-center top-12 p-4  right-0 bg-gray-900/95 backdrop-blur-3xl supports-[backdrop-filter]:bg-gray-900/60 rounded-md border border-gray-600 bg-gray-700" id="notification">
                 <h3 className="text-lg font-bold text-blue-400">Notifications</h3>
-                <ul>
-                  <li className="notifications-list opacity-1">fzefzefzef</li>
-                  <li className="notifications-list opacity-1">fzefzefzef</li>
-                  <li className="notifications-list opacity-1">fzefzefzef</li>
-                  <li className="notifications-list opacity-1">fzefzefzef</li>
+                <ul className="">
+                  <li className="notifications-list opacity-1 mt-9">
+                    <div className="flex flex-row items-center justify-between w-full">
+                      <div className="w-auto h-full flex ">
+                      <img src="https://media.wired.com/photos/5926b0c2af95806129f504df/master/w_2560%2Cc_limit/JohnWick2.jpg" className="rounded-full w-[60px] aspect-square" alt="" />
+                      </div>
+                      <div className="flex flex-col justify-center items-start w-[80%]">
+                        <div className="text-start"> <b>John Wick added new auction :</b> an 1969 mustang car</div>
+                        <div className="font-light">2 hours ago</div>
+                      </div>
+                    
+                    </div>
+                    </li>
+                    <li className="notifications-list opacity-1 mt-9">
+                    <div className="flex flex-row items-center justify-between w-full">
+                      <div className="w-auto h-full flex ">
+                      <img src="https://media.wired.com/photos/5926b0c2af95806129f504df/master/w_2560%2Cc_limit/JohnWick2.jpg" className="rounded-full w-[60px] aspect-square" alt="" />
+                      </div>
+                      <div className="flex flex-col justify-center items-start w-[80%]">
+                        <div className="text-start"> <b>John Wick added new auction :</b> an 1969 mustang car</div>
+                        <div className="font-light">2 hours ago</div>
+                      </div>
+                    
+                    </div>
+                    </li>
+                    <li className="notifications-list opacity-1 mt-9">
+                    <div className="flex flex-row items-center justify-between w-full">
+                      <div className="w-auto h-full flex ">
+                      <img src="https://media.wired.com/photos/5926b0c2af95806129f504df/master/w_2560%2Cc_limit/JohnWick2.jpg" className="rounded-full w-[60px] aspect-square" alt="" />
+                      </div>
+                      <div className="flex flex-col justify-center items-start w-[80%]">
+                        <div className="text-start"> <b>John Wick added new auction :</b> an 1969 mustang car</div>
+                        <div className="font-light">2 hours ago</div>
+                      </div>
+                    
+                    </div>
+                    </li>
+                    <li className="notifications-list opacity-1 mt-9">
+                    <div className="flex flex-row items-center justify-between w-full">
+                      <div className="w-auto h-full flex ">
+                      <img src="https://media.wired.com/photos/5926b0c2af95806129f504df/master/w_2560%2Cc_limit/JohnWick2.jpg" className="rounded-full w-[60px] aspect-square" alt="" />
+                      </div>
+                      <div className="flex flex-col justify-center items-start w-[80%]">
+                        <div className="text-start"> <b>John Wick added new auction :</b> an 1969 mustang car</div>
+                        <div className="font-light">2 hours ago</div>
+                      </div>
+                    
+                    </div>
+                    </li>
+                    
                 </ul>
               </div>
             )}
