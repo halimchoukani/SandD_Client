@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import {  Clock, Eye, Heart, Share2 } from "lucide-react"
 import { Button, Input } from './ui/index'
@@ -6,6 +6,9 @@ import Header from './header'
 import Footer from './footer'
 
 export default function ProductPage() {
+    useEffect(() => {
+        document.title = "S&D - Product"; // Change the page title
+      }, []);
   const [bidAmount, setBidAmount] = useState('')
   const [currentBid, setCurrentBid] = useState(1000)
 

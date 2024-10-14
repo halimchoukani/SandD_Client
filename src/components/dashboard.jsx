@@ -1,9 +1,12 @@
-import  { useState } from 'react'
+import  { useEffect, useState } from 'react'
 import {  Users, DollarSign, Package,  ArrowRight, TrendingUp, Clock } from 'lucide-react'
 import { Button, Input, Card, CardHeader, CardTitle, CardContent, CardFooter, Avatar, Badge } from './ui/index'
 import Header from './header'
 
 export default function Dashboard() {
+    useEffect(() => {
+        document.title = "S&D - Dashboard"; // Change the page title
+      }, []);
   const [searchTerm, setSearchTerm] = useState('')
 
   const stats = [

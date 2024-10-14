@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Search, Filter, Clock, ArrowUpDown } from "lucide-react"
 import { Button, Input, Select, Card, CardContent, CardFooter } from './ui'
@@ -6,6 +6,10 @@ import Header from './header'
 import Footer from './footer'
 
 export default function Auctions() {
+    useEffect(() => {
+        document.title = "S&D - Bids"; // Change the page title
+      }, []);
+
   const [searchTerm, setSearchTerm] = useState('')
   const [category, setCategory] = useState('all')
   const [sortBy, setSortBy] = useState('endingSoon')

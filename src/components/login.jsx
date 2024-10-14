@@ -13,7 +13,6 @@ import { useEffect, useState } from "react";
 
 export default function Login() {
   const [password, setPassword] = useState(""); // Use useState to manage password input
-  const [detail, setDetail] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   useEffect(() => {
     document.title = "S&D - Login"; // Change the page title
