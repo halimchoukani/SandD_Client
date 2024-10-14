@@ -58,11 +58,21 @@ export default function Signup() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" required type="password" placeholder="******************" />
+            <Input
+              id="password"
+              required
+              type="password"
+              placeholder="******************"
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="cpassword">Confirm Password</Label>
-            <Input id="cpassword" required type="password" placeholder="******************" />
+            <Input
+              id="cpassword"
+              required
+              type="password"
+              placeholder="******************"
+            />
           </div>
           <Button className="w-full" type="submit">
             Sign Up
@@ -80,7 +90,6 @@ export default function Signup() {
               >
                 Sign In
               </div>
-            
             </Link>
           </div>
         </CardFooter>
