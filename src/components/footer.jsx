@@ -1,7 +1,4 @@
-import React from "react";
 
-import { Button } from "./ui/index";
-import { Input } from "./ui/index";
 
 export default function Footer() {
   return (

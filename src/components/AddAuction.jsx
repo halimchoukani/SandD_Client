@@ -1,5 +1,5 @@
 import  { useState } from 'react'
-import { Gavel, Upload, AlertCircle } from "lucide-react"
+import {  Upload, AlertCircle } from "lucide-react"
 import { Button, Input, Textarea, Select, Card, CardHeader, CardTitle, CardContent, CardFooter } from './ui'
 import Header from './header'
 import Footer from './footer'
