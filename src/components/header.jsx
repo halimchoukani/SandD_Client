@@ -1,55 +1,70 @@
 import { useEffect, useState } from "react";
 import { Button } from "./ui/index";
 import { Gavel, User, Bell, Menu } from "lucide-react";
-import { Link } from "react-router-dom"; // Import Link
+import { Link } from "react-router-dom";
 import gsap from "gsap";
+
 function Header() {
   const [toggleNotif, settoggleNotif] = useState(false);
 
   const toggleVisibility = () => {
     settoggleNotif(!toggleNotif);
   };
-  useEffect(()=>{
-    gsap.to("#notification",{
-      opacity :1 ,
-      height:"auto",
-      duration : .5
-    })
-    gsap.from(".notifications-list",{
-      opacity :0 ,
-      x:-20,
-      duration : .2,
-      delay:.4,
-      stagger:.1,
-    })
-  },[toggleNotif])
+
+  useEffect(() => {
+    if (toggleNotif) {
+      gsap.to("#notification", {
+        opacity: 1,
+        height: "auto",
+        duration: 0.5,
+      });
+      gsap.from(".notifications-list", {
+        opacity: 0,
+        x: -20,
+        duration: 0.2,
+        delay: 0.4,
+        stagger: 0.1,
+      });
+    } else {
+      gsap.to("#notification", {
+        opacity: 0,
+        height: 0,
+        duration: 0.5,
+      });
+    }
+  }, [toggleNotif]);
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-gray-800 bg-gray-900/95 backdrop-blur supports-[backdrop-filter]:bg-gray-900/60">
-      <div className="flex flex-row h-16 items-center justify-between p-5">
+    <header className="sticky top-0 z-50 w-full border-b border-gray-800 bg-gray-900/95 backdrop-blur supports-[backdrop-filter]:bg-gray-900/60 box-content">
+      <div className="flex flex-row h-16 items-center justify-between px-5 md:px-10">
         <Link to="/" className="flex items-center gap-2">
           <Gavel className="h-6 w-6 text-blue-400" />
           <span className="font-bold text-blue-400">S&D</span>
         </Link>
-        <nav className="flex gap-10">
+
+        {/* Navigation for larger screens */}
+        <nav className="hidden md:flex gap-10">
           <Link
-            className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4 cursor-pointer"
+            className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
             to="/auctions"
           >
             Auctions
           </Link>
           <Link
-            className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4 cursor-pointer"
+            className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
             to="/sell"
           >
             Sell
           </Link>
           <Link
-            className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4 cursor-pointer"
+            className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
             to="/about"
           >
             About
           </Link>
         </nav>
+
+        {/* Notification and User Actions */}
         <div className="flex items-center gap-3">
           <Button
             variant="ghost"
@@ -59,58 +74,87 @@ function Header() {
             <Bell className="h-6 w-6" onClick={toggleVisibility} />
             <span className="sr-only">Notifications</span>
             {toggleNotif && (
-              <div className="absolute w-[500px] h-0 opacity-0 origin-center top-12 p-4 right-0   rounded-md border border-gray-600 bg-gray-900" id="notification">
-                <h3 className="text-lg font-bold text-blue-400">Notifications</h3>
-                <ul className="">
-                  <li className="notifications-list opacity-1 mt-9 hover:bg-gray-800 p-2 hover:rounded-md">
-                    <div className="flex flex-row items-center justify-between w-full">
-                      <div className="w-auto h-full flex ">
-                      <img src="https://media.wired.com/photos/5926b0c2af95806129f504df/master/w_2560%2Cc_limit/JohnWick2.jpg" className="rounded-full w-[60px] aspect-square" alt="" />
+              <div
+                className="absolute lg:w-[400px] md:w-[300px] sm:w-[250px] w-[200px] top-12 p-4 right-0 h-0 opacity-0 origin-top-right rounded-md border border-gray-600 bg-gray-900"
+                id="notification"
+                onBlur={toggleVisibility}
+              >
+                <h3 className="text-lg font-bold text-blue-400">
+                  Notifications
+                </h3>
+                <ul className="w-full flex flex-col">
+                  <li className="notifications-list hover:bg-gray-800 p-2 rounded-md">
+                    <div className="flex flex-row justify-between items-start">
+                      <img
+                        src="https://media.wired.com/photos/5926b0c2af95806129f504df/master/w_2560%2Cc_limit/JohnWick2.jpg"
+                        className="rounded-full w-[40px] h-[40px]"
+                        alt="John Wick"
+                      />
+                      <div className="w-[80%] flex flex-col justify-start items-start">
+                        <p className="text-left text-sm font-semibold">
+                          John Wick added new auction:1969 Mustang Car
+                        </p>
+
+                        <span className="text-xs text-gray-500">
+                          2 hours ago
+                        </span>
                       </div>
-                      <div className="flex flex-col justify-center items-start w-[80%]">
-                        <div className="text-start"> <b>John Wick added new auction :</b> an 1969 mustang car</div>
-                        <div className="font-light">2 hours ago</div>
-                      </div>
-                    
                     </div>
-                    </li>
-                    <li className="notifications-list opacity-1 mt-9 hover:bg-gray-800 p-2 hover:rounded-md">
-                    <div className="flex flex-row items-center justify-between w-full">
-                      <div className="w-auto h-full flex ">
-                      <img src="https://media.wired.com/photos/5926b0c2af95806129f504df/master/w_2560%2Cc_limit/JohnWick2.jpg" className="rounded-full w-[60px] aspect-square" alt="" />
+                  </li>
+                  <li className="notifications-list hover:bg-gray-800 p-2 rounded-md">
+                    <div className="flex flex-row justify-between items-start">
+                      <img
+                        src="https://media.wired.com/photos/5926b0c2af95806129f504df/master/w_2560%2Cc_limit/JohnWick2.jpg"
+                        className="rounded-full w-[40px] h-[40px]"
+                        alt="John Wick"
+                      />
+                      <div className="w-[80%] flex flex-col justify-start items-start">
+                        <p className="text-left text-sm font-semibold">
+                          John Wick added new auction:1969 Mustang Car
+                        </p>
+
+                        <span className="text-xs text-gray-500">
+                          2 hours ago
+                        </span>
                       </div>
-                      <div className="flex flex-col justify-center items-start w-[80%]">
-                        <div className="text-start"> <b>John Wick added new auction :</b> an 1969 mustang car</div>
-                        <div className="font-light">2 hours ago</div>
-                      </div>
-                    
                     </div>
-                    </li>
-                    <li className="notifications-list opacity-1 mt-9 hover:bg-gray-800 p-2 hover:rounded-md">
-                    <div className="flex flex-row items-center justify-between w-full">
-                      <div className="w-auto h-full flex ">
-                      <img src="https://media.wired.com/photos/5926b0c2af95806129f504df/master/w_2560%2Cc_limit/JohnWick2.jpg" className="rounded-full w-[60px] aspect-square" alt="" />
+                  </li>
+                  <li className="notifications-list hover:bg-gray-800 p-2 rounded-md">
+                    <div className="flex flex-row justify-between items-start">
+                      <img
+                        src="https://media.wired.com/photos/5926b0c2af95806129f504df/master/w_2560%2Cc_limit/JohnWick2.jpg"
+                        className="rounded-full w-[40px] h-[40px]"
+                        alt="John Wick"
+                      />
+                      <div className="w-[80%] flex flex-col justify-start items-start">
+                        <p className="text-left text-sm font-semibold">
+                          John Wick added new auction:1969 Mustang Car
+                        </p>
+
+                        <span className="text-xs text-gray-500">
+                          2 hours ago
+                        </span>
                       </div>
-                      <div className="flex flex-col justify-center items-start w-[80%]">
-                        <div className="text-start"> <b>John Wick added new auction :</b> an 1969 mustang car</div>
-                        <div className="font-light">2 hours ago</div>
-                      </div>
-                    
                     </div>
-                    </li>
-                    <li className="notifications-list opacity-1 mt-9 hover:bg-gray-800 p-2 hover:rounded-md">
-                    <div className="flex flex-row items-center justify-between w-full">
-                      <div className="w-auto h-full flex ">
-                      <img src="https://media.wired.com/photos/5926b0c2af95806129f504df/master/w_2560%2Cc_limit/JohnWick2.jpg" className="rounded-full w-[60px] aspect-square" alt="" />
+                  </li>
+                  <li className="notifications-list hover:bg-gray-800 p-2 rounded-md">
+                    <div className="flex flex-row justify-between items-start">
+                      <img
+                        src="https://media.wired.com/photos/5926b0c2af95806129f504df/master/w_2560%2Cc_limit/JohnWick2.jpg"
+                        className="rounded-full w-[40px] h-[40px]"
+                        alt="John Wick"
+                      />
+                      <div className="w-[80%] flex flex-col justify-start items-start">
+                        <p className="text-left text-sm font-semibold">
+                          John Wick added new auction:1969 Mustang Car
+                        </p>
+
+                        <span className="text-xs text-gray-500">
+                          2 hours ago
+                        </span>
                       </div>
-                      <div className="flex flex-col justify-center items-start w-[80%]">
-                        <div className="text-start"> <b>John Wick added new auction :</b> an 1969 mustang car</div>
-                        <div className="font-light">2 hours ago</div>
-                      </div>
-                    
                     </div>
-                    </li>
-                    
+                  </li>
                 </ul>
               </div>
             )}
@@ -123,6 +167,8 @@ function Header() {
             <User className="h-6 w-6" />
             <span className="sr-only">Account</span>
           </Button>
+
+          {/* Hamburger Menu for smaller screens */}
           <Button
             variant="ghost"
             size="icon"
@@ -133,6 +179,8 @@ function Header() {
           </Button>
         </div>
       </div>
+
+      {/* Add dropdown menu here if needed */}
     </header>
   );
 }
