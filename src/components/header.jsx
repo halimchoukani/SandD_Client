@@ -59,7 +59,7 @@ function Header() {
             <Bell className="h-6 w-6" onClick={toggleVisibility} />
             <span className="sr-only">Notifications</span>
             {toggleNotif && (
-              <div className="absolute w-[500px] h-0 opacity-0 origin-center top-12 p-4  right-0 bg-gray-900/95 backdrop-blur-3xl supports-[backdrop-filter]:bg-gray-900/60 rounded-md border border-gray-600 bg-gray-700" id="notification">
+              <div className="absolute w-[500px] h-0 opacity-0 origin-center top-12 p-4 right-0   rounded-md border border-gray-600 bg-gray-900" id="notification">
                 <h3 className="text-lg font-bold text-blue-400">Notifications</h3>
                 <ul className="">
                   <li className="notifications-list opacity-1 mt-9">
