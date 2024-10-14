@@ -25,7 +25,7 @@ export default function ProductPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100">
+    <div className="min-h-screen bg-gray-950 text-gray-100">
       {/* Header */}
       <Header />
 
@@ -84,7 +84,7 @@ export default function ProductPage() {
               <h2 className="text-xl font-semibold mb-4 text-blue-400">Seller Information</h2>
               <div className="flex items-center space-x-4">
                 <img
-                  src="/placeholder.svg?height=50&width=50"
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzx7NtTmm07GLG0S4ZCliy-i8ZDtyFJl-y-w&s"
                   alt="Seller Avatar"
                   className="w-12 h-12 rounded-full"
                 />

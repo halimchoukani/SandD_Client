@@ -1,15 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/index";
 import { Gavel, User, Bell, Menu } from "lucide-react";
 import { Link } from "react-router-dom"; // Import Link
-
+import gsap from "gsap";
 function Header() {
   const [toggleNotif, settoggleNotif] = useState(false);
 
   const toggleVisibility = () => {
     settoggleNotif(!toggleNotif);
   };
-
+  useEffect(()=>{
+    gsap.to("#notification",{
+      opacity :1 ,
+      height:"auto",
+      duration : .5
+    })
+    gsap.from(".notifications-list",{
+      opacity :0 ,
+      x:-20,
+      duration : .2,
+      delay:.4,
+      stagger:.1,
+    })
+  },[toggleNotif])
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-800 bg-gray-900/95 backdrop-blur supports-[backdrop-filter]:bg-gray-900/60">
       <div className="flex flex-row h-16 items-center justify-between p-5">
@@ -46,13 +59,13 @@ function Header() {
             <Bell className="h-6 w-6" onClick={toggleVisibility} />
             <span className="sr-only">Notifications</span>
             {toggleNotif && (
-              <div className="absolute origin-center top-12 p-5 right-0 bg-gray-900/95 backdrop-blur supports-[backdrop-filter]:bg-gray-900/60 rounded-md border border-gray-600 bg-gray-700">
+              <div className="absolute h-0 opacity-0 origin-center top-12 p-5 right-0 bg-gray-900/95 backdrop-blur-3xl supports-[backdrop-filter]:bg-gray-900/60 rounded-md border border-gray-600 bg-gray-700" id="notification">
                 <h3 className="text-lg font-bold text-blue-400">Notifications</h3>
                 <ul>
-                  <li>fzefzefzef</li>
-                  <li>fzefzefzef</li>
-                  <li>fzefzefzef</li>
-                  <li>fzefzefzef</li>
+                  <li className="notifications-list opacity-1">fzefzefzef</li>
+                  <li className="notifications-list opacity-1">fzefzefzef</li>
+                  <li className="notifications-list opacity-1">fzefzefzef</li>
+                  <li className="notifications-list opacity-1">fzefzefzef</li>
                 </ul>
               </div>
             )}
