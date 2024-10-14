@@ -4,11 +4,21 @@ import { Search, Filter, Clock, ArrowUpDown } from "lucide-react"
 import { Button, Input, Select, Card, CardContent, CardFooter } from './ui'
 import Header from './header'
 import Footer from './footer'
+import gsap from 'gsap'
+import { useGSAP } from '@gsap/react'
 
 export default function Auctions() {
     useEffect(() => {
         document.title = "S&D - Bids"; // Change the page title
       }, []);
+      useGSAP(() => {
+        gsap.from(".card", {
+          opacity: 0,
+          y: 20,
+          duration: 0.5,
+          stagger: 0.1,
+        });
+      });
 
   const [searchTerm, setSearchTerm] = useState('')
   const [category, setCategory] = useState('all')
@@ -102,7 +112,7 @@ export default function Auctions() {
         {/* Auctions Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredAuctions.map((auction) => (
-            <Card key={auction.id} className="bg-gray-800 overflow-hidden">
+            <Card key={auction.id} className="bg-gray-800 overflow-hidden card opacity-1">
               <img src={auction.image} alt={auction.title} className="w-full h-48 object-cover" />
               <CardContent className="p-4">
                 <h2 className="text-xl font-semibold mb-2 text-white">{auction.title}</h2>
