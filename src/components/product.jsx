@@ -1,28 +1,28 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 
-import {  Clock, Eye, Heart, Share2 } from "lucide-react"
-import { Button, Input } from './ui/index'
-import Header from './header'
-import Footer from './footer'
+import { Clock, Eye, Heart, Share2 } from "lucide-react";
+import { Button, Input } from "./ui/index";
+import Header from "./header";
+import Footer from "./footer";
 
 export default function ProductPage() {
-    useEffect(() => {
-        document.title = "S&D - Product"; // Change the page title
-      }, []);
-  const [bidAmount, setBidAmount] = useState('')
-  const [currentBid, setCurrentBid] = useState(1000)
+  useEffect(() => {
+    document.title = "S&D - Product"; // Change the page title
+  }, []);
+  const [bidAmount, setBidAmount] = useState("");
+  const [currentBid, setCurrentBid] = useState(1000);
 
-  const handleBidChange = (e) => setBidAmount(e.target.value)
+  const handleBidChange = (e) => setBidAmount(e.target.value);
 
   const handleBidSubmit = () => {
     if (parseFloat(bidAmount) > currentBid) {
-      setCurrentBid(parseFloat(bidAmount))
-      setBidAmount('')
-      alert('Bid placed successfully!')
+      setCurrentBid(parseFloat(bidAmount));
+      setBidAmount("");
+      alert("Bid placed successfully!");
     } else {
-      alert('Bid must be higher than the current bid.')
+      alert("Bid must be higher than the current bid.");
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
@@ -43,22 +43,33 @@ export default function ProductPage() {
 
           {/* Product Details */}
           <div className="bg-gray-800 p-6 rounded-lg shadow">
-            <h1 className="text-3xl font-bold mb-4 text-blue-400">Vintage Rolex Submariner</h1>
+            <h1 className="text-3xl font-bold mb-4 text-blue-400">
+              Vintage Rolex Submariner
+            </h1>
             <div className="flex items-center space-x-4 text-sm text-gray-400 mb-4">
-              <span className="flex items-center"><Eye className="h-4 w-4 mr-1" /> 1.5k views</span>
-              <span className="flex items-center"><Heart className="h-4 w-4 mr-1" /> 120 watchers</span>
+              <span className="flex items-center">
+                <Eye className="h-4 w-4 mr-1" /> 1.5k views
+              </span>
+              <span className="flex items-center">
+                <Heart className="h-4 w-4 mr-1" /> 120 watchers
+              </span>
               <button className="flex items-center text-blue-400 hover:text-blue-300">
                 <Share2 className="h-4 w-4 mr-1" /> Share
               </button>
             </div>
             <p className="text-gray-300 mb-6">
-              A rare 1967 Rolex Submariner in excellent condition. This timepiece features a black dial, 
-              date function, and comes with original box and papers.
+              A rare 1967 Rolex Submariner in excellent condition. This
+              timepiece features a black dial, date function, and comes with
+              original box and papers.
             </p>
             <div className="bg-gray-700 p-4 rounded-lg mb-6">
               <div className="flex justify-between items-center mb-2">
-                <span className="font-semibold text-gray-300">Current Bid:</span>
-                <span className="text-2xl font-bold text-green-400">${currentBid.toLocaleString()}</span>
+                <span className="font-semibold text-gray-300">
+                  Current Bid:
+                </span>
+                <span className="text-2xl font-bold text-green-400">
+                  ${currentBid.toLocaleString()}
+                </span>
               </div>
               <div className="flex items-center text-sm text-gray-400">
                 <Clock className="h-4 w-4 mr-1" />
@@ -72,8 +83,8 @@ export default function ProductPage() {
                 className="flex-grow bg-gray-700 text-white border-gray-600"
                 placeholder="Enter your bid"
               />
-              <Button 
-                onClick={handleBidSubmit} 
+              <Button
+                onClick={handleBidSubmit}
                 disabled={!bidAmount || parseFloat(bidAmount) <= currentBid}
                 className="bg-blue-500 hover:bg-blue-600 text-white disabled:bg-gray-600 disabled:text-gray-400"
               >
@@ -81,7 +92,9 @@ export default function ProductPage() {
               </Button>
             </div>
             <div className="border-t border-gray-700 pt-6">
-              <h2 className="text-xl font-semibold mb-4 text-blue-400">Seller Information</h2>
+              <h2 className="text-xl font-semibold mb-4 text-blue-400">
+                Seller Information
+              </h2>
               <div className="flex items-center space-x-4">
                 <img
                   src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzx7NtTmm07GLG0S4ZCliy-i8ZDtyFJl-y-w&s"
@@ -90,7 +103,9 @@ export default function ProductPage() {
                 />
                 <div>
                   <p className="font-semibold text-gray-200">John Doe</p>
-                  <p className="text-sm text-gray-400">Member since 2018 • 100% positive feedback</p>
+                  <p className="text-sm text-gray-400">
+                    Member since 2018 • 100% positive feedback
+                  </p>
                 </div>
               </div>
             </div>
@@ -99,9 +114,12 @@ export default function ProductPage() {
 
         {/* Product Description */}
         <div className="bg-gray-800 p-6 rounded-lg shadow mt-8">
-          <h2 className="text-2xl font-bold mb-4 text-blue-400">Product Description</h2>
+          <h2 className="text-2xl font-bold mb-4 text-blue-400">
+            Product Description
+          </h2>
           <p className="text-gray-300 mb-4">
-            This 1967 Rolex Submariner (Ref. 1680) is a true collector^s item. Key features include:
+            This 1967 Rolex Submariner (Ref. 1680) is a true collector^s item.
+            Key features include:
           </p>
           <ul className="list-disc pl-5 mb-4 text-gray-300">
             <li>Original black dial with date function</li>
@@ -111,8 +129,9 @@ export default function ProductPage() {
             <li>Comes with original box and papers</li>
           </ul>
           <p className="text-gray-300">
-            The watch is in excellent condition, showing minimal signs of wear consistent with its age. 
-            This is a rare opportunity to own a piece of horological history.
+            The watch is in excellent condition, showing minimal signs of wear
+            consistent with its age. This is a rare opportunity to own a piece
+            of horological history.
           </p>
         </div>
       </main>
@@ -120,5 +139,5 @@ export default function ProductPage() {
       {/* Footer */}
       <Footer />
     </div>
-  )
+  );
 }
