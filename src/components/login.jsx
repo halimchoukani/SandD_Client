@@ -1,4 +1,4 @@
-import { Link, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 import { Button, Input, Label, FormGroup } from "./ui/index";
 import {
   Card,
@@ -9,15 +9,21 @@ import {
   CardTitle,
 } from "./ui/index";
 import { Gavel, Facebook, Mail } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import { useGoogleLogin } from "@react-oauth/google";
 
 export default function Login() {
   const password = useRef(null);
   const email = useRef(null);
+  const navigate = useNavigate(); // Initialize useNavigate hook
 
   useEffect(() => {
     document.title = "S&D - Login";
   }, []);
+
+  const loginGoogle = useGoogleLogin({
+    onSuccess: (tokenResponse) => console.log(tokenResponse),
+  });
 
   const loginUser = async (e) => {
     e.preventDefault();
@@ -40,7 +46,9 @@ export default function Login() {
       if (data.jwt) {
         console.log("Login successful");
         localStorage.setItem("token", data.jwt);
-        <Navigate to="/" />;
+
+        // Use the navigate function to redirect after login
+        navigate("/"); // Redirect to home page
       }
     } catch (error) {
       console.log(error.message);
@@ -98,12 +106,8 @@ export default function Login() {
               <span className={`bg-background px-2 `}>Or continue with</span>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <Button variant="outline">
-              <Facebook className="mr-2 h-4 w-4" />
-              Facebook
-            </Button>
-            <Button variant="outline">
+          <div className="grid gap-4">
+            <Button variant="outline" onClick={() => loginGoogle()}>
               <Mail className="mr-2 h-4 w-4" />
               Google
             </Button>
