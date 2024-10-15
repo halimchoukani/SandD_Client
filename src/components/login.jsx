@@ -9,21 +9,46 @@ import {
   CardTitle,
 } from "./ui/index";
 import { Gavel, Facebook, Mail } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Login() {
-  const [password, setPassword] = useState(""); // Use useState to manage password input
-  const [error, setError] = useState("");
+  const password = useRef(null);
+  const email = useRef(null);
+
   useEffect(() => {
-    document.title = "S&D - Login"; // Change the page title
+    document.title = "S&D - Login";
   }, []);
-  useEffect(() => {
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters long");
-    } else {
-      setError("");
+
+  const loginUser = async (e) => {
+    e.preventDefault();
+
+    // API request to login endpoint
+    try {
+      const response = await fetch("http://localhost:8089/api/user/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email.current.value,
+          password: password.current.value,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Login failed. Please check your credentials.");
+      }
+
+      const data = await response.json();
+      console.log("Login successful:", data);
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+      }
+    } catch (error) {
+      console.log(error.message);
     }
-  }, [password]);
+  };
+
   return (
     <div
       className={`min-h-screen flex items-center justify-center 
@@ -48,6 +73,7 @@ export default function Login() {
               placeholder="m@example.com"
               required
               type="email"
+              ref={email}
             />
           </div>
           <div className="space-y-2">
@@ -57,15 +83,11 @@ export default function Login() {
               required
               type="password"
               placeholder="******************"
-              value={password} // Use the state value for password
-              onChange={(e) => {
-                setPassword(e.target.value); // Update the password state
-              }}
+              ref={password}
             />
-            <span>{error}</span>
           </div>
 
-          <Button className="w-full" type="submit">
+          <Button className="w-full" type="submit" onClick={loginUser}>
             Sign In
           </Button>
           <div className="relative">
