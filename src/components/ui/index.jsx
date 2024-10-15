@@ -70,7 +70,6 @@ export const Select = forwardRef(({ className, options, ...props }, ref) => {
   );
 });
 
-
 Select.displayName = "Select";
 
 export const Card = forwardRef(({ className, ...props }, ref) => (
@@ -209,8 +208,13 @@ export const AlertDescription = forwardRef(({ className, ...props }, ref) => (
 
 AlertDescription.displayName = "AlertDescription";
 
-export const FormGroup = forwardRef(({ className, ...props }, ref) => (
-  <div ref={ref} className={`space-y-2 ${className}`} {...props} />
+export const FormGroup = forwardRef(({ className, method, ...props }, ref) => (
+  <form
+    ref={ref}
+    method={method}
+    className={`space-y-2 ${className}`}
+    {...props}
+  />
 ));
 
 FormGroup.displayName = "FormGroup";

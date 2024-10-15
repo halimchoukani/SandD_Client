@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom"; // Import Link
-import { Button, Input, Label } from "./ui/index";
+import { Link, Navigate } from "react-router-dom";
+import { Button, Input, Label, FormGroup } from "./ui/index";
 import {
   Card,
   CardContent,
@@ -21,8 +21,6 @@ export default function Login() {
 
   const loginUser = async (e) => {
     e.preventDefault();
-
-    // API request to login endpoint
     try {
       const response = await fetch("http://localhost:8089/api/user/login", {
         method: "POST",
@@ -38,11 +36,11 @@ export default function Login() {
       if (!response.ok) {
         throw new Error("Login failed. Please check your credentials.");
       }
-
       const data = await response.json();
-      console.log("Login successful");
-      if (data.token) {
-        localStorage.setItem("token", data.token);
+      if (data.jwt) {
+        console.log("Login successful");
+        localStorage.setItem("token", data.jwt);
+        <Navigate to="/" />;
       }
     } catch (error) {
       console.log(error.message);
@@ -66,30 +64,32 @@ export default function Login() {
           <CardDescription>Login</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              placeholder="m@example.com"
-              required
-              type="email"
-              ref={email}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              required
-              type="password"
-              placeholder="******************"
-              ref={password}
-            />
-          </div>
+          <FormGroup>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                placeholder="m@example.com"
+                required
+                type="email"
+                ref={email}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                required
+                type="password"
+                placeholder="******************"
+                ref={password}
+              />
+            </div>
 
-          <Button className="w-full" type="submit" onClick={loginUser}>
-            Sign In
-          </Button>
+            <Button className="w-full" type="submit" onClick={loginUser}>
+              Sign In
+            </Button>
+          </FormGroup>
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t" />
