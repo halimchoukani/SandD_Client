@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import { Button, Input, Label } from "./ui/index";
+import { Link, useNavigate } from "react-router-dom";
+import { Button, Input, Label, Textarea } from "./ui/index";
 import {
   Card,
   CardContent,
@@ -9,75 +9,247 @@ import {
   CardTitle,
 } from "./ui/index";
 import { Gavel } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Signup() {
+  const navigate = useNavigate();
+
+  // Form states
+  const [formData, setFormData] = useState({
+    username: "",
+    name: "",
+    lastName: "",
+    phoneNumber: "",
+    address: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  // Error states
+  const [error, setError] = useState(null);
+  const [errors, setErrors] = useState({});
+  const errorAlert = useRef(null);
   useEffect(() => {
     document.title = "S&D - SignUp"; // Change the page title
   }, []);
+  const closeAlert = () => {
+    errorAlert.current.style.display = "none";
+  };
+  // Validation function
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.username) newErrors.username = "Username is required";
+    if (!formData.name) newErrors.name = "First name is required";
+    if (!formData.lastName) newErrors.lastName = "Last name is required";
+    if (!formData.phoneNumber)
+      newErrors.phoneNumber = "Phone number is required";
+    if (!formData.address) newErrors.address = "Address is required";
+    if (!formData.email) newErrors.email = "Email is required";
+    else if (!/\S+@\S+\.\S+/.test(formData.email))
+      newErrors.email = "Email is invalid";
+
+    if (!formData.password) newErrors.password = "Password is required";
+    if (formData.password !== formData.confirmPassword)
+      newErrors.confirmPassword = "Passwords do not match";
+
+    return newErrors;
+  };
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
+  };
+
+  const SignupUser = async (e) => {
+    e.preventDefault();
+
+    const validationErrors = validateForm();
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length > 0) {
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:8089/api/user/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+          firstname: formData.name,
+          lastname: formData.lastName,
+          number: formData.phoneNumber,
+          address: formData.address,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        errorAlert.current.style.display = "block";
+        setError(data.message);
+        return;
+      }
+      navigate("/login");
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <div
-      className={`min-h-screen flex items-center justify-center $
-        bg-[#111827]
-      `}
+      className={`min-h-screen flex items-center justify-center bg-[#111827]`}
     >
       <Card className={`w-full max-w-md`}>
-        <CardHeader className="space-y-1">
-          <Link to="/">
-            <div className="flex items-center justify-center mb-4">
-              <Gavel className="h-6 w-6 mr-2" />
-              <CardTitle className="text-2xl font-bold ">S&D</CardTitle>
+        <form onSubmit={SignupUser}>
+          <CardHeader className="space-y-1">
+            <Link to="/">
+              <div className="flex items-center justify-center mb-4">
+                <Gavel className="h-6 w-6 mr-2" />
+                <CardTitle className="text-2xl font-bold">S&D</CardTitle>
+              </div>
+            </Link>
+            <CardDescription>Sign up</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div
+              className=" bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+              role="alert"
+              style={{ display: "none" }}
+              ref={errorAlert}
+            >
+              <strong className="font-bold">SignUp Error : </strong>
+              <span className="block sm:inline">{error}</span>
+              <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
+                <svg
+                  className="fill-current h-6 w-6 text-red-500"
+                  role="button"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                >
+                  <title>Close</title>
+                  <path
+                    onClick={closeAlert}
+                    d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"
+                  />
+                </svg>
+              </span>
             </div>
-          </Link>
-          <CardDescription>Sign up</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex flex-row justify-between items-center gap-4">
-            <div>
-              <Label htmlFor="name">Name</Label>
-              <Input id="name" placeholder="Foulen" required type="text" />
-            </div>
-            <div>
-              <Label htmlFor="lastName">Last Name</Label>
+            <div className="space-y-2">
+              <Label htmlFor="username">Username</Label>
               <Input
-                id="lastName"
-                placeholder="Ben Foulen"
-                required
+                id="username"
+                placeholder="@username"
                 type="text"
+                value={formData.username}
+                onChange={handleChange}
               />
+              {errors.username && (
+                <p className="text-red-500">{errors.username}</p>
+              )}
             </div>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              placeholder="m@example.com"
-              required
-              type="email"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              required
-              type="password"
-              placeholder="******************"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="cpassword">Confirm Password</Label>
-            <Input
-              id="cpassword"
-              required
-              type="password"
-              placeholder="******************"
-            />
-          </div>
-          <Button className="w-full" type="submit">
-            Sign Up
-          </Button>
-        </CardContent>
+            <div className="flex flex-row justify-between items-center gap-4">
+              <div>
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  id="name"
+                  placeholder="Foulen"
+                  type="text"
+                  value={formData.name}
+                  onChange={handleChange}
+                />
+                {errors.name && <p className="text-red-500">{errors.name}</p>}
+              </div>
+              <div>
+                <Label htmlFor="lastName">Last Name</Label>
+                <Input
+                  id="lastName"
+                  placeholder="Ben Foulen"
+                  type="text"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                />
+                {errors.lastName && (
+                  <p className="text-red-500">{errors.lastName}</p>
+                )}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="phoneNumber">Phone Number</Label>
+              <Input
+                id="phoneNumber"
+                placeholder="123456"
+                type="text"
+                value={formData.phoneNumber}
+                onChange={handleChange}
+              />
+              {errors.phoneNumber && (
+                <p className="text-red-500">{errors.phoneNumber}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="address">Address</Label>
+              <Textarea
+                id="address"
+                name="address"
+                className="mt-1 bg-gray-800 border-gray-700 text-white resize-none"
+                placeholder="Address"
+                value={formData.address}
+                onChange={handleChange}
+              />
+              {errors.address && (
+                <p className="text-red-500">{errors.address}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                placeholder="m@example.com"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+              />
+              {errors.email && <p className="text-red-500">{errors.email}</p>}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="******************"
+                value={formData.password}
+                onChange={handleChange}
+              />
+              {errors.password && (
+                <p className="text-red-500">{errors.password}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                placeholder="******************"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+              />
+              {errors.confirmPassword && (
+                <p className="text-red-500">{errors.confirmPassword}</p>
+              )}
+            </div>
+            <Button className="w-full" type="submit">
+              Sign Up
+            </Button>
+          </CardContent>
+        </form>
         <CardFooter className="flex flex-wrap items-center justify-between gap-2">
           <div className={`text-sm flex flex-wrap`}>
             <span className="mr-1 hidden sm:inline-block">
@@ -86,7 +258,6 @@ export default function Signup() {
             <Link to="/login">
               <div
                 className={`underline underline-offset-4 hover:text-primary cursor-pointer `}
-                href="#"
               >
                 Sign In
               </div>

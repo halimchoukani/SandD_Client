@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import {
   Gavel,
   User,
@@ -24,6 +24,11 @@ import Header from "./header";
 import Footer from "./footer";
 
 export default function Profile() {
+  const navigate = useNavigate();
+  const Logout = () => {
+    localStorage.clear();
+    navigate("/login");
+  };
   const [isEditing, setIsEditing] = useState(false);
   const [user, setUser] = useState({
     name: "John Doe",
@@ -162,7 +167,10 @@ export default function Profile() {
                     <Package size={20} />
                     <span>My Bids</span>
                   </Link>
-                  <button className="flex items-center space-x-2   hover:text-blue-500 w-full text-left">
+                  <button
+                    className="flex items-center space-x-2   hover:text-blue-500 w-full text-left"
+                    onClick={Logout}
+                  >
                     <LogOut size={20} />
                     <span>Logout</span>
                   </button>

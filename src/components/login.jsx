@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
+import { Link, useNavigate } from "react-router-dom";
 import { Button, Input, Label, FormGroup } from "./ui/index";
 import {
   Card,
@@ -8,14 +8,16 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/index";
-import { Gavel, Facebook, Mail } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { Gavel, Mail } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 
 export default function Login() {
   const password = useRef(null);
   const email = useRef(null);
   const navigate = useNavigate();
+
+  const [userForm, setUserForm] = useState({});
 
   useEffect(() => {
     document.title = "S&D - Login";
@@ -25,28 +27,53 @@ export default function Login() {
     onSuccess: (tokenResponse) => console.log(tokenResponse),
   });
 
+  const verify = () => {
+    const emailValue = email.current.value;
+    const passwordValue = password.current.value;
+
+    if (emailValue === "" || passwordValue === "") {
+      console.log("Please fill in all fields");
+      return false; // Invalid form
+    }
+
+    // Determine if it's an email or username and set userForm
+    if (emailValue.indexOf("@") === -1) {
+      setUserForm({
+        username: emailValue,
+        password: passwordValue,
+      });
+    } else {
+      setUserForm({
+        email: emailValue,
+        password: passwordValue,
+      });
+    }
+
+    return true; // Valid form
+  };
+
   const loginUser = async (e) => {
     e.preventDefault();
+    if (!verify()) return; // Only proceed if verification is successful
+
     try {
       const response = await fetch("http://localhost:8089/api/user/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          email: email.current.value,
-          password: password.current.value,
-        }),
+        body: JSON.stringify(userForm),
       });
 
       if (!response.ok) {
         throw new Error("Login failed. Please check your credentials.");
       }
+
       const data = await response.json();
       if (data.jwt) {
         console.log("Login successful");
         localStorage.setItem("token", data.jwt);
-        navigate("/");
+        navigate("/"); // Redirect after successful login
       }
     } catch (error) {
       console.log(error.message);
@@ -55,16 +82,14 @@ export default function Login() {
 
   return (
     <div
-      className={`min-h-screen flex items-center justify-center 
-        bg-[#111827]
-      `}
+      className={`min-h-screen flex items-center justify-center bg-[#111827]`}
     >
       <Card className={`w-full max-w-md`}>
         <CardHeader className="space-y-1">
           <Link to="/">
             <div className="flex items-center justify-center mb-4">
               <Gavel className="h-6 w-6 mr-2" />
-              <CardTitle className="text-2xl font-bold ">S&D</CardTitle>
+              <CardTitle className="text-2xl font-bold">S&D</CardTitle>
             </div>
           </Link>
           <CardDescription>Login</CardDescription>
@@ -72,12 +97,12 @@ export default function Login() {
         <CardContent className="space-y-4">
           <FormGroup>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Email or Username</Label>
               <Input
                 id="email"
-                placeholder="m@example.com"
+                placeholder="m@example.com or username"
                 required
-                type="email"
+                type="text"
                 ref={email}
               />
             </div>
@@ -91,7 +116,6 @@ export default function Login() {
                 ref={password}
               />
             </div>
-
             <Button className="w-full" type="submit" onClick={loginUser}>
               Sign In
             </Button>
@@ -101,7 +125,7 @@ export default function Login() {
               <span className="w-full border-t" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className={`bg-background px-2 `}>Or continue with</span>
+              <span className={`bg-background px-2`}>Or continue with</span>
             </div>
           </div>
           <div className="grid gap-4">
@@ -118,7 +142,7 @@ export default function Login() {
             </span>
             <Link to="/signup">
               <div
-                className={`underline underline-offset-4 hover:text-primary cursor-pointer `}
+                className={`underline underline-offset-4 hover:text-primary cursor-pointer`}
               >
                 Sign Up
               </div>
