@@ -15,7 +15,7 @@ import { useGoogleLogin } from "@react-oauth/google";
 export default function Login() {
   const password = useRef(null);
   const email = useRef(null);
-  const navigate = useNavigate(); // Initialize useNavigate hook
+  const navigate = useNavigate();
 
   useEffect(() => {
     document.title = "S&D - Login";
@@ -46,9 +46,7 @@ export default function Login() {
       if (data.jwt) {
         console.log("Login successful");
         localStorage.setItem("token", data.jwt);
-
-        // Use the navigate function to redirect after login
-        navigate("/"); // Redirect to home page
+        navigate("/");
       }
     } catch (error) {
       console.log(error.message);
