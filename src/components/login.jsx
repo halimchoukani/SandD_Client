@@ -17,7 +17,8 @@ export default function Login() {
   const email = useRef(null);
   const navigate = useNavigate();
 
-  const [userForm, setUserForm] = useState({});
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     document.title = "S&D - Login";
@@ -27,42 +28,22 @@ export default function Login() {
     onSuccess: (tokenResponse) => console.log(tokenResponse),
   });
 
-  const verify = () => {
-    const emailValue = email.current.value;
-    const passwordValue = password.current.value;
-
-    if (emailValue === "" || passwordValue === "") {
-      console.log("Please fill in all fields");
-      return false; // Invalid form
-    }
-
-    // Determine if it's an email or username and set userForm
-    if (emailValue.indexOf("@") === -1) {
-      setUserForm({
-        username: emailValue,
-        password: passwordValue,
-      });
-    } else {
-      setUserForm({
-        email: emailValue,
-        password: passwordValue,
-      });
-    }
-
-    return true; // Valid form
-  };
-
   const loginUser = async (e) => {
-    e.preventDefault();
-    if (!verify()) return; // Only proceed if verification is successful
-
+    e.preventDefault(); // Prevent page reload on form submission
+    setLoading(true);
+    setErrorMessage("");
+    const input = email.current.value; // Assuming email.current.value contains the input
+    const isEmail = /\S+@\S+\.\S+/.test(input); // Simple regex to check if input is an email
     try {
       const response = await fetch("http://localhost:8089/api/user/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(userForm),
+        body: JSON.stringify({
+          [isEmail ? "email" : "username"]: input,
+          password : password.current.value,
+        }),
       });
 
       if (!response.ok) {
@@ -78,12 +59,13 @@ export default function Login() {
     } catch (error) {
       console.log(error.message);
     }
+    finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div
-      className={`min-h-screen flex items-center justify-center bg-[#111827]`}
-    >
+    <div className={`min-h-screen flex items-center justify-center bg-[#111827]`}>
       <Card className={`w-full max-w-md`}>
         <CardHeader className="space-y-1">
           <Link to="/">
@@ -95,7 +77,7 @@ export default function Login() {
           <CardDescription>Login</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <FormGroup>
+          <FormGroup method="post">
             <div className="space-y-2">
               <Label htmlFor="email">Email or Username</Label>
               <Input
@@ -116,8 +98,11 @@ export default function Login() {
                 ref={password}
               />
             </div>
-            <Button className="w-full" type="submit" onClick={loginUser}>
-              Sign In
+            {errorMessage && (
+              <p className="text-red-500 text-sm">{errorMessage}</p>
+            )}
+            <Button className="w-full" type="submit" onClick={loginUser} disabled={loading}>
+              {loading ? "Signing In..." : "Sign In"}
             </Button>
           </FormGroup>
           <div className="relative">
