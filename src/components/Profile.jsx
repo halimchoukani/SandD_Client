@@ -1,11 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import {
-  Gavel,
   User,
   Settings,
   Package,
-  CreditCard,
   LogOut,
 } from "lucide-react";
 import {
@@ -22,8 +20,17 @@ import {
 } from "./ui";
 import Header from "./header";
 import Footer from "./footer";
+import jwt_decode from "jwt-decode";
 
 export default function Profile() {
+  
+  useEffect(()=>{
+    document.title = "S&D - Profile";
+    const token = localStorage.getItem("token"); // Assuming the token is stored in localStorage
+    const decoded = jwt_decode(token);
+
+    console.log(decoded); 
+  },[])
   const navigate = useNavigate();
   const Logout = () => {
     localStorage.clear();
