@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Gavel, Camera, Eye, EyeOff } from "lucide-react";
 import {
@@ -6,24 +6,48 @@ import {
   Card,
   CardHeader,
   CardContent,
-  CardFooter,
   Input,
   FormGroup,
   Label,
   Avatar,
 } from "../components/ui/index";
+import {jwtDecode} from "jwt-decode"; // Correct import
 
 export default function ProfileEdit() {
-  const [user, setUser] = useState({
-    name: "John Doe",
-    email: "john.doe@example.com",
-    avatar: "/placeholder.svg?height=200&width=200",
-    bio: "Passionate about collecting vintage items and participating in exciting auctions!",
-  });
+  const getUser = async (id) => {
+    const res = await fetch(`http://localhost:8089/api/user/get/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return res.json();
+  };
 
+  const updateUser = async (user) => {
+    const res = await fetch(`http://localhost:8089/api/user/update/${user.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
+    return res.json();
+  };
+
+  const [user, setUser] = useState({});
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    document.title = "S&D - Profile";
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decoded = jwtDecode(token);
+      getUser(decoded.sub).then((data) => setUser(data)); // Fetch user data once on mount
+    }
+  }, []); // Empty dependency array to run only on mount
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -50,14 +74,10 @@ export default function ProfileEdit() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here you would typically send the updated user data to your backend
     console.log("Updated user data:", user);
-    if (newPassword) {
-      console.log("New password:", newPassword);
-    }
-    // Show a success message or redirect the user
+    await updateUser(user);
     alert("Profile updated successfully!");
   };
 
@@ -95,8 +115,8 @@ export default function ProfileEdit() {
               <CardContent className="flex flex-col items-center">
                 <div className="relative">
                   <Avatar
-                    src={user.avatar}
-                    alt={user.name}
+                    src={user.avatar || ""}
+                    alt="Profile Avatar"
                     size="large"
                     className="w-32 h-32"
                   />
@@ -129,13 +149,13 @@ export default function ProfileEdit() {
               </CardHeader>
               <CardContent>
                 <FormGroup>
-                  <Label htmlFor="name" className="text-gray-300">
+                  <Label htmlFor="firstname" className="text-gray-300">
                     Full Name
                   </Label>
                   <Input
-                    id="name"
-                    name="name"
-                    value={user.name}
+                    id="firstname"
+                    name="firstname"
+                    value={user.firstname || ""}
                     onChange={handleInputChange}
                     required
                     className="bg-gray-700 text-white border-gray-600 focus:border-blue-500 focus:ring-blue-500"
@@ -149,24 +169,11 @@ export default function ProfileEdit() {
                     id="email"
                     name="email"
                     type="email"
-                    value={user.email}
+                    value={user.email || ""}
                     onChange={handleInputChange}
                     required
                     className="bg-gray-700 text-white border-gray-600 focus:border-blue-500 focus:ring-blue-500"
                   />
-                </FormGroup>
-                <FormGroup>
-                  <Label htmlFor="bio" className="text-gray-300">
-                    Bio
-                  </Label>
-                  <textarea
-                    id="bio"
-                    name="bio"
-                    value={user.bio}
-                    onChange={handleInputChange}
-                    rows="4"
-                    className="w-full px-3 py-2 text-white border rounded-lg focus:outline-none focus:border-blue-500 bg-gray-700 border-gray-600"
-                  ></textarea>
                 </FormGroup>
               </CardContent>
             </Card>
@@ -198,11 +205,7 @@ export default function ProfileEdit() {
                         className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-white"
                         onClick={() => setShowPassword(!showPassword)}
                       >
-                        {showPassword ? (
-                          <EyeOff size={20} />
-                        ) : (
-                          <Eye size={20} />
-                        )}
+                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                       </button>
                     </div>
                   </FormGroup>
