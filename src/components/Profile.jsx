@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
-import {
-  User,
-  Settings,
-  Package,
-  LogOut,
-} from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { User, Settings, Package, LogOut } from "lucide-react";
 import {
   Button,
   Card,
@@ -20,32 +15,35 @@ import {
 } from "./ui";
 import Header from "./header";
 import Footer from "./footer";
-import jwt_decode from "jwt-decode";
+import {jwtDecode} from "jwt-decode"; // Correct import
 
 export default function Profile() {
-  
-  useEffect(()=>{
+  const getUser = async (id) => {
+    const res = await fetch(`http://localhost:8089/api/user/get/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+
+      },
+    });
+    return res.json();
+  };
+
+  const [user, setUser] = useState({});
+  useEffect(() => {
     document.title = "S&D - Profile";
     const token = localStorage.getItem("token"); // Assuming the token is stored in localStorage
-    const decoded = jwt_decode(token);
+    const decoded = jwtDecode(token);
+    getUser(decoded.sub).then((data) => setUser(data));    
+  }, [user]);
 
-    console.log(decoded); 
-  },[])
   const navigate = useNavigate();
   const Logout = () => {
     localStorage.clear();
     navigate("/login");
   };
+
   const [isEditing, setIsEditing] = useState(false);
-  const [user, setUser] = useState({
-    name: "John Doe",
-    email: "john.doe@example.com",
-    avatar:
-      "https://blenderartists.org/uploads/default/original/4X/7/f/3/7f36fa03901a1714543c7fbdf3403ce4179d5605.jpeg",
-    joinDate: "January 2023",
-    bidsWon: 15,
-    totalSpent: 5000,
-  });
 
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
@@ -98,7 +96,7 @@ export default function Profile() {
                 <div className="flex items-center space-x-4 mb-6">
                   <Avatar
                     src={user.avatar}
-                    alt={user.name}
+                    alt={user.firstname +" "+user.lastname}
                     className="w-[200px] h-[200px]"
                   />
                 </div>
@@ -107,7 +105,7 @@ export default function Profile() {
                   <Input
                     id="name"
                     name="name"
-                    value={user.name}
+                    value={user.firstname +" "+user.lastname}
                     onChange={handleInputChange}
                     disabled={!isEditing}
                   />
@@ -137,9 +135,7 @@ export default function Profile() {
                   <Badge variant="success" className="mr-2">
                     Bids Won: {user.bidsWon}
                   </Badge>
-                  <Badge variant="primary">
-                    Total Spent: ${user.totalSpent}
-                  </Badge>
+                  <Badge variant="primary">Total Spent: ${user.totalSpent}</Badge>
                 </div>
               </div>
             </CardFooter>
@@ -153,29 +149,20 @@ export default function Profile() {
               </CardHeader>
               <CardContent>
                 <nav className="space-y-2">
-                  <Link
-                    to="/profile"
-                    className="flex items-center space-x-2   hover:text-blue-500"
-                  >
+                  <Link to="/profile" className="flex items-center space-x-2 hover:text-blue-500">
                     <User size={20} />
                     <span>Profile</span>
                   </Link>
-                  <Link
-                    to="/profile/edit"
-                    className="flex items-center space-x-2   hover:text-blue-500"
-                  >
+                  <Link to="/profile/edit" className="flex items-center space-x-2 hover:text-blue-500">
                     <Settings size={20} />
                     <span>Settings</span>
                   </Link>
-                  <Link
-                    to="/my-bids"
-                    className="flex items-center space-x-2   hover:text-blue-500"
-                  >
+                  <Link to="/my-bids" className="flex items-center space-x-2 hover:text-blue-500">
                     <Package size={20} />
                     <span>My Bids</span>
                   </Link>
                   <button
-                    className="flex items-center space-x-2   hover:text-blue-500 w-full text-left"
+                    className="flex items-center space-x-2 hover:text-blue-500 w-full text-left"
                     onClick={Logout}
                   >
                     <LogOut size={20} />
@@ -192,21 +179,15 @@ export default function Profile() {
               <CardContent>
                 <ul className="space-y-4">
                   {recentActivity.map((activity) => (
-                    <li
-                      key={activity.id}
-                      className="flex justify-between items-center"
-                    >
+                    <li key={activity.id} className="flex justify-between items-center">
                       <div>
                         <p className="font-medium">{activity.item}</p>
                         <p className="text-sm text-gray-500">{activity.date}</p>
                       </div>
                       <Badge
-                        variant={
-                          activity.type === "won" ? "success" : "primary"
-                        }
+                        variant={activity.type === "won" ? "success" : "primary"}
                       >
-                        {activity.type === "won" ? "Won" : "Bid"}: $
-                        {activity.amount}
+                        {activity.type === "won" ? "Won" : "Bid"}: ${activity.amount}
                       </Badge>
                     </li>
                   ))}
