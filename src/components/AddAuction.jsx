@@ -1,5 +1,5 @@
 import  { useState } from 'react'
-import {  Upload, AlertCircle } from "lucide-react"
+import {  Upload, AlertCircle,Loader  } from "lucide-react"
 import { Button, Input, Textarea, Select, Card, CardHeader, CardTitle, CardContent, CardFooter } from './ui'
 import Header from './header'
 import Footer from './footer'
@@ -16,7 +16,7 @@ export default function AddAuction() {
   })
 
   const [errors, setErrors] = useState({})
-
+  const [loading, setLoading] = useState(false)
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData(prevState => ({
@@ -27,21 +27,33 @@ export default function AddAuction() {
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0]
-    setFormData(prevState => ({
-      ...prevState,
-      image: file
-    }))
+    if (file) {
+      setLoading(true)
+
+      // Simulate image upload process
+      setTimeout(() => {
+        setFormData(prevState => ({
+          ...prevState,
+          image: file
+        }))
+        setLoading(false)
+      }, 2000) // Simulate a 2-second delay for image processing
+    }
   }
 
   const handleSubmit = (e) => {
+    console.log("Form submitted:", formData);
+    
     e.preventDefault()
     const newErrors = {}
 
-    // Basic form validation
+      // Basic form validation
     if (!formData.title.trim()) newErrors.title = "Title is required"
     if (!formData.category) newErrors.category = "Category is required"
     if (!formData.description.trim()) newErrors.description = "Description is required"
     if (!formData.startingPrice || isNaN(formData.startingPrice)) newErrors.startingPrice = "Valid starting price is required"
+    if (formData.startingPrice < 1) newErrors.startingPrice = "Starting price must be at least $1.00"
+    if (formData.reservePrice < formData.startingPrice) newErrors.reservePrice = "Reserve price must be higher than the starting price"
     if (!formData.duration) newErrors.duration = "Duration is required"
 
     if (Object.keys(newErrors).length > 0) {
@@ -112,7 +124,7 @@ export default function AddAuction() {
                   id="category"
                   name="category"
                   value={formData.category}
-                  onValueChange={(value) => handleChange({ target: { name: 'category', value } })}
+                  onChange={(value) => handleChange({ target: { name: 'category', value: value.currentTarget.value } })}
                   options={categories}
                   className="mt-1 bg-gray-800 border-gray-700 text-white"
                 />
@@ -168,7 +180,7 @@ export default function AddAuction() {
                   id="duration"
                   name="duration"
                   value={formData.duration}
-                  onValueChange={(value) => handleChange({ target: { name: 'duration', value } })}
+                  onChange={(value) => handleChange({ target: { name: 'duration', value:value.currentTarget.value } })}
                   options={durations}
                   className="mt-1 bg-gray-800 border-gray-700 text-white"
                 />
@@ -193,7 +205,15 @@ export default function AddAuction() {
                     <Upload className="mr-2 h-5 w-5" />
                     Choose file
                   </label>
-                  {formData.image && <span className="ml-3 text-sm text-gray-400">{formData.image.name}</span>}
+                  
+                  {loading ? (
+                    <div className="ml-3 flex items-center">
+                      <Loader className="animate-spin h-5 w-5 text-blue-400" />
+                      <span className="ml-2 text-sm text-gray-400">Uploading...</span>
+                    </div>
+                  ) : formData.image && (
+                    <span className="ml-3 text-sm text-gray-400">{formData.image.name}</span>
+                  )}
                 </div>
               </div>
             </form>
