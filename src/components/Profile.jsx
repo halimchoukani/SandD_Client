@@ -45,9 +45,6 @@ export default function Profile() {
 
   const [isEditing, setIsEditing] = useState(false);
 
-  const handleEditToggle = () => {
-    setIsEditing(!isEditing);
-  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
