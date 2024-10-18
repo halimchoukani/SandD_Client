@@ -7,7 +7,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "./ui/index";
+  Alert,
+} from "./ui/";
 import { Gavel, Mail } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
@@ -42,11 +43,12 @@ export default function Login() {
         },
         body: JSON.stringify({
           [isEmail ? "email" : "username"]: input,
-          password : password.current.value,
+          password: password.current.value,
         }),
       });
 
       if (!response.ok) {
+        setErrorMessage("Login failed. Please check your credentials.");
         throw new Error("Login failed. Please check your credentials.");
       }
 
@@ -58,14 +60,15 @@ export default function Login() {
       }
     } catch (error) {
       console.log(error.message);
-    }
-    finally {
+    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className={`min-h-screen flex items-center justify-center bg-[#111827]`}>
+    <div
+      className={`min-h-screen flex items-center justify-center bg-[#111827]`}
+    >
       <Card className={`w-full max-w-md`}>
         <CardHeader className="space-y-1">
           <Link to="/">
@@ -76,6 +79,7 @@ export default function Login() {
           </Link>
           <CardDescription>Login</CardDescription>
         </CardHeader>
+
         <CardContent className="space-y-4">
           <FormGroup method="post">
             <div className="space-y-2">
@@ -101,7 +105,12 @@ export default function Login() {
             {errorMessage && (
               <p className="text-red-500 text-sm">{errorMessage}</p>
             )}
-            <Button className="w-full" type="submit" onClick={loginUser} disabled={loading}>
+            <Button
+              className="w-full"
+              type="submit"
+              onClick={loginUser}
+              disabled={loading}
+            >
               {loading ? "Signing In..." : "Sign In"}
             </Button>
           </FormGroup>

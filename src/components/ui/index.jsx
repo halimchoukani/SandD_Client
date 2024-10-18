@@ -168,23 +168,18 @@ export const Badge = forwardRef(
 
 Badge.displayName = "Badge";
 
-export const Alert = forwardRef(
-  ({ className, variant = "default", ...props }, ref) => {
-    const variants = {
-      default: "bg-gray-700 text-gray-100",
-      destructive: "bg-red-900 text-red-100 border-red-700",
-    };
-
-    return (
-      <div
-        ref={ref}
-        role="alert"
-        className={`rounded-lg border p-4 ${variants[variant]} ${className}`}
-        {...props}
-      />
-    );
-  }
-);
+export const Alert = forwardRef(({ className, text, ...props }, ref) => {
+  return (
+    <div role="alert">
+      <div className="bg-red-500 text-white font-bold rounded-t px-4 py-2">
+        Alert
+      </div>
+      <div className="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
+        <p>{text}</p>
+      </div>
+    </div>
+  );
+});
 
 Alert.displayName = "Alert";
 
