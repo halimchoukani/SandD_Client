@@ -59,7 +59,7 @@ export default function Login() {
 
           const backendData = await backendResponse.json();
           localStorage.setItem("token", backendData.jwt);
-          navigate("/"); // Redirect after login success
+          navigate("/");
         } catch (e) {
           console.log(e.message);
         }

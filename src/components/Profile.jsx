@@ -33,7 +33,9 @@ export default function Profile() {
     document.title = "S&D - Profile";
     const token = localStorage.getItem("token"); // Assuming the token is stored in localStorage
     const decoded = jwtDecode(token);
-    getUser(decoded.sub).then((data) => setUser(data));
+    getUser(decoded.sub).then((data) => {
+      setUser(data);
+    });
   }, []);
 
   const navigate = useNavigate();
@@ -125,7 +127,14 @@ export default function Profile() {
             </CardContent>
             <CardFooter>
               <div className="flex justify-between items-center w-full">
-                <span>Member since: {user.joinDate}</span>
+                <span>
+                  Member since:{" "}
+                  {new Date(user.createdAt).toLocaleDateString(undefined, {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </span>
                 <div>
                   <Badge variant="success" className="mr-2">
                     Bids Won: {user.bidsWon}

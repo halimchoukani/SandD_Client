@@ -24,11 +24,14 @@ export default function Signup() {
     email: "",
     password: "",
     confirmPassword: "",
+    image: null,
   });
 
   // Error states
   const [error, setError] = useState(null);
   const [errors, setErrors] = useState({});
+  const [imagePreview, setImagePreview] = useState(null); // State for image preview
+
   const errorAlert = useRef(null);
   useEffect(() => {
     document.title = "S&D - SignUp"; // Change the page title
@@ -63,7 +66,18 @@ export default function Signup() {
       [e.target.id]: e.target.value,
     });
   };
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setFormData({
+      ...formData,
+      image: file,
+    });
 
+    // Create a preview URL for the selected image
+    if (file) {
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
   const SignupUser = async (e) => {
     e.preventDefault();
 
@@ -74,21 +88,25 @@ export default function Signup() {
       return;
     }
 
+    // Build the FormData object
+    const form = new FormData();
+    form.append("username", formData.username); // Should be formData.get('username')
+    form.append("email", formData.email); // Should be formData.get('email')
+    form.append("password", formData.password); // Should be formData.get('password')
+    form.append("firstname", formData.name);
+    form.append("lastname", formData.lastName);
+    form.append("phoneNumber", formData.phoneNumber);
+    form.append("address", formData.address);
+
+    // Append the image file
+    if (formData.image) {
+      form.append("image", formData.image);
+    }
+
     try {
       const response = await fetch("http://localhost:8089/api/user/signup", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: formData.username,
-          email: formData.email,
-          password: formData.password,
-          firstname: formData.name,
-          lastname: formData.lastName,
-          phoneNumber: formData.phoneNumber,
-          address: formData.address,
-        }),
+        body: form,
       });
 
       if (!response.ok) {
@@ -107,7 +125,7 @@ export default function Signup() {
     <div
       className={`min-h-screen flex items-center justify-center bg-[#111827]`}
     >
-      <Card className={`w-full max-w-md`}>
+      <Card className={`w-full h-full max-w-md`}>
         <form onSubmit={SignupUser}>
           <CardHeader className="space-y-1">
             <Link to="/">
@@ -116,7 +134,6 @@ export default function Signup() {
                 <CardTitle className="text-2xl font-bold">S&D</CardTitle>
               </div>
             </Link>
-            <CardDescription>Sign up</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div
@@ -155,7 +172,7 @@ export default function Signup() {
                 <p className="text-red-500">{errors.username}</p>
               )}
             </div>
-            <div className="flex flex-row justify-between items-center gap-4">
+            <div className="space-y-2 flex flex-row flex-wrap justify-between items-center gap-4">
               <div>
                 <Label htmlFor="name">Name</Label>
                 <Input
@@ -199,7 +216,7 @@ export default function Signup() {
               <Textarea
                 id="address"
                 name="address"
-                className="mt-1 bg-gray-800 border-gray-700 text-white resize-none"
+                className=" resize-none"
                 placeholder="Address"
                 value={formData.address}
                 onChange={handleChange}
@@ -219,32 +236,69 @@ export default function Signup() {
               />
               {errors.email && <p className="text-red-500">{errors.email}</p>}
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="******************"
-                value={formData.password}
-                onChange={handleChange}
-              />
-              {errors.password && (
-                <p className="text-red-500">{errors.password}</p>
-              )}
+            <div className="flex flex-row flex-wrap justify-between items-start gap-4">
+              <div>
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="******************"
+                  value={formData.password}
+                  onChange={handleChange}
+                />
+                {errors.password && (
+                  <p className="text-red-500">{errors.password}</p>
+                )}
+              </div>
+              <div>
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  placeholder="******************"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                />
+                {errors.confirmPassword && (
+                  <p className="text-red-500">{errors.confirmPassword}</p>
+                )}
+              </div>
             </div>
+
+            {/* Image Upload */}
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                placeholder="******************"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-              />
-              {errors.confirmPassword && (
-                <p className="text-red-500">{errors.confirmPassword}</p>
-              )}
+              <div className="flex flex-row flex-wrap justify-between items-start gap-4 ">
+                {/* File Input */}
+                <div className="w-[45%] space-y-2">
+                  {" "}
+                  {/* Set fixed width */}
+                  <Label htmlFor="image">Profile Image</Label>
+                  <Input
+                    id="image"
+                    type="file"
+                    accept="image/*"
+                    className="w-full"
+                    onChange={handleImageChange}
+                  />
+                </div>
+
+                {/* Image Preview */}
+                <div className="w-[40%] space-y-2">
+                  {" "}
+                  {/* Set fixed width */}
+                  {imagePreview && (
+                    <div className="mt-2">
+                      <img
+                        src={imagePreview}
+                        alt="Profile Preview"
+                        className="h-24 w-24 object-cover rounded-full"
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
+
             <Button className="w-full" type="submit">
               Sign Up
             </Button>
