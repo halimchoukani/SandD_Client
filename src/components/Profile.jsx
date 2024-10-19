@@ -92,8 +92,8 @@ export default function Profile() {
               <form onSubmit={handleSubmit}>
                 <div className="flex items-center space-x-4 mb-6">
                   <Avatar
-                    src={user.avatar}
-                    alt={user.firstname + " " + user.lastname}
+                    src={"http://localhost:8089/upload/avatar/" + user.imageUrl}
+                    alt={user.imageUrl}
                     className="w-[200px] h-[200px]"
                   />
                 </div>
