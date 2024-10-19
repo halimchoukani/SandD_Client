@@ -27,7 +27,6 @@ export default function Profile() {
     });
     return res.json();
   };
-
   const [user, setUser] = useState({});
   useEffect(() => {
     document.title = "S&D - Profile";
@@ -92,7 +91,7 @@ export default function Profile() {
               <form onSubmit={handleSubmit}>
                 <div className="flex items-center space-x-4 mb-6">
                   <Avatar
-                    src={"http://localhost:8089/upload/avatar/" + user.imageUrl}
+                    src={`http://localhost:8089/api/user/upload/avatar/${user.imageUrl}`}
                     alt={user.imageUrl}
                     className="w-[200px] h-[200px]"
                   />

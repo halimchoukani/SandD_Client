@@ -11,7 +11,7 @@ import {
   Label,
   Avatar,
 } from "../components/ui/index";
-import {jwtDecode} from "jwt-decode"; // Correct import
+import { jwtDecode } from "jwt-decode"; // Correct import
 
 export default function ProfileEdit() {
   const getUser = async (id) => {
@@ -25,13 +25,16 @@ export default function ProfileEdit() {
   };
 
   const updateUser = async (user) => {
-    const res = await fetch(`http://localhost:8089/api/user/update/${user.id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
-    });
+    const res = await fetch(
+      `http://localhost:8089/api/user/update/${user.id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      }
+    );
     return res.json();
   };
 
@@ -68,7 +71,7 @@ export default function ProfileEdit() {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setUser((prevUser) => ({ ...prevUser, avatar: reader.result }));
+        setUser((prevUser) => ({ ...prevUser, image: reader.result }));
       };
       reader.readAsDataURL(file);
     }
@@ -115,7 +118,7 @@ export default function ProfileEdit() {
               <CardContent className="flex flex-col items-center">
                 <div className="relative">
                   <Avatar
-                    src={user.avatar || ""}
+                    src={`http://localhost:8089/api/user/upload/avatar/${user.imageUrl}`}
                     alt="Profile Avatar"
                     size="large"
                     className="w-32 h-32"
@@ -205,7 +208,11 @@ export default function ProfileEdit() {
                         className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-white"
                         onClick={() => setShowPassword(!showPassword)}
                       >
-                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                        {showPassword ? (
+                          <EyeOff size={20} />
+                        ) : (
+                          <Eye size={20} />
+                        )}
                       </button>
                     </div>
                   </FormGroup>
