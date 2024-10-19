@@ -15,7 +15,7 @@ import {
 } from "./ui";
 import Header from "./header";
 import Footer from "./footer";
-import {jwtDecode} from "jwt-decode"; // Correct import
+import { jwtDecode } from "jwt-decode"; // Correct import
 
 export default function Profile() {
   const getUser = async (id) => {
@@ -23,7 +23,6 @@ export default function Profile() {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-
       },
     });
     return res.json();
@@ -34,8 +33,8 @@ export default function Profile() {
     document.title = "S&D - Profile";
     const token = localStorage.getItem("token"); // Assuming the token is stored in localStorage
     const decoded = jwtDecode(token);
-    getUser(decoded.sub).then((data) => setUser(data));    
-  }, [user]);
+    getUser(decoded.sub).then((data) => setUser(data));
+  }, []);
 
   const navigate = useNavigate();
   const Logout = () => {
@@ -44,7 +43,6 @@ export default function Profile() {
   };
 
   const [isEditing, setIsEditing] = useState(false);
-
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -93,7 +91,7 @@ export default function Profile() {
                 <div className="flex items-center space-x-4 mb-6">
                   <Avatar
                     src={user.avatar}
-                    alt={user.firstname +" "+user.lastname}
+                    alt={user.firstname + " " + user.lastname}
                     className="w-[200px] h-[200px]"
                   />
                 </div>
@@ -102,7 +100,7 @@ export default function Profile() {
                   <Input
                     id="name"
                     name="name"
-                    value={user.firstname +" "+user.lastname}
+                    value={user.firstname + " " + user.lastname}
                     onChange={handleInputChange}
                     disabled={!isEditing}
                   />
@@ -132,7 +130,9 @@ export default function Profile() {
                   <Badge variant="success" className="mr-2">
                     Bids Won: {user.bidsWon}
                   </Badge>
-                  <Badge variant="primary">Total Spent: ${user.totalSpent}</Badge>
+                  <Badge variant="primary">
+                    Total Spent: ${user.totalSpent}
+                  </Badge>
                 </div>
               </div>
             </CardFooter>
@@ -146,15 +146,24 @@ export default function Profile() {
               </CardHeader>
               <CardContent>
                 <nav className="space-y-2">
-                  <Link to="/profile" className="flex items-center space-x-2 hover:text-blue-500">
+                  <Link
+                    to="/profile"
+                    className="flex items-center space-x-2 hover:text-blue-500"
+                  >
                     <User size={20} />
                     <span>Profile</span>
                   </Link>
-                  <Link to="/profile/edit" className="flex items-center space-x-2 hover:text-blue-500">
+                  <Link
+                    to="/profile/edit"
+                    className="flex items-center space-x-2 hover:text-blue-500"
+                  >
                     <Settings size={20} />
                     <span>Settings</span>
                   </Link>
-                  <Link to="/my-bids" className="flex items-center space-x-2 hover:text-blue-500">
+                  <Link
+                    to="/my-bids"
+                    className="flex items-center space-x-2 hover:text-blue-500"
+                  >
                     <Package size={20} />
                     <span>My Bids</span>
                   </Link>
@@ -176,15 +185,21 @@ export default function Profile() {
               <CardContent>
                 <ul className="space-y-4">
                   {recentActivity.map((activity) => (
-                    <li key={activity.id} className="flex justify-between items-center">
+                    <li
+                      key={activity.id}
+                      className="flex justify-between items-center"
+                    >
                       <div>
                         <p className="font-medium">{activity.item}</p>
                         <p className="text-sm text-gray-500">{activity.date}</p>
                       </div>
                       <Badge
-                        variant={activity.type === "won" ? "success" : "primary"}
+                        variant={
+                          activity.type === "won" ? "success" : "primary"
+                        }
                       >
-                        {activity.type === "won" ? "Won" : "Bid"}: ${activity.amount}
+                        {activity.type === "won" ? "Won" : "Bid"}: $
+                        {activity.amount}
                       </Badge>
                     </li>
                   ))}

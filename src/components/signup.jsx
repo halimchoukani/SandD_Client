@@ -86,7 +86,7 @@ export default function Signup() {
           password: formData.password,
           firstname: formData.name,
           lastname: formData.lastName,
-          number: formData.phoneNumber,
+          phoneNumber: formData.phoneNumber,
           address: formData.address,
         }),
       });

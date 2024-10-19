@@ -26,7 +26,48 @@ export default function Login() {
   }, []);
 
   const loginGoogle = useGoogleLogin({
-    onSuccess: (tokenResponse) => console.log(tokenResponse),
+    onSuccess: async (tokenResponse) => {
+      try {
+        // Use the access token to fetch the user's Google profile
+        const userInfoResponse = await fetch(
+          "https://www.googleapis.com/oauth2/v3/userinfo",
+          {
+            headers: {
+              Authorization: `Bearer ${tokenResponse.access_token}`,
+            },
+          }
+        );
+        const userInfo = await userInfoResponse.json();
+        console.log("Google user info:", userInfo);
+
+        // Send user information and token to backend
+        try {
+          const backendResponse = await fetch(
+            "http://localhost:8089/api/user/google-login",
+            {
+              method: "GET", // POST request to match backend
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${tokenResponse.access_token}`,
+              },
+            }
+          );
+
+          if (!backendResponse.ok) {
+            throw new Error("Google login failed");
+          }
+
+          const backendData = await backendResponse.json();
+          localStorage.setItem("token", backendData.jwt);
+          navigate("/"); // Redirect after login success
+        } catch (e) {
+          console.log(e.message);
+        }
+      } catch (error) {
+        setErrorMessage(error.message);
+      }
+    },
+    onError: () => setErrorMessage("Google login was unsuccessful."),
   });
 
   const loginUser = async (e) => {
