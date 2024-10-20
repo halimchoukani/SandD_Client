@@ -8,108 +8,69 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
 export default function Auctions() {
-  const getAuctions = async () => {
-    const res = await fetch(`http://localhost:8089/api/auction/getAll`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    return res.json();
-  };
-
-  useEffect(() => {
-    document.title = "S&D - Bids"; // Change the page title
-    getAuctions().then((data)=>setAuctions(data));
-    console.log(auctions);
-  }, []);
-
-  useGSAP(() => {
-    gsap.from(".card", {
-      opacity: 0,
-      y: 20,
-      duration: 0.5,
-      stagger: 0.1,
-    });
-  });
-
   const [searchTerm, setSearchTerm] = useState("");
   const [category, setCategory] = useState("all");
   const [sortBy, setSortBy] = useState("endingSoon");
   const [auctions, setAuctions] = useState([]);
 
-  // Mock data for auctions
-  // const auctions = [
-  //   {
-  //     id: 1,
-  //     title: "Vintage Rolex Submariner",
-  //     category: "Watches",
-  //     currentBid: 5000,
-  //     endTime: "2024-03-15T14:00:00Z",
-  //     image:
-  //       "https://www.bobswatches.com/rolex-blog/wp-content/uploads/2020/12/Rolex_Submariner_5513_5D3_9227-2-1.jpg",
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "Rare First Edition Book",
-  //     category: "Books",
-  //     currentBid: 1000,
-  //     endTime: "2024-03-14T10:00:00Z",
-  //     image:
-  //       "https://www.bobswatches.com/rolex-blog/wp-content/uploads/2020/12/Rolex_Submariner_5513_5D3_9227-2-1.jpg",
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "Antique Victorian Desk",
-  //     category: "Furniture",
-  //     currentBid: 2500,
-  //     endTime: "2024-03-16T18:00:00Z",
-  //     image:
-  //       "https://www.bobswatches.com/rolex-blog/wp-content/uploads/2020/12/Rolex_Submariner_5513_5D3_9227-2-1.jpg",
-  //   },
-  //   {
-  //     id: 4,
-  //     title: "1967 Ford Mustang",
-  //     category: "Cars",
-  //     currentBid: 25000,
-  //     endTime: "2024-03-20T12:00:00Z",
-  //     image:
-  //       "https://www.bobswatches.com/rolex-blog/wp-content/uploads/2020/12/Rolex_Submariner_5513_5D3_9227-2-1.jpg",
-  //   },
-  //   {
-  //     id: 5,
-  //     title: "Original Andy Warhol Print",
-  //     category: "Art",
-  //     currentBid: 15000,
-  //     endTime: "2024-03-18T16:00:00Z",
-  //     image:
-  //       "https://www.bobswatches.com/rolex-blog/wp-content/uploads/2020/12/Rolex_Submariner_5513_5D3_9227-2-1.jpg",
-  //   },
-  //   {
-  //     id: 6,
-  //     title: "Signed Basketball Jersey",
-  //     category: "Sports Memorabilia",
-  //     currentBid: 500,
-  //     endTime: "2024-03-17T20:00:00Z",
-  //     image:
-  //       "https://www.bobswatches.com/rolex-blog/wp-content/uploads/2020/12/Rolex_Submariner_5513_5D3_9227-2-1.jpg",
-  //   },
-  // ];
+  const getAuctions = async () => {
+    try {
+      const res = await fetch(`http://localhost:8089/api/auction/all`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
 
-  const filteredAuctions = auctions
-    .filter(
-      (auction) =>
-        auction.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        (category === "all" || auction.category === category)
-    )
-    .sort((a, b) => {
-      if (sortBy === "endingSoon") {
-        return new Date(a.endTime) - new Date(b.endTime);
-      } else if (sortBy === "highestBid") {
-        return b.currentBid - a.currentBid;
+      console.log("API response:", data); // Log the response data
+
+      // Check if the data is an array
+      if (Array.isArray(data)) {
+        setAuctions(data);
+      } else {
+        console.error("Invalid response: auctions is not an array");
+        setAuctions([]); // Reset auctions to an empty array if response is invalid
       }
-      return 0;
-    });
+    } catch (error) {
+      console.error("Error fetching auctions:", error);
+    }
+  };
+
+  useEffect(() => {
+    document.title = "S&D - Bids"; // Change the page title
+    getAuctions();
+  }, []);
+
+  useGSAP(() => {
+    if (auctions.length > 0) {
+      gsap.from(".card", {
+        opacity: 0,
+        y: 20,
+        duration: 0.5,
+        stagger: 0.1,
+      });
+    }
+  }, [auctions]);
+
+  // Filtering auctions by search term and category
+  const filteredAuctions = auctions
+    .filter((auction) =>
+      auction.title.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .filter((auction) =>
+      category === "all" ? true : auction.category === category
+    );
+
+  // Sorting auctions
+  filteredAuctions.sort((a, b) => {
+    if (sortBy === "endingSoon") {
+      return new Date(a.end_time) - new Date(b.end_time);
+    } else if (sortBy === "highestBid") {
+      return b.current_price - a.current_price;
+    }
+    return 0;
+  });
 
   const categoryOptions = [
     { value: "all", label: "All Categories" },
@@ -139,7 +100,7 @@ export default function Auctions() {
 
         {/* Search and Filter Section */}
         <Card className="mb-8 bg-transparent border-none">
-          <CardContent className="">
+          <CardContent>
             <div className="h-full flex flex-col gap-4 justify-center items-center md:flex-row md:items-center">
               <div className="flex-grow">
                 <div className="relative">
@@ -156,7 +117,7 @@ export default function Auctions() {
                 <Filter className="h-5 w-5 text-gray-400" />
                 <Select
                   value={category}
-                  onValueChange={setCategory}
+                  onChange={setCategory} // Updated prop name
                   options={categoryOptions}
                   className="w-40 bg-gray-800 border-gray-700 text-white"
                 />
@@ -165,7 +126,7 @@ export default function Auctions() {
                 <ArrowUpDown className="h-5 w-5 text-gray-400" />
                 <Select
                   value={sortBy}
-                  onValueChange={setSortBy}
+                  onChange={setSortBy} // Updated prop name
                   options={sortOptions}
                   className="w-40 bg-gray-800 border-gray-700 text-white"
                 />
@@ -177,13 +138,9 @@ export default function Auctions() {
         {/* Auctions Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredAuctions.map((auction) => (
-            <Card
-              key={auction.id}
-              className="bg-gray-800 overflow-hidden card opacity-1"
-            >
+            <Card key={auction.id} className="bg-gray-800 overflow-hidden card">
               <img
-                // src={auction.image}
-                src="https://www.bobswatches.com/rolex-blog/wp-content/uploads/2020/12/Rolex_Submariner_5513_5D3_9227-2-1.jpg"
+                src={auction.image}
                 alt={auction.title}
                 className="w-full h-48 object-cover"
               />
@@ -191,14 +148,17 @@ export default function Auctions() {
                 <h2 className="text-xl font-semibold mb-2 text-white">
                   {auction.title}
                 </h2>
-                <p className="text-gray-400 mb-2">"category"</p>
+                <p className="text-gray-400 mb-2">{auction.category}</p>
                 <div className="flex justify-between items-center mb-2">
                   <span className="font-bold text-green-400">
-                    ${auction.current_price.toLocaleString()}
+                    $
+                    {auction.startPrice
+                      ? auction.startPrice.toLocaleString()
+                      : "N/A"}
                   </span>
                   <span className="text-sm text-gray-400 flex items-center">
                     <Clock className="h-4 w-4 mr-1" />
-                    {new Date(auction.end_time).toLocaleString()}
+                    {new Date(auction.endTime).toLocaleString()}
                   </span>
                 </div>
               </CardContent>
