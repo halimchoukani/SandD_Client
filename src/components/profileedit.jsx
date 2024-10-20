@@ -48,9 +48,9 @@ export default function ProfileEdit() {
     const token = localStorage.getItem("token");
     if (token) {
       const decoded = jwtDecode(token);
-      getUser(decoded.sub).then((data) => setUser(data)); // Fetch user data once on mount
+      getUser(decoded.sub).then((data) => setUser(data));
     }
-  }, []); // Empty dependency array to run only on mount
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -153,7 +153,7 @@ export default function ProfileEdit() {
               <CardContent>
                 <FormGroup>
                   <Label htmlFor="firstname" className="text-gray-300">
-                    Full Name
+                    First Name
                   </Label>
                   <Input
                     id="firstname"
@@ -165,14 +165,26 @@ export default function ProfileEdit() {
                   />
                 </FormGroup>
                 <FormGroup>
-                  <Label htmlFor="email" className="text-gray-300">
-                    Email Address
+                  <Label htmlFor="lastname" className="text-gray-300">
+                    Last Name
                   </Label>
                   <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={user.email || ""}
+                    id="lastname"
+                    name="lastname"
+                    value={user.lastname || ""}
+                    onChange={handleInputChange}
+                    required
+                    className="bg-gray-700 text-white border-gray-600 focus:border-blue-500 focus:ring-blue-500"
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="phonenumber" className="text-gray-300">
+                    Phone Number
+                  </Label>
+                  <Input
+                    id="phonenumber"
+                    name="phoneNumber"
+                    value={user.phoneNumber || ""}
                     onChange={handleInputChange}
                     required
                     className="bg-gray-700 text-white border-gray-600 focus:border-blue-500 focus:ring-blue-500"
