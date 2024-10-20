@@ -42,14 +42,13 @@ export default function Auctions() {
     getAuctions();
   }, []);
 
-  useGSAP(() => {
+  useEffect(() => {
     if (auctions.length > 0) {
-      gsap.from(".card", {
-        opacity: 0,
-        y: 20,
-        duration: 0.5,
-        stagger: 0.1,
-      });
+      gsap.fromTo(
+        ".card",
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.5, stagger: 0.1 }
+      );
     }
   }, [auctions]);
 
