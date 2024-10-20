@@ -12,6 +12,7 @@ import Auctions from "./components/auctions";
 import AddAuction from "./components/AddAuction";
 import Profile from "./components/Profile";
 import UsersList from "./components/UsersList";
+import MyAuctions from "./components/MyAuctions";
 function App() {
   const lenis = new Lenis();
   function raf(time) {
@@ -32,6 +33,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/auction/:id" element={<ProductPage />} />
         <Route path="/auctions" element={<Auctions />} />
+        <Route path="/myauctions" element={<MyAuctions />} />
         <Route path="/userslist" element={<UsersList />} />
         <Route path="/sell" element={<AddAuction />} />
         <Route path="/dashboard" element={<Dashboard />} />
