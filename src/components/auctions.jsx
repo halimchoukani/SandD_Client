@@ -19,13 +19,28 @@ export default function Auctions() {
         },
       });
       const data = await res.json();
+      
+      if (Array.isArray(data)) {
+        const newData = await Promise.all(
+          data.map(async (auction) => {
+            const res2 = await fetch(
+              `http://localhost:8089/api/images/auction/${auction.id}`
+            );
+            if (res2.ok) {
+              const imageData = await res2.json();
+              if (imageData.length > 0) {
+                return { ...auction, url: imageData[0].url };
+              }
+            }
+            return auction;
+          })
+        );
 
-      console.log("API response:", data); // Log the response data
+      console.log("API response:", newData); // Log the response data
 
       // Check if the data is an array
-      if (Array.isArray(data)) {
-        setAuctions(data);
-        console.log(data);
+        setAuctions(newData);
+        
       } else {
         console.error("Invalid response: auctions is not an array");
         setAuctions([]); // Reset auctions to an empty array if response is invalid
@@ -90,7 +105,7 @@ export default function Auctions() {
           {filteredAuctions.map((auction) => (
             <Card key={auction.id} className="bg-gray-800 overflow-hidden card">
               <img
-                src={auction.image}
+                src={`http://localhost:8089/api/images/upload/auction/${auction.url}`}
                 alt={auction.title}
                 className="w-full h-48 object-cover"
               />

@@ -16,6 +16,7 @@ export default function ProductPage() {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [images,setImages] = useState(null);
 
   useEffect(() => {
     document.title = "AuctionMaster - Profile";
@@ -38,6 +39,8 @@ export default function ProductPage() {
         );
         if (!response.ok) throw new Error("Failed to fetch user data");
         const userData = await response.json();
+
+
         setUser(userData);
       } catch (err) {
         setError(
@@ -65,6 +68,11 @@ export default function ProductPage() {
           setProduct(data);
           setCurrentBid(data.currentPrice);
           setAuctionEnd(new Date(data.auctionEnd));
+          const res2 = await fetch(`http://localhost:8089/api/images/auction/${id}`);
+          if(res2.ok){
+            const d = await res2.json();
+            setImages(d);
+          }
         } else {
           console.error("Invalid response: product is not an object");
           setProduct(null);
@@ -143,19 +151,22 @@ export default function ProductPage() {
   };
 
   return (
+    
     <div className="min-h-screen bg-gray-950 text-gray-100">
       <Header />
 
       <main className="container mx-auto px-4 py-8">
         <div className="grid md:grid-cols-2 gap-8">
           <div className="bg-gray-800 p-4 rounded-lg shadow">
-            {Product && Product.imageUrl && (
+            {Product && images && (
               <img
-                src={Product.imageUrl}
+                src={`http://localhost:8089/api/images/upload/auction/${images[0].url}`}
                 alt={Product.title}
                 className="w-full h-auto object-cover rounded"
               />
             )}
+
+            
           </div>
 
           <div className="bg-gray-800 p-6 rounded-lg shadow">
