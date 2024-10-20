@@ -5,12 +5,9 @@ import { Button, Input, Select, Card, CardContent, CardFooter } from "./ui";
 import Header from "./header";
 import Footer from "./footer";
 import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
 
 export default function Auctions() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [category, setCategory] = useState("all");
-  const [sortBy, setSortBy] = useState("endingSoon");
   const [auctions, setAuctions] = useState([]);
 
   const getAuctions = async () => {
@@ -28,6 +25,7 @@ export default function Auctions() {
       // Check if the data is an array
       if (Array.isArray(data)) {
         setAuctions(data);
+        console.log(data);
       } else {
         console.error("Invalid response: auctions is not an array");
         setAuctions([]); // Reset auctions to an empty array if response is invalid
@@ -105,7 +103,7 @@ export default function Auctions() {
                   <span className="font-bold text-green-400">
                     $
                     {auction.startPrice
-                      ? auction.startPrice.toLocaleString()
+                      ? auction.currentPrice.toLocaleString()
                       : "N/A"}
                   </span>
                   <span className="text-sm text-gray-400 flex items-center">
