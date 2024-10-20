@@ -219,12 +219,12 @@ export default function Profile() {
                     <ChevronRight size={16} />
                   </Link>
                   <Link
-                    to="/my-bids"
+                    to="/myauctions"
                     className="flex items-center justify-between p-2 hover:bg-gray-800 rounded"
                   >
                     <div className="flex items-center space-x-2">
                       <Package size={20} />
-                      <span>My Bids</span>
+                      <span>My Auctions</span>
                     </div>
                     <ChevronRight size={16} />
                   </Link>
