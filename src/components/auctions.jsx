@@ -53,38 +53,9 @@ export default function Auctions() {
   }, [auctions]);
 
   // Filtering auctions by search term and category
-  const filteredAuctions = auctions
-    .filter((auction) =>
-      auction.title.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    .filter((auction) =>
-      category === "all" ? true : auction.category === category
-    );
-
-  // Sorting auctions
-  filteredAuctions.sort((a, b) => {
-    if (sortBy === "endingSoon") {
-      return new Date(a.end_time) - new Date(b.end_time);
-    } else if (sortBy === "highestBid") {
-      return b.current_price - a.current_price;
-    }
-    return 0;
-  });
-
-  const categoryOptions = [
-    { value: "all", label: "All Categories" },
-    { value: "Watches", label: "Watches" },
-    { value: "Books", label: "Books" },
-    { value: "Furniture", label: "Furniture" },
-    { value: "Cars", label: "Cars" },
-    { value: "Art", label: "Art" },
-    { value: "Sports Memorabilia", label: "Sports Memorabilia" },
-  ];
-
-  const sortOptions = [
-    { value: "endingSoon", label: "Ending Soon" },
-    { value: "highestBid", label: "Highest Bid" },
-  ];
+  const filteredAuctions = auctions.filter((auction) =>
+    auction.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
@@ -111,24 +82,6 @@ export default function Auctions() {
                   />
                   <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
                 </div>
-              </div>
-              <div className="flex items-center space-x-4">
-                <Filter className="h-5 w-5 text-gray-400" />
-                <Select
-                  value={category}
-                  onChange={setCategory} // Updated prop name
-                  options={categoryOptions}
-                  className="w-40 bg-gray-800 border-gray-700 text-white"
-                />
-              </div>
-              <div className="flex items-center space-x-4">
-                <ArrowUpDown className="h-5 w-5 text-gray-400" />
-                <Select
-                  value={sortBy}
-                  onChange={setSortBy} // Updated prop name
-                  options={sortOptions}
-                  className="w-40 bg-gray-800 border-gray-700 text-white"
-                />
               </div>
             </div>
           </CardContent>
