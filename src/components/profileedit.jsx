@@ -32,15 +32,17 @@ export default function ProfileEdit() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(user),
+        body: JSON.stringify({
+          firstname: user.firstname,
+          lastname: user.lastname,
+          phoneNumber: user.phoneNumber,
+        }),
       }
     );
     return res.json();
   };
 
   const [user, setUser] = useState({});
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
@@ -211,8 +213,6 @@ export default function ProfileEdit() {
                         id="newPassword"
                         name="newPassword"
                         type={showPassword ? "text" : "password"}
-                        value={newPassword}
-                        onChange={handlePasswordChange}
                         className="bg-gray-700 text-white border-gray-600 focus:border-blue-500 focus:ring-blue-500"
                       />
                       <button
@@ -236,8 +236,6 @@ export default function ProfileEdit() {
                       id="confirmPassword"
                       name="confirmPassword"
                       type="password"
-                      value={confirmPassword}
-                      onChange={handlePasswordChange}
                       className="bg-gray-700 text-white border-gray-600 focus:border-blue-500 focus:ring-blue-500"
                     />
                   </FormGroup>
