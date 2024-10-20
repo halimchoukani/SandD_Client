@@ -1,112 +1,162 @@
-import  { useState } from 'react'
-import {  Upload, AlertCircle,Loader  } from "lucide-react"
-import { Button, Input, Textarea, Select, Card, CardHeader, CardTitle, CardContent, CardFooter } from './ui'
-import Header from './header'
-import Footer from './footer'
+import { useState } from "react";
+import { Upload, AlertCircle, Loader, Images, X } from "lucide-react";
+import {
+  Button,
+  Input,
+  Textarea,
+  Select,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "./ui";
+import Header from "./header";
+import Footer from "./footer";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 export default function AddAuction() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
-    title: '',
-    category: '',
-    description: '',
-    startingPrice: '',
-    reservePrice: '',
-    duration: '',
-    image: null
-  })
+    title: "",
+    description: "",
+    startPrice: "",
+    duration: "",
+  });
 
-  const [errors, setErrors] = useState({})
-  const [loading, setLoading] = useState(false)
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData(prevState => ({
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
       ...prevState,
-      [name]: value
-    }))
-  }
+      [name]: value,
+    }));
+  };
 
+  const [images, setImages] = useState(new Array());
+  const [imageId, setImagesId] = useState(1);
   const handleImageUpload = (e) => {
-    const file = e.target.files[0]
+    const file = e.target.files[0];
     if (file) {
-      setLoading(true)
+      setLoading(true);
+      const i = [...images];
+      i.push({ id: imageId, file });
+      setImagesId(imageId + 1);
 
-      // Simulate image upload process
       setTimeout(() => {
-        setFormData(prevState => ({
-          ...prevState,
-          image: file
-        }))
-        setLoading(false)
-      }, 2000) // Simulate a 2-second delay for image processing
+        setImages(i);
+        setLoading(false);
+      }, 2000);
     }
+  };
+  const removeImage = (id) => {
+    setImages((prevImages) => prevImages.filter((image) => image.id !== id))
   }
 
-  const handleSubmit = (e) => {
-    console.log("Form submitted:", formData);
-    
-    e.preventDefault()
-    const newErrors = {}
 
-      // Basic form validation
-    if (!formData.title.trim()) newErrors.title = "Title is required"
-    if (!formData.category) newErrors.category = "Category is required"
-    if (!formData.description.trim()) newErrors.description = "Description is required"
-    if (!formData.startingPrice || isNaN(formData.startingPrice)) newErrors.startingPrice = "Valid starting price is required"
-    if (formData.startingPrice < 1) newErrors.startingPrice = "Starting price must be at least $1.00"
-    if (formData.reservePrice < formData.startingPrice) newErrors.reservePrice = "Reserve price must be higher than the starting price"
-    if (!formData.duration) newErrors.duration = "Duration is required"
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const newErrors = {};
+
+    // Basic form validation
+    if (!formData.title.trim()) newErrors.title = "Title is required";
+    if (!formData.description.trim())
+      newErrors.description = "Description is required";
+    if (!formData.startPrice || isNaN(formData.startPrice))
+      newErrors.startPrice = "Valid starting price is required";
+    if (formData.startPrice < 1)
+      newErrors.startPrice = "Starting price must be at least $1.00";
+    if (!formData.duration) newErrors.duration = "Duration is required";
 
     if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
+      setErrors(newErrors);
     } else {
-      // Here you would typically send the form data to your backend
-      console.log("Form submitted:", formData)
-      alert("Auction created successfully!")
-      // Reset form after successful submission
-      setFormData({
-        title: '',
-        category: '',
-        description: '',
-        startingPrice: '',
-        reservePrice: '',
-        duration: '',
-        image: null
-      })
-      setErrors({})
-    }
-  }
+      let Data = { ...formData };
+      Data.currentPrice = Data.startPrice;
+      Data.startTime = new Date();
+      Data.endTime = new Date(Data.startTime);
+      Data.endTime.setDate(Data.startTime.getDate() + Number(Data.duration));
+      const token = jwtDecode(localStorage.getItem("token"));
+      Data.seller = { id: token.sub };
+      Data.status = "OPEN";
 
-  const categories = [
-    { value: 'electronics', label: 'Electronics' },
-    { value: 'fashion', label: 'Fashion' },
-    { value: 'home', label: 'Home & Garden' },
-    { value: 'sports', label: 'Sports' },
-    { value: 'art', label: 'Art' },
-    { value: 'collectibles', label: 'Collectibles' },
-    { value: 'vehicles', label: 'Vehicles' },
-  ]
+      try {
+        const res = await fetch("http://localhost:8089/api/auction/add", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(Data),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          console.log(data);
+          images.forEach( async(image) => {
+      
+            let ImageRequest = new FormData();
+            ImageRequest.append("auctionId",data.id);
+            ImageRequest.append("file",image.file);
+            try{
+              const res = await fetch("http://localhost:8089/api/images/add", {
+                method: "POST",
+                body: ImageRequest,
+              });
+              if(res.ok){
+                navigate("/auction/"+data.id);
+              }
+            } catch(e){
+              console.log(e);
+            }
+          });
+          
+        }
+      } catch (e) {
+        console.log(e);
+      }
+      // Reset form after successful submission
+      setImages(new Array());
+      setFormData({
+        title: "",
+        description: "",
+        startPrice: "",
+        duration: "",
+        image: null,
+      });
+      setErrors({});
+    }
+  };
 
   const durations = [
-    { value: '1', label: '1 Day' },
-    { value: '3', label: '3 Days' },
-    { value: '5', label: '5 Days' },
-    { value: '7', label: '7 Days' },
-    { value: '10', label: '10 Days' },
-  ]
+    { value: "1", label: "1 Day" },
+    { value: "3", label: "3 Days" },
+    { value: "5", label: "5 Days" },
+    { value: "7", label: "7 Days" },
+    { value: "10", label: "10 Days" },
+  ];
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
-      <Header/>
+      <Header />
 
       <main className="container mx-auto px-4 py-8">
         <Card className="bg-gray-900 border-gray-800">
           <CardHeader>
-            <CardTitle className="text-2xl font-bold text-blue-400">Auction Details</CardTitle>
+            <CardTitle className="text-2xl font-bold text-blue-400">
+              Auction Details
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label htmlFor="title" className="block text-sm font-medium text-gray-300">Title</label>
+                <label
+                  htmlFor="title"
+                  className="block text-sm font-medium text-gray-300"
+                >
+                  Title
+                </label>
                 <Input
                   id="title"
                   name="title"
@@ -115,24 +165,17 @@ export default function AddAuction() {
                   className="mt-1 bg-gray-800 border-gray-700 text-white"
                   placeholder="Enter auction title"
                 />
-                {errors.title && <p className="mt-1 text-sm text-red-500">{errors.title}</p>}
+                {errors.title && (
+                  <p className="mt-1 text-sm text-red-500">{errors.title}</p>
+                )}
               </div>
-
               <div>
-                <label htmlFor="category" className="block text-sm font-medium text-gray-300">Category</label>
-                <Select
-                  id="category"
-                  name="category"
-                  value={formData.category}
-                  onChange={(value) => handleChange({ target: { name: 'category', value: value.currentTarget.value } })}
-                  options={categories}
-                  className="mt-1 bg-gray-800 border-gray-700 text-white"
-                />
-                {errors.category && <p className="mt-1 text-sm text-red-500">{errors.category}</p>}
-              </div>
-
-              <div>
-                <label htmlFor="description" className="block text-sm font-medium text-gray-300">Description</label>
+                <label
+                  htmlFor="description"
+                  className="block text-sm font-medium text-gray-300"
+                >
+                  Description
+                </label>
                 <Textarea
                   id="description"
                   name="description"
@@ -142,53 +185,74 @@ export default function AddAuction() {
                   placeholder="Describe your item"
                   rows={4}
                 />
-                {errors.description && <p className="mt-1 text-sm text-red-500">{errors.description}</p>}
+                {errors.description && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.description}
+                  </p>
+                )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="startingPrice" className="block text-sm font-medium text-gray-300">Starting Price ($)</label>
+                  <label
+                    htmlFor="startPrice"
+                    className="block text-sm font-medium text-gray-300"
+                  >
+                    Starting Price ($)
+                  </label>
                   <Input
-                    id="startingPrice"
-                    name="startingPrice"
+                    id="startPrice"
+                    name="startPrice"
                     type="number"
-                    value={formData.startingPrice}
+                    value={formData.startPrice}
                     onChange={handleChange}
                     className="mt-1 bg-gray-800 border-gray-700 text-white"
                     placeholder="0.00"
                   />
-                  {errors.startingPrice && <p className="mt-1 text-sm text-red-500">{errors.startingPrice}</p>}
+                  {errors.startPrice && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors.startPrice}
+                    </p>
+                  )}
                 </div>
 
                 <div>
-                  <label htmlFor="reservePrice" className="block text-sm font-medium text-gray-300">Reserve Price ($) (Optional)</label>
-                  <Input
-                    id="reservePrice"
-                    name="reservePrice"
-                    type="number"
-                    value={formData.reservePrice}
-                    onChange={handleChange}
+                  <label
+                    htmlFor="duration"
+                    className="block text-sm font-medium text-gray-300"
+                  >
+                    Auction Duration
+                  </label>
+                  <Select
+                    id="duration"
+                    name="duration"
+                    value={formData.duration}
+                    onChange={(value) =>
+                      handleChange({
+                        target: {
+                          name: "duration",
+                          value: value.currentTarget.value,
+                        },
+                      })
+                    }
+                    options={durations}
                     className="mt-1 bg-gray-800 border-gray-700 text-white"
-                    placeholder="0.00"
                   />
+                  {errors.duration && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors.duration}
+                    </p>
+                  )}
                 </div>
               </div>
 
               <div>
-                <label htmlFor="duration" className="block text-sm font-medium text-gray-300">Auction Duration</label>
-                <Select
-                  id="duration"
-                  name="duration"
-                  value={formData.duration}
-                  onChange={(value) => handleChange({ target: { name: 'duration', value:value.currentTarget.value } })}
-                  options={durations}
-                  className="mt-1 bg-gray-800 border-gray-700 text-white"
-                />
-                {errors.duration && <p className="mt-1 text-sm text-red-500">{errors.duration}</p>}
-              </div>
-
-              <div>
-                <label htmlFor="image" className="block text-sm font-medium text-gray-300">Upload Image</label>
+                <label
+                  htmlFor="image"
+                  className="block text-sm font-medium text-gray-300"
+                >
+                  Upload Image
+                </label>
                 <div className="mt-1 flex items-center">
                   <Input
                     id="image"
@@ -205,21 +269,45 @@ export default function AddAuction() {
                     <Upload className="mr-2 h-5 w-5" />
                     Choose file
                   </label>
-                  
-                  {loading ? (
-                    <div className="ml-3 flex items-center">
-                      <Loader className="animate-spin h-5 w-5 text-blue-400" />
-                      <span className="ml-2 text-sm text-gray-400">Uploading...</span>
-                    </div>
-                  ) : formData.image && (
-                    <span className="ml-3 text-sm text-gray-400">{formData.image.name}</span>
-                  )}
                 </div>
+
+                {images.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Preview Images
+                  </h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    {images.map((image) => (
+                      <div
+                        key={image.id}
+                        className="relative bg-gray-100 dark:bg-gray-800 rounded-md overflow-hidden"
+                      >
+                        <img
+                          src={URL.createObjectURL(image.file)}
+                          alt={`Preview ${image.id}`}
+                          className="w-full h-32 object-cover"
+                        />
+                        <Button
+                          onClick={() => removeImage(image.id)}
+                          className="absolute top-1 right-1 p-1 bg-red-500 hover:bg-red-600 text-white rounded-full"
+                          size="icon"
+                        >
+                          <X className="w-4 h-4" />
+                          <span className="sr-only">Remove image</span>
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
               </div>
             </form>
           </CardContent>
           <CardFooter>
-            <Button onClick={handleSubmit} className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+            <Button
+              onClick={handleSubmit}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+            >
               Create Auction
             </Button>
           </CardFooter>
@@ -236,15 +324,18 @@ export default function AddAuction() {
             <ul className="list-disc pl-5 space-y-2 text-gray-300">
               <li>Ensure all information provided is accurate and complete.</li>
               <li>Starting price must be at least $1.00.</li>
-              <li>Reserve price is optional. If set, it must be higher than the starting price.</li>
-              <li>Auction duration cannot be changed once the listing is live.</li>
-              <li>High-quality images increase the chances of a successful sale.</li>
+              <li>
+                Auction duration cannot be changed once the listing is live.
+              </li>
+              <li>
+                High-quality images increase the chances of a successful sale.
+              </li>
             </ul>
           </CardContent>
         </Card>
       </main>
 
-      <Footer/>
+      <Footer />
     </div>
-  )
+  );
 }
