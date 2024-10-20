@@ -66,7 +66,21 @@ export default function MyAuctions() {
           console.log("API response:", data); // Log the response data
 
           if (Array.isArray(data)) {
-            setAuctions(data);
+            const newData = await Promise.all(
+              data.map(async (auction) => {
+                const res2 = await fetch(
+                  `http://localhost:8089/api/images/auction/${auction.id}`
+                );
+                if (res2.ok) {
+                  const imageData = await res2.json();
+                  if (imageData.length > 0) {
+                    return { ...auction, url: imageData[0].url };
+                  }
+                }
+                return auction;
+              })
+            );
+            setAuctions(newData);
             console.log(data);
           } else {
             console.error("Invalid response: auctions is not an array");
@@ -199,9 +213,9 @@ export default function MyAuctions() {
                         </td>
                         <td class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-white">
                           <img
-                            src={auction.image}
+                            src={`http://localhost:8089/api/images/upload/auction/${auction.url}`}
                             alt={auction.title}
-                            className="w-50 h-50 object-cover"
+                            className="w-[50px] h-[50px] object-cover rounded-full"
                           />
                         </td>
                         <td class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-white">
