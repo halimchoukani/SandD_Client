@@ -1,16 +1,42 @@
 import { useEffect, useState } from "react";
-
-import { Clock, Eye, Heart, Share2 } from "lucide-react";
+import { Clock } from "lucide-react";
 import { Button, Input } from "./ui/index";
 import Header from "./header";
 import Footer from "./footer";
+import { useParams } from "react-router-dom";
 
 export default function ProductPage() {
-  useEffect(() => {
-    document.title = "S&D - Product"; // Change the page title
-  }, []);
+  const { id } = useParams();
+  const [Product, setProduct] = useState({});
   const [bidAmount, setBidAmount] = useState("");
   const [currentBid, setCurrentBid] = useState(1000);
+
+  useEffect(() => {
+    document.title = "S&D - Product"; // Change the page title
+    getProduct(); // Fetch product details when the component mounts
+  }, []);
+
+  const getProduct = async () => {
+    try {
+      const res = await fetch(`http://localhost:8089/api/auction/${id}`);
+      if (res.ok) {
+        const data = await res.json();
+        console.log("API response:", data); // Log the response data
+
+        if (typeof data === "object") {
+          setProduct(data);
+          setCurrentBid(data.currentPrice); // Ensure you are using the correct property from data
+        } else {
+          console.error("Invalid response: product is not an object");
+          setProduct({}); // Reset product to an empty object if response is invalid
+        }
+      } else {
+        navigate("/404");
+      }
+    } catch (error) {
+      console.error("Error fetching product:", error);
+    }
+  };
 
   const handleBidChange = (e) => setBidAmount(e.target.value);
 
@@ -34,34 +60,21 @@ export default function ProductPage() {
         <div className="grid md:grid-cols-2 gap-8">
           {/* Product Image */}
           <div className="bg-gray-800 p-4 rounded-lg shadow">
-            <img
-              src="https://www.bobswatches.com/rolex-blog/wp-content/uploads/2020/12/Rolex_Submariner_5513_5D3_9227-2-1.jpg"
-              alt="Vintage Watch"
-              className="w-full h-auto object-cover rounded"
-            />
+            {Product.imageUrl && ( // Ensure imageUrl is available before rendering
+              <img
+                src={Product.imageUrl} // Update to use Product.imageUrl from API response
+                alt={Product.title} // Update alt text to be more dynamic
+                className="w-full h-auto object-cover rounded"
+              />
+            )}
           </div>
 
           {/* Product Details */}
           <div className="bg-gray-800 p-6 rounded-lg shadow">
             <h1 className="text-3xl font-bold mb-4 text-blue-400">
-              Vintage Rolex Submariner
+              {Product.title}
             </h1>
-            <div className="flex items-center space-x-4 text-sm text-gray-400 mb-4">
-              <span className="flex items-center">
-                <Eye className="h-4 w-4 mr-1" /> 1.5k views
-              </span>
-              <span className="flex items-center">
-                <Heart className="h-4 w-4 mr-1" /> 120 watchers
-              </span>
-              <button className="flex items-center text-blue-400 hover:text-blue-300">
-                <Share2 className="h-4 w-4 mr-1" /> Share
-              </button>
-            </div>
-            <p className="text-gray-300 mb-6">
-              A rare 1967 Rolex Submariner in excellent condition. This
-              timepiece features a black dial, date function, and comes with
-              original box and papers.
-            </p>
+            <p className="text-gray-300 mb-6">{Product.description}</p>
             <div className="bg-gray-700 p-4 rounded-lg mb-6">
               <div className="flex justify-between items-center mb-2">
                 <span className="font-semibold text-gray-300">
@@ -95,19 +108,24 @@ export default function ProductPage() {
               <h2 className="text-xl font-semibold mb-4 text-blue-400">
                 Seller Information
               </h2>
-              <div className="flex items-center space-x-4">
-                <img
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzx7NtTmm07GLG0S4ZCliy-i8ZDtyFJl-y-w&s"
-                  alt="Seller Avatar"
-                  className="w-12 h-12 rounded-full"
-                />
-                <div>
-                  <p className="font-semibold text-gray-200">John Doe</p>
-                  <p className="text-sm text-gray-400">
-                    Member since 2018 • 100% positive feedback
-                  </p>
+              {Product.seller && ( // Check if seller exists before rendering
+                <div className="flex items-center space-x-4">
+                  <img
+                    src={`http://localhost:8089/api/user/upload/avatar/${Product.seller.imageUrl}`}
+                    alt="Seller Avatar"
+                    className="w-12 h-12 rounded-full"
+                  />
+                  <div>
+                    <p className="font-semibold text-gray-200">
+                      {Product.seller.firstname + " " + Product.seller.lastname}
+                    </p>
+                    <p className="text-sm text-gray-400">
+                      Member since{" "}
+                      {new Date(Product.seller.createdAt).toLocaleString()}
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
@@ -118,21 +136,10 @@ export default function ProductPage() {
             Product Description
           </h2>
           <p className="text-gray-300 mb-4">
-            This 1967 Rolex Submariner (Ref. 1680) is a true collector^s item.
-            Key features include:
+            {Product.description || "No description available."}{" "}
+            {/* Provide a fallback */}
           </p>
-          <ul className="list-disc pl-5 mb-4 text-gray-300">
-            <li>Original black dial with date function</li>
-            <li>40mm stainless steel case</li>
-            <li>Automatic movement</li>
-            <li>Waterproof to 200 meters</li>
-            <li>Comes with original box and papers</li>
-          </ul>
-          <p className="text-gray-300">
-            The watch is in excellent condition, showing minimal signs of wear
-            consistent with its age. This is a rare opportunity to own a piece
-            of horological history.
-          </p>
+          {/* Additional product features */}
         </div>
       </main>
 
