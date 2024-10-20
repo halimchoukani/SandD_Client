@@ -3,5 +3,9 @@
 @tailwind utilities;
 
 body {
-  background-color: rgba(17, 24, 39, 0.900);
+  background-color: rgba(17, 24, 39, 0.9);
+}
+#notification {
+  scrollbar-width: bold;
+  scrollbar-color: #ffff rgba(255, 255, 255, 0.1); /* thumb color and track color */
 }

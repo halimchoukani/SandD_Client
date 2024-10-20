@@ -11,7 +11,7 @@ import {
   Label,
   Avatar,
 } from "../components/ui/index";
-import {jwtDecode} from "jwt-decode"; // Correct import
+import { jwtDecode } from "jwt-decode"; // Correct import
 
 export default function ProfileEdit() {
   const getUser = async (id) => {
@@ -25,19 +25,24 @@ export default function ProfileEdit() {
   };
 
   const updateUser = async (user) => {
-    const res = await fetch(`http://localhost:8089/api/user/update/${user.id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
-    });
+    const res = await fetch(
+      `http://localhost:8089/api/user/update/${user.id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstname: user.firstname,
+          lastname: user.lastname,
+          phoneNumber: user.phoneNumber,
+        }),
+      }
+    );
     return res.json();
   };
 
   const [user, setUser] = useState({});
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
@@ -45,9 +50,9 @@ export default function ProfileEdit() {
     const token = localStorage.getItem("token");
     if (token) {
       const decoded = jwtDecode(token);
-      getUser(decoded.sub).then((data) => setUser(data)); // Fetch user data once on mount
+      getUser(decoded.sub).then((data) => setUser(data));
     }
-  }, []); // Empty dependency array to run only on mount
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -68,7 +73,7 @@ export default function ProfileEdit() {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setUser((prevUser) => ({ ...prevUser, avatar: reader.result }));
+        setUser((prevUser) => ({ ...prevUser, image: reader.result }));
       };
       reader.readAsDataURL(file);
     }
@@ -115,7 +120,7 @@ export default function ProfileEdit() {
               <CardContent className="flex flex-col items-center">
                 <div className="relative">
                   <Avatar
-                    src={user.avatar || ""}
+                    src={`http://localhost:8089/api/user/upload/avatar/${user.imageUrl}`}
                     alt="Profile Avatar"
                     size="large"
                     className="w-32 h-32"
@@ -150,7 +155,7 @@ export default function ProfileEdit() {
               <CardContent>
                 <FormGroup>
                   <Label htmlFor="firstname" className="text-gray-300">
-                    Full Name
+                    First Name
                   </Label>
                   <Input
                     id="firstname"
@@ -162,14 +167,26 @@ export default function ProfileEdit() {
                   />
                 </FormGroup>
                 <FormGroup>
-                  <Label htmlFor="email" className="text-gray-300">
-                    Email Address
+                  <Label htmlFor="lastname" className="text-gray-300">
+                    Last Name
                   </Label>
                   <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={user.email || ""}
+                    id="lastname"
+                    name="lastname"
+                    value={user.lastname || ""}
+                    onChange={handleInputChange}
+                    required
+                    className="bg-gray-700 text-white border-gray-600 focus:border-blue-500 focus:ring-blue-500"
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="phonenumber" className="text-gray-300">
+                    Phone Number
+                  </Label>
+                  <Input
+                    id="phonenumber"
+                    name="phoneNumber"
+                    value={user.phoneNumber || ""}
                     onChange={handleInputChange}
                     required
                     className="bg-gray-700 text-white border-gray-600 focus:border-blue-500 focus:ring-blue-500"
@@ -196,8 +213,6 @@ export default function ProfileEdit() {
                         id="newPassword"
                         name="newPassword"
                         type={showPassword ? "text" : "password"}
-                        value={newPassword}
-                        onChange={handlePasswordChange}
                         className="bg-gray-700 text-white border-gray-600 focus:border-blue-500 focus:ring-blue-500"
                       />
                       <button
@@ -205,7 +220,11 @@ export default function ProfileEdit() {
                         className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-white"
                         onClick={() => setShowPassword(!showPassword)}
                       >
-                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                        {showPassword ? (
+                          <EyeOff size={20} />
+                        ) : (
+                          <Eye size={20} />
+                        )}
                       </button>
                     </div>
                   </FormGroup>
@@ -217,8 +236,6 @@ export default function ProfileEdit() {
                       id="confirmPassword"
                       name="confirmPassword"
                       type="password"
-                      value={confirmPassword}
-                      onChange={handlePasswordChange}
                       className="bg-gray-700 text-white border-gray-600 focus:border-blue-500 focus:ring-blue-500"
                     />
                   </FormGroup>

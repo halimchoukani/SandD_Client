@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { User, Settings, Package, LogOut } from "lucide-react";
+import {
+  User,
+  Settings,
+  Package,
+  LogOut,
+  Edit,
+  Camera,
+  Bell,
+  ChevronRight,
+} from "lucide-react";
 import {
   Button,
   Card,
@@ -12,49 +21,58 @@ import {
   Label,
   Avatar,
   Badge,
+  Tooltip,
+  Alert,
+  AlertTitle,
+  AlertDescription,
 } from "./ui";
 import Header from "./header";
 import Footer from "./footer";
-import { jwtDecode } from "jwt-decode"; // Correct import
+import { jwtDecode } from "jwt-decode";
 
 export default function Profile() {
-  const getUser = async (id) => {
-    const res = await fetch(`http://localhost:8089/api/user/get/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    return res.json();
-  };
-
-  const [user, setUser] = useState({});
-  useEffect(() => {
-    document.title = "S&D - Profile";
-    const token = localStorage.getItem("token"); // Assuming the token is stored in localStorage
-    const decoded = jwtDecode(token);
-    getUser(decoded.sub).then((data) => {
-      setUser(data);
-    });
-  }, []);
-
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const Logout = () => {
-    localStorage.clear();
+
+  useEffect(() => {
+    document.title = "AuctionMaster - Profile";
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    const fetchUserData = async () => {
+      try {
+        const decoded = jwtDecode(token);
+        const response = await fetch(
+          `http://localhost:8089/api/user/get/${decoded.sub}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (!response.ok) throw new Error("Failed to fetch user data");
+        const userData = await response.json();
+        setUser(userData);
+      } catch (err) {
+        setError(
+          "An error occurred while fetching your profile. Please try again later."
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
     navigate("/login");
-  };
-
-  const [isEditing, setIsEditing] = useState(false);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setUser((prevUser) => ({ ...prevUser, [name]: value }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Here you would typically send the updated user data to your backend
-    setIsEditing(false);
   };
 
   const recentActivity = [
@@ -75,74 +93,109 @@ export default function Profile() {
     { id: 3, type: "bid", item: "Rare Coin", date: "2024-03-01", amount: 300 },
   ];
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-950 text-gray-100 flex items-center justify-center">
+        Loading...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-950 text-gray-100 flex items-center justify-center">
+        <Alert variant="destructive">
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gray-950 text-gray-100 flex items-center justify-center">
+        No user data available
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
-      {/* Header */}
       <Header />
 
-      {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* User Info Card */}
-          <Card className="md:col-span-2">
-            <CardHeader className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">Profile Information</h2>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit}>
-                <div className="flex items-center space-x-4 mb-6">
+          <Card className="lg:col-span-2">
+            <CardHeader className="relative">
+              <div className="absolute top-0 right-0 mt-4 mr-4">
+                <Link to="edit">
+                  <Tooltip content="Edit Profile">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-gray-400 hover:text-white"
+                    >
+                      <Edit size={20} />
+                    </Button>
+                  </Tooltip>
+                </Link>
+              </div>
+              <div className="flex flex-col items-center space-y-4">
+                <div className="relative">
                   <Avatar
-                    src={user.avatar}
-                    alt={user.firstname + " " + user.lastname}
-                    className="w-[200px] h-[200px]"
+                    src={`http://localhost:8089/api/user/upload/avatar/${user.imageUrl}`}
+                    alt={user.firstname}
+                    className="w-32 h-32"
                   />
                 </div>
-                <FormGroup>
-                  <Label htmlFor="name">Name</Label>
-                  <Input
-                    id="name"
-                    name="name"
-                    value={user.firstname + " " + user.lastname}
-                    onChange={handleInputChange}
-                    disabled={!isEditing}
-                  />
-                </FormGroup>
+                <h1 className="text-3xl font-bold">{`${user.firstname} ${user.lastname}`}</h1>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormGroup>
                   <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
-                    name="email"
-                    type="email"
                     value={user.email}
-                    onChange={handleInputChange}
-                    disabled={!isEditing}
+                    readOnly
+                    className="bg-gray-800"
                   />
                 </FormGroup>
-                {isEditing && (
-                  <Button type="submit" className="mt-4">
-                    Save Changes
-                  </Button>
-                )}
-              </form>
+                <FormGroup>
+                  <Label htmlFor="phone">Phone</Label>
+                  <Input
+                    id="phone"
+                    value={user.phoneNumber}
+                    readOnly
+                    className="bg-gray-800"
+                  />
+                </FormGroup>
+                <FormGroup className="md:col-span-2">
+                  <Label htmlFor="address">Address</Label>
+                  <Input
+                    id="address"
+                    value={user.address}
+                    readOnly
+                    className="bg-gray-800"
+                  />
+                </FormGroup>
+              </div>
             </CardContent>
-            <CardFooter>
-              <div className="flex justify-between items-center w-full">
-                <span>
-                  Member since:{" "}
-                  {new Date(user.createdAt).toLocaleDateString(undefined, {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </span>
-                <div>
-                  <Badge variant="success" className="mr-2">
-                    Bids Won: {user.bidsWon}
-                  </Badge>
-                  <Badge variant="primary">
-                    Total Spent: ${user.totalSpent}
-                  </Badge>
-                </div>
+            <CardFooter className="flex justify-between items-center">
+              <span className="text-sm text-gray-400">
+                Member since:{" "}
+                {new Date(user.createdAt).toLocaleDateString(undefined, {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </span>
+              <div className="space-x-2">
+                <Badge variant="success">Bids Won: {user.bidsWon}</Badge>
+                <Badge variant="primary">Total Spent: ${user.totalSpent}</Badge>
               </div>
             </CardFooter>
           </Card>
@@ -156,32 +209,34 @@ export default function Profile() {
               <CardContent>
                 <nav className="space-y-2">
                   <Link
-                    to="/profile"
-                    className="flex items-center space-x-2 hover:text-blue-500"
-                  >
-                    <User size={20} />
-                    <span>Profile</span>
-                  </Link>
-                  <Link
                     to="/profile/edit"
-                    className="flex items-center space-x-2 hover:text-blue-500"
+                    className="flex items-center justify-between p-2 hover:bg-gray-800 rounded"
                   >
-                    <Settings size={20} />
-                    <span>Settings</span>
+                    <div className="flex items-center space-x-2">
+                      <User size={20} />
+                      <span>Edit Profile</span>
+                    </div>
+                    <ChevronRight size={16} />
                   </Link>
                   <Link
                     to="/my-bids"
-                    className="flex items-center space-x-2 hover:text-blue-500"
+                    className="flex items-center justify-between p-2 hover:bg-gray-800 rounded"
                   >
-                    <Package size={20} />
-                    <span>My Bids</span>
+                    <div className="flex items-center space-x-2">
+                      <Package size={20} />
+                      <span>My Bids</span>
+                    </div>
+                    <ChevronRight size={16} />
                   </Link>
                   <button
-                    className="flex items-center space-x-2 hover:text-blue-500 w-full text-left"
-                    onClick={Logout}
+                    className="flex items-center justify-between p-2 hover:bg-gray-800 rounded w-full text-left"
+                    onClick={handleLogout}
                   >
-                    <LogOut size={20} />
-                    <span>Logout</span>
+                    <div className="flex items-center space-x-2">
+                      <LogOut size={20} />
+                      <span>Logout</span>
+                    </div>
+                    <ChevronRight size={16} />
                   </button>
                 </nav>
               </CardContent>
@@ -196,11 +251,11 @@ export default function Profile() {
                   {recentActivity.map((activity) => (
                     <li
                       key={activity.id}
-                      className="flex justify-between items-center"
+                      className="flex justify-between items-center p-2 hover:bg-gray-800 rounded"
                     >
                       <div>
                         <p className="font-medium">{activity.item}</p>
-                        <p className="text-sm text-gray-500">{activity.date}</p>
+                        <p className="text-sm text-gray-400">{activity.date}</p>
                       </div>
                       <Badge
                         variant={
@@ -215,8 +270,12 @@ export default function Profile() {
                 </ul>
               </CardContent>
               <CardFooter>
-                <Link to="/activity" className="text-blue-500 hover:underline">
+                <Link
+                  to="/activity"
+                  className="text-blue-400 hover:text-blue-300 flex items-center"
+                >
                   View All Activity
+                  <ChevronRight size={16} className="ml-1" />
                 </Link>
               </CardFooter>
             </Card>
@@ -224,7 +283,6 @@ export default function Profile() {
         </div>
       </main>
 
-      {/* Footer */}
       <Footer />
     </div>
   );
