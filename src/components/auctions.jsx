@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, Filter, Clock, ArrowUpDown } from "lucide-react";
-import { Button, Input, Select, Card, CardContent, CardFooter } from "./ui";
+import { Search, Clock } from "lucide-react";
+import { Button, Input, Card, CardContent, CardFooter } from "./ui";
 import Header from "./header";
 import Footer from "./footer";
 import gsap from "gsap";

@@ -136,18 +136,21 @@ export default function ProductPage() {
   const getRemainingTime = () => {
     if (!Product?.endTime) return "N/A";
     const now = new Date();
+
     const auctionEnd = new Date(Product.endTime);
+    console.log("auctionEnd", auctionEnd);
+    
     const remainingTime = auctionEnd - now;
 
     if (remainingTime <= 0) return "Auction has ended";
-
+    const days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
     const hours = Math.floor(
       (remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
     );
     const minutes = Math.floor(
       (remainingTime % (1000 * 60 * 60)) / (1000 * 60)
     );
-    return `${hours} hours, ${minutes} minutes`;
+    return `${days} days, ${hours} hours, ${minutes} minutes`;
   };
 
   return (

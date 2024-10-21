@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, Clock, Trash2, Eye, Pencil } from "lucide-react";
-import { Button, Input, Card, CardContent, CardFooter } from "./ui";
+import { Search, Clock, Trash2, Eye } from "lucide-react";
+import {  Input, Card, CardContent } from "./ui";
 import Header from "./header";
 import Footer from "./footer";
 import gsap from "gsap";
@@ -142,88 +142,88 @@ export default function MyAuctions() {
           </CardContent>
         </Card>
         {/* Auctions Grid */}
-        <div class="flex flex-col">
-          <div class=" overflow-x-auto pb-3">
-            <div class="min-w-full inline-block align-middle">
-              <div class="border rounded-xl border-gray-700 ">
-                <table class="min-w-full  rounded-xl overflow-hidden">
+        <div className="flex flex-col">
+          <div className=" overflow-x-auto pb-3">
+            <div className="min-w-full inline-block align-middle">
+              <div className="border rounded-xl border-gray-700 ">
+                <table className="min-w-full  rounded-xl overflow-hidden">
                   <thead>
-                    <tr class="bg-gray-600">
+                    <tr className="bg-gray-600">
                       <th
                         scope="col"
-                        class="p-5 text-left text-sm leading-6 font-semibold text-white capitalize"
+                        className="p-5 text-left text-sm leading-6 font-semibold text-white capitalize"
                       >
                         {" "}
                         id{" "}
                       </th>
                       <th
                         scope="col"
-                        class="p-5 text-left text-sm leading-6 font-semibold text-white capitalize"
+                        className="p-5 text-left text-sm leading-6 font-semibold text-white capitalize"
                       >
                         {" "}
                         Image{" "}
                       </th>
                       <th
                         scope="col"
-                        class="p-5 text-left text-sm leading-6 font-semibold text-white capitalize "
+                        className="p-5 text-left text-sm leading-6 font-semibold text-white capitalize "
                       >
                         {" "}
                         Title{" "}
                       </th>
                       <th
                         scope="col"
-                        class="p-5 text-left text-sm leading-6 font-semibold text-white capitalize"
+                        className="p-5 text-left text-sm leading-6 font-semibold text-white capitalize"
                       >
                         {" "}
                         Current Price{" "}
                       </th>
                       <th
                         scope="col"
-                        class="p-5 text-left text-sm leading-6 font-semibold text-white capitalize"
+                        className="p-5 text-left text-sm leading-6 font-semibold text-white capitalize"
                       >
                         {" "}
                         Status{" "}
                       </th>
                       <th
                         scope="col"
-                        class="p-5 text-left text-sm leading-6 font-semibold text-white capitalize"
+                        className="p-5 text-left text-sm leading-6 font-semibold text-white capitalize"
                       >
                         {" "}
                         End Time{" "}
                       </th>
                       <th
                         scope="col"
-                        class="p-5 text-left text-sm leading-6 font-semibold text-white capitalize"
+                        className="p-5 text-left text-sm leading-6 font-semibold text-white capitalize"
                       >
                         {" "}
                         Actions{" "}
                       </th>
                     </tr>
                   </thead>
-                  <tbody class="divide-y divide-gray-300 ">
+                  <tbody className="divide-y divide-gray-300 ">
                     {filteredAuctions.map((auction) => (
                       <tr
                         key={auction.id}
                         className="bg-gray-900 hover:bg-gray-700 cursor-pointer card"
                       >
-                        <td class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-white ">
+                        <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-white ">
                           <span className="text-sm text-gray-400 flex items-center">
                             {auction.id}
                           </span>
                         </td>
-                        <td class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-white">
+                        <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-white">
                           <img
                             src={`http://localhost:8089/api/images/upload/auction/${auction.url}`}
                             alt={auction.title}
                             className="w-[50px] h-[50px] object-cover rounded-full"
                           />
                         </td>
-                        <td class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-white">
+                        <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-white">
                           <h2 className="text-xl font-semibold mb-2 text-white">
                             {auction.title}
                           </h2>
                         </td>
-                        <td class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-white">
+                        <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-white">
                           <span className="font-bold">
                             $
                             {auction.startPrice
@@ -242,13 +242,13 @@ export default function MyAuctions() {
                             {auction.status === "OPEN" ? "OPEN" : "CLOSE"}
                           </span>
                         </td>
-                        <td class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-white">
+                        <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-white">
                           <span className="text-sm text-gray-400 flex items-center">
                             <Clock className="h-4 w-4 mr-1" />
                             {new Date(auction.endTime).toLocaleString()}
                           </span>
                         </td>
-                        <td class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-white flex flex-row items-center justify-evenly">
+                        <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-white flex flex-row items-center justify-evenly">
                           <Link to={`/auction/${auction.id}`}>
                             <Eye color="#2bbfe3" />
                           </Link>
