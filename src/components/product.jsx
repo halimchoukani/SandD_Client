@@ -138,7 +138,6 @@ export default function ProductPage() {
     const now = new Date();
 
     const auctionEnd = new Date(Product.endTime);
-    console.log("auctionEnd", auctionEnd);
     
     const remainingTime = auctionEnd - now;
 
