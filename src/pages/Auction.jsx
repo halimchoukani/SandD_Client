@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Clock } from "lucide-react";
-import { Button, Input } from "./ui/index";
-import Header from "./header";
-import Footer from "./footer";
+import { Button, Input } from "../components/ui/index";
+import Header from "../components/header";
+import Footer from "../components/footer";
 import { useParams, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
-export default function ProductPage() {
+export default function Auction() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [Product, setProduct] = useState(null);
@@ -29,19 +29,18 @@ export default function ProductPage() {
     const fetchUserData = async () => {
       try {
         const decoded = jwtDecode(token);
-        const response = await fetch(
-          `http://localhost:8089/api/user/get/${decoded.sub}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch(`/api/user/get/${decoded.sub}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         if (!response.ok) throw new Error("Failed to fetch user data");
         const userData = await response.json();
         setUser(userData);
       } catch (err) {
-        setError("An error occurred while fetching your profile. Please try again later.");
+        setError(
+          "An error occurred while fetching your profile. Please try again later."
+        );
       } finally {
         setIsLoading(false);
       }
@@ -57,14 +56,14 @@ export default function ProductPage() {
 
   const getProduct = async () => {
     try {
-      const res = await fetch(`http://localhost:8089/api/auction/${id}`);
+      const res = await fetch(`/api/auction/${id}`);
       if (res.ok) {
         const data = await res.json();
         if (typeof data === "object") {
           setProduct(data);
           setCurrentBid(data.currentPrice);
           setAuctionEnd(new Date(data.auctionEnd));
-          const res2 = await fetch(`http://localhost:8089/api/images/auction/${id}`);
+          const res2 = await fetch(`/api/images/auction/${id}`);
           if (res2.ok) {
             const d = await res2.json();
             setImages(d || []);
@@ -90,7 +89,7 @@ export default function ProductPage() {
     }
 
     try {
-      const res = await fetch(`http://localhost:8089/api/bid/add`, {
+      const res = await fetch(`/api/bid/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -126,8 +125,12 @@ export default function ProductPage() {
 
     if (remainingTime <= 0) return "Auction has ended";
     const days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+    const hours = Math.floor(
+      (remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
+    const minutes = Math.floor(
+      (remainingTime % (1000 * 60 * 60)) / (1000 * 60)
+    );
     return `${days} days, ${hours} hours, ${minutes} minutes`;
   };
 
@@ -135,11 +138,10 @@ export default function ProductPage() {
 
   useEffect(() => {
     if (images.length > 0) {
-      setActiveImage(`http://localhost:8089/api/images/upload/auction/${images[0]?.url}`);
+      setActiveImage(`/api/images/upload/auction/${images[0]?.url}`);
     }
   }, [images]);
   return (
-    
     <div className="min-h-screen bg-gray-950 text-gray-100">
       <Header />
 
@@ -148,7 +150,7 @@ export default function ProductPage() {
           <div className="bg-gray-800 p-4 rounded-lg shadow">
             {/* {Product && images && (
               <img
-                src={`http://localhost:8089/api/images/upload/auction/${images[0].url}`}
+                src={`/api/images/upload/auction/${images[0].url}`}
                 alt={Product.title}
                 className="w-full h-auto object-cover rounded"
               />
@@ -166,8 +168,10 @@ export default function ProductPage() {
                   {images.map(({ url }, index) => (
                     <div key={index}>
                       <img
-                        onClick={() => setActiveImage(`http://localhost:8089/api/images/upload/auction/${url}`)}
-                        src={`http://localhost:8089/api/images/upload/auction/${url}`}
+                        onClick={() =>
+                          setActiveImage(`/api/images/upload/auction/${url}`)
+                        }
+                        src={`/api/images/upload/auction/${url}`}
                         className="object-cover object-center h-20 max-w-full rounded-lg cursor-pointer"
                         alt="gallery-image"
                       />
@@ -178,8 +182,6 @@ export default function ProductPage() {
             ) : (
               <p>Loading images...</p>
             )}
-
-            
           </div>
 
           <div className="bg-gray-800 p-6 rounded-lg shadow">
@@ -229,7 +231,7 @@ export default function ProductPage() {
                   {Product.seller && (
                     <div className="flex items-center space-x-4">
                       <img
-                        src={`http://localhost:8089/api/user/upload/avatar/${Product.seller.imageUrl}`}
+                        src={`/api/user/upload/avatar/${Product.seller.imageUrl}`}
                         alt="Seller Avatar"
                         className="w-12 h-12 rounded-full"
                       />

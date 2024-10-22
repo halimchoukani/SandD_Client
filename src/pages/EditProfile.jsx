@@ -13,9 +13,9 @@ import {
 } from "../components/ui/index";
 import { jwtDecode } from "jwt-decode"; // Correct import
 
-export default function ProfileEdit() {
+export default function EditProfile() {
   const getUser = async (id) => {
-    const res = await fetch(`http://localhost:8089/api/user/get/${id}`, {
+    const res = await fetch(`/api/user/get/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -25,20 +25,17 @@ export default function ProfileEdit() {
   };
 
   const updateUser = async (user) => {
-    const res = await fetch(
-      `http://localhost:8089/api/user/update/${user.id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          firstname: user.firstname,
-          lastname: user.lastname,
-          phoneNumber: user.phoneNumber,
-        }),
-      }
-    );
+    const res = await fetch(`/api/user/update/${user.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        firstname: user.firstname,
+        lastname: user.lastname,
+        phoneNumber: user.phoneNumber,
+      }),
+    });
     return res.json();
   };
 
@@ -120,7 +117,7 @@ export default function ProfileEdit() {
               <CardContent className="flex flex-col items-center">
                 <div className="relative">
                   <Avatar
-                    src={`http://localhost:8089/api/user/upload/avatar/${user.imageUrl}`}
+                    src={`/api/user/upload/avatar/${user.imageUrl}`}
                     alt="Profile Avatar"
                     size="large"
                     className="w-32 h-32"

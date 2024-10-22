@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Button, Input, Label, FormGroup } from "./ui/index";
+import { Button, Input, Label, FormGroup } from "../components/ui/index";
 import {
   Card,
   CardContent,
@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
   Alert,
-} from "./ui/";
+} from "../components/ui";
 import { Gavel, Mail } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
@@ -42,16 +42,13 @@ export default function Login() {
 
         // Send user information and token to backend
         try {
-          const backendResponse = await fetch(
-            "http://localhost:8089/api/user/google-login",
-            {
-              method: "GET", // POST request to match backend
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${tokenResponse.access_token}`,
-              },
-            }
-          );
+          const backendResponse = await fetch("/api/user/google-login", {
+            method: "GET", // POST request to match backend
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${tokenResponse.access_token}`,
+            },
+          });
 
           if (!backendResponse.ok) {
             throw new Error("Google login failed");
@@ -77,7 +74,7 @@ export default function Login() {
     const input = email.current.value; // Assuming email.current.value contains the input
     const isEmail = /\S+@\S+\.\S+/.test(input); // Simple regex to check if input is an email
     try {
-      const response = await fetch("http://localhost:8089/api/user/login", {
+      const response = await fetch("/api/user/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

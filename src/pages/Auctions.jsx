@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Search, Clock } from "lucide-react";
-import { Button, Input, Card, CardContent, CardFooter } from "./ui";
-import Header from "./header";
-import Footer from "./footer";
+import { Button, Input, Card, CardContent, CardFooter } from "../components/ui";
+import Header from "../components/header";
+import Footer from "../components/footer";
 import gsap from "gsap";
 
 export default function Auctions() {
@@ -12,20 +12,18 @@ export default function Auctions() {
 
   const getAuctions = async () => {
     try {
-      const res = await fetch(`http://localhost:8089/api/auction/all`, {
+      const res = await fetch(`/api/auction/all`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
       });
       const data = await res.json();
-      
+
       if (Array.isArray(data)) {
         const newData = await Promise.all(
           data.map(async (auction) => {
-            const res2 = await fetch(
-              `http://localhost:8089/api/images/auction/${auction.id}`
-            );
+            const res2 = await fetch(`/api/images/auction/${auction.id}`);
             if (res2.ok) {
               const imageData = await res2.json();
               if (imageData.length > 0) {
@@ -36,11 +34,10 @@ export default function Auctions() {
           })
         );
 
-      console.log("API response:", newData); // Log the response data
+        console.log("API response:", newData); // Log the response data
 
-      // Check if the data is an array
+        // Check if the data is an array
         setAuctions(newData);
-        
       } else {
         console.error("Invalid response: auctions is not an array");
         setAuctions([]); // Reset auctions to an empty array if response is invalid
@@ -105,7 +102,7 @@ export default function Auctions() {
           {filteredAuctions.map((auction) => (
             <Card key={auction.id} className="bg-gray-800 overflow-hidden card">
               <img
-                src={`http://localhost:8089/api/images/upload/auction/${auction.url}`}
+                src={`/api/images/upload/auction/${auction.url}`}
                 alt={auction.title}
                 className="w-full h-48 object-cover"
               />

@@ -9,7 +9,7 @@ function Header() {
   const notifRef = useRef(null); // Create a ref for the notification dropdown
   const getBids = async () => {
     try {
-      const res = await fetch(`http://localhost:8089/api/bid/all`, {
+      const res = await fetch(`/api/bid/all`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -136,7 +136,7 @@ function Header() {
                       <li className="notifications-list hover:bg-gray-800 p-2 rounded-md">
                         <div className="flex flex-row justify-between items-start">
                           <img
-                            src={`http://localhost:8089/api/user/upload/avatar/${bid.buyer.imageUrl}`}
+                            src={`/api/user/upload/avatar/${bid.buyer.imageUrl}`}
                             className="rounded-full w-[40px] h-[40px]"
                             alt={`${bid.buyer.firstname} ${bid.buyer.lastname}`}
                           />

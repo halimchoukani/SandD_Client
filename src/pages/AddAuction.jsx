@@ -10,9 +10,9 @@ import {
   CardTitle,
   CardContent,
   CardFooter,
-} from "./ui";
-import Header from "./header";
-import Footer from "./footer";
+} from "../components/ui";
+import Header from "../components/header";
+import Footer from "../components/footer";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 
@@ -53,9 +53,8 @@ export default function AddAuction() {
     }
   };
   const removeImage = (id) => {
-    setImages((prevImages) => prevImages.filter((image) => image.id !== id))
-  }
-
+    setImages((prevImages) => prevImages.filter((image) => image.id !== id));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -84,7 +83,7 @@ export default function AddAuction() {
       Data.status = "OPEN";
 
       try {
-        const res = await fetch("http://localhost:8089/api/auction/add", {
+        const res = await fetch("/api/auction/add", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -94,24 +93,22 @@ export default function AddAuction() {
         if (res.ok) {
           const data = await res.json();
           console.log(data);
-          images.forEach( async(image) => {
-      
+          images.forEach(async (image) => {
             let ImageRequest = new FormData();
-            ImageRequest.append("auctionId",data.id);
-            ImageRequest.append("file",image.file);
-            try{
-              const res = await fetch("http://localhost:8089/api/images/add", {
+            ImageRequest.append("auctionId", data.id);
+            ImageRequest.append("file", image.file);
+            try {
+              const res = await fetch("/api/images/add", {
                 method: "POST",
                 body: ImageRequest,
               });
-              if(res.ok){
-                navigate("/auction/"+data.id);
+              if (res.ok) {
+                navigate("/auction/" + data.id);
               }
-            } catch(e){
+            } catch (e) {
               console.log(e);
             }
           });
-          
         }
       } catch (e) {
         console.log(e);
@@ -272,34 +269,34 @@ export default function AddAuction() {
                 </div>
 
                 {images.length > 0 && (
-                <div>
-                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Preview Images
-                  </h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    {images.map((image) => (
-                      <div
-                        key={image.id}
-                        className="relative bg-gray-100 dark:bg-gray-800 rounded-md overflow-hidden"
-                      >
-                        <img
-                          src={URL.createObjectURL(image.file)}
-                          alt={`Preview ${image.id}`}
-                          className="w-full h-32 object-cover"
-                        />
-                        <Button
-                          onClick={() => removeImage(image.id)}
-                          className="absolute top-1 right-1 p-1 bg-red-500 hover:bg-red-600 text-white rounded-full"
-                          size="icon"
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Preview Images
+                    </h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      {images.map((image) => (
+                        <div
+                          key={image.id}
+                          className="relative bg-gray-100 dark:bg-gray-800 rounded-md overflow-hidden"
                         >
-                          <X className="w-4 h-4" />
-                          <span className="sr-only">Remove image</span>
-                        </Button>
-                      </div>
-                    ))}
+                          <img
+                            src={URL.createObjectURL(image.file)}
+                            alt={`Preview ${image.id}`}
+                            className="w-full h-32 object-cover"
+                          />
+                          <Button
+                            onClick={() => removeImage(image.id)}
+                            className="absolute top-1 right-1 p-1 bg-red-500 hover:bg-red-600 text-white rounded-full"
+                            size="icon"
+                          >
+                            <X className="w-4 h-4" />
+                            <span className="sr-only">Remove image</span>
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
               </div>
             </form>
           </CardContent>

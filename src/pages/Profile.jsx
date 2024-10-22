@@ -25,9 +25,9 @@ import {
   Alert,
   AlertTitle,
   AlertDescription,
-} from "./ui";
-import Header from "./header";
-import Footer from "./footer";
+} from "../components/ui";
+import Header from "../components/header";
+import Footer from "../components/footer";
 import { jwtDecode } from "jwt-decode";
 
 export default function Profile() {
@@ -47,14 +47,11 @@ export default function Profile() {
     const fetchUserData = async () => {
       try {
         const decoded = jwtDecode(token);
-        const response = await fetch(
-          `http://localhost:8089/api/user/get/${decoded.sub}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch(`/api/user/get/${decoded.sub}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         if (!response.ok) throw new Error("Failed to fetch user data");
         const userData = await response.json();
         setUser(userData);
@@ -145,7 +142,7 @@ export default function Profile() {
               <div className="flex flex-col items-center space-y-4">
                 <div className="relative">
                   <Avatar
-                    src={`http://localhost:8089/api/user/upload/avatar/${user.imageUrl}`}
+                    src={`/api/user/upload/avatar/${user.imageUrl}`}
                     alt={user.firstname}
                     className="w-32 h-32"
                   />

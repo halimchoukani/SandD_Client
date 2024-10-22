@@ -1,15 +1,15 @@
 import { useEffect } from "react";
-import Footer from "./footer";
-import Header from "./header";
-import { Button } from "./ui/index";
+import Footer from "../components/footer";
+import Header from "../components/header";
+import { Button } from "../components/ui/index";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "./ui/index";
-import Hero from "./hero";
+} from "../components/ui/index";
+import Hero from "../components/hero";
 import { Link } from "react-router-dom";
 
 export default function Home() {
@@ -60,13 +60,12 @@ export default function Home() {
             </div>
             <div className="mt-12 text-center">
               <Link to="/auctions">
-              <Button
-                variant="outline"
-                className="border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-gray-900"
-              >
-                View All Auctions
-              </Button>
-              
+                <Button
+                  variant="outline"
+                  className="border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-gray-900"
+                >
+                  View All Auctions
+                </Button>
               </Link>
             </div>
           </div>

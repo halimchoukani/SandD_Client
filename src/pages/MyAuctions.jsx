@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Search, Clock, Trash2, Eye } from "lucide-react";
-import {  Input, Card, CardContent } from "./ui";
-import Header from "./header";
-import Footer from "./footer";
+import { Input, Card, CardContent } from "../components/ui";
+import Header from "../components/header";
+import Footer from "../components/footer";
 import gsap from "gsap";
 import { jwtDecode } from "jwt-decode";
 
@@ -24,14 +24,11 @@ export default function MyAuctions() {
     const fetchUserData = async () => {
       try {
         const decoded = jwtDecode(token);
-        const response = await fetch(
-          `http://localhost:8089/api/user/get/${decoded.sub}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch(`/api/user/get/${decoded.sub}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         if (!response.ok) throw new Error("Failed to fetch user data");
         const userData = await response.json();
         setId(userData.id);
@@ -52,15 +49,12 @@ export default function MyAuctions() {
     if (id) {
       const getAuctions = async () => {
         try {
-          const res = await fetch(
-            `http://localhost:8089/api/auction/user/${id}`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
+          const res = await fetch(`/api/auction/user/${id}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
           const data = await res.json();
 
           console.log("API response:", data); // Log the response data
@@ -68,9 +62,7 @@ export default function MyAuctions() {
           if (Array.isArray(data)) {
             const newData = await Promise.all(
               data.map(async (auction) => {
-                const res2 = await fetch(
-                  `http://localhost:8089/api/images/auction/${auction.id}`
-                );
+                const res2 = await fetch(`/api/images/auction/${auction.id}`);
                 if (res2.ok) {
                   const imageData = await res2.json();
                   if (imageData.length > 0) {
@@ -213,7 +205,7 @@ export default function MyAuctions() {
                         </td>
                         <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-white">
                           <img
-                            src={`http://localhost:8089/api/images/upload/auction/${auction.url}`}
+                            src={`/api/images/upload/auction/${auction.url}`}
                             alt={auction.title}
                             className="w-[50px] h-[50px] object-cover rounded-full"
                           />

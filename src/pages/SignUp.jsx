@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Button, Input, Label, Textarea } from "./ui/index";
+import { Button, Input, Label, Textarea } from "../components/ui/index";
 import {
   Card,
   CardContent,
@@ -7,11 +7,11 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "./ui/index";
+} from "../components/ui/index";
 import { Gavel } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-export default function Signup() {
+export default function SignUp() {
   const navigate = useNavigate();
 
   // Form states
@@ -104,7 +104,7 @@ export default function Signup() {
     }
 
     try {
-      const response = await fetch("http://localhost:8089/api/user/signup", {
+      const response = await fetch("/api/user/signup", {
         method: "POST",
         body: form,
       });
