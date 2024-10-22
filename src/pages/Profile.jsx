@@ -69,23 +69,7 @@ export default function Profile() {
     navigate("/login");
   };
 
-  const recentActivity = [
-    {
-      id: 1,
-      type: "bid",
-      item: "Vintage Watch",
-      date: "2024-03-10",
-      amount: 500,
-    },
-    {
-      id: 2,
-      type: "won",
-      item: "Antique Vase",
-      date: "2024-03-05",
-      amount: 750,
-    },
-    { id: 3, type: "bid", item: "Rare Coin", date: "2024-03-01", amount: 300 },
-  ];
+  const recentActivity = [];
 
   if (isLoading) {
     return (
@@ -263,15 +247,15 @@ export default function Profile() {
                   ))}
                 </ul>
               </CardContent>
-              <CardFooter>
+              {/* <CardFooter>
                 <Link
-                  to="/activity"
+                  to="/myauctions"
                   className="text-blue-400 hover:text-blue-300 flex items-center"
                 >
                   View All Activity
                   <ChevronRight size={16} className="ml-1" />
                 </Link>
-              </CardFooter>
+              </CardFooter> */}
             </Card>
           </div>
         </div>
