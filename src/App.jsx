@@ -58,12 +58,12 @@ function App() {
           <Route element={<ProtectedRoutes />}>
             <Route path="/profile/edit" element={<EditProfile />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/sell" element={<AddAuction />} />
+            <Route path="/myauctions" element={<MyAuctions />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/auction/:id" element={<Auction />} />
           <Route path="/auctions" element={<Auctions />} />
-          <Route path="/myauctions" element={<MyAuctions />} />
-          <Route path="/sell" element={<AddAuction />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/404" element={<NotFound />} />
           <Route path="*" element={<NotFound />} />
