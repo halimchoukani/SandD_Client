@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   User,
@@ -29,21 +29,17 @@ import {
 import Header from "../components/header";
 import Footer from "../components/footer";
 import { jwtDecode } from "jwt-decode";
+import { Context } from "../App";
 
 export default function Profile() {
+  const { isSignedIn, setIsSignedIn } = useContext(Context);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-
   useEffect(() => {
     document.title = "AuctionMaster - Profile";
     const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-
     const fetchUserData = async () => {
       try {
         const decoded = jwtDecode(token);
@@ -69,6 +65,7 @@ export default function Profile() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    setIsSignedIn(false);
     navigate("/login");
   };
 

@@ -9,10 +9,13 @@ import {
   CardTitle,
 } from "../components/ui/index";
 import { Gavel } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { Context } from "../App";
 
 export default function SignUp() {
   const navigate = useNavigate();
+  const { isSignedIn, setIsSignedIn } = useContext(Context);
+  console.log(isSignedIn);
 
   // Form states
   const [formData, setFormData] = useState({
@@ -35,7 +38,10 @@ export default function SignUp() {
   const errorAlert = useRef(null);
   useEffect(() => {
     document.title = "S&D - SignUp"; // Change the page title
-  }, []);
+    if (isSignedIn) {
+      navigate("/");
+    }
+  }, [isSignedIn, navigate]);
   const closeAlert = () => {
     errorAlert.current.style.display = "none";
   };

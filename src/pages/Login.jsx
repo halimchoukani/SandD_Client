@@ -10,10 +10,13 @@ import {
   Alert,
 } from "../components/ui";
 import { Gavel, Mail } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
+import { Context } from "../App";
 
 export default function Login() {
+  const { isSignedIn, setIsSignedIn } = useContext(Context);
+
   const password = useRef(null);
   const email = useRef(null);
   const navigate = useNavigate();
@@ -23,7 +26,10 @@ export default function Login() {
 
   useEffect(() => {
     document.title = "S&D - Login";
-  }, []);
+    if (isSignedIn) {
+      navigate("/");
+    }
+  }, [isSignedIn, navigate]);
 
   const loginGoogle = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
@@ -56,6 +62,7 @@ export default function Login() {
 
           const backendData = await backendResponse.json();
           localStorage.setItem("token", backendData.jwt);
+          setIsSignedIn(true);
           navigate("/");
         } catch (e) {
           console.log(e.message);
@@ -94,6 +101,7 @@ export default function Login() {
       if (data.jwt) {
         console.log("Login successful");
         localStorage.setItem("token", data.jwt);
+        setIsSignedIn(true);
         navigate("/"); // Redirect after successful login
       }
     } catch (error) {

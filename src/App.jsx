@@ -11,6 +11,10 @@ import NotFound from "./pages/NotFound";
 import Auctions from "./pages/Auctions";
 import Lenis from "lenis";
 import Home from "./pages/home";
+import { useContext, useState, useEffect, createContext } from "react";
+
+export const Context = createContext();
+
 function App() {
   const lenis = new Lenis();
   function raf(time) {
@@ -19,25 +23,41 @@ function App() {
   }
 
   requestAnimationFrame(raf);
+  const [isSignedIn, setIsSignedIn] = useState(false);
+
+  useEffect(() => {
+    checkSignInStatus();
+  }, []);
+
+  function checkSignInStatus() {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsSignedIn(true);
+    } else {
+      setIsSignedIn(false);
+    }
+  }
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route element={<ProtectedRoutes />}>
-          <Route path="/profile/edit" element={<EditProfile />} />
-          <Route path="/profile" element={<Profile />} />
-        </Route>
-        <Route path="/login" element={<Login />} />
-        <Route path="/auction/:id" element={<Auction />} />
-        <Route path="/auctions" element={<Auctions />} />
-        <Route path="/myauctions" element={<MyAuctions />} />
-        <Route path="/sell" element={<AddAuction />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/404" element={<NotFound />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </Router>
+    <Context.Provider value={{ isSignedIn, setIsSignedIn }}>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route element={<ProtectedRoutes />}>
+            <Route path="/profile/edit" element={<EditProfile />} />
+            <Route path="/profile" element={<Profile />} />
+          </Route>
+          <Route path="/login" element={<Login />} />
+          <Route path="/auction/:id" element={<Auction />} />
+          <Route path="/auctions" element={<Auctions />} />
+          <Route path="/myauctions" element={<MyAuctions />} />
+          <Route path="/sell" element={<AddAuction />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/404" element={<NotFound />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Router>
+    </Context.Provider>
   );
 }
 
