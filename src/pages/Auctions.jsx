@@ -48,7 +48,7 @@ export default function Auctions() {
   };
 
   useEffect(() => {
-    document.title = "S&D - Bids"; // Change the page title
+    document.title = "S&D - Auctions"; // Change the page title
     getAuctions();
   }, []);
 

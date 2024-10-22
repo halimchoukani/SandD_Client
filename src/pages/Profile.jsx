@@ -33,40 +33,20 @@ import { Context } from "../App";
 
 export default function Profile() {
   const { isSignedIn, setIsSignedIn } = useContext(Context);
-  const [user, setUser] = useState(null);
+  const { user, setUser } = useContext(Context);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   useEffect(() => {
-    document.title = "AuctionMaster - Profile";
-    const token = localStorage.getItem("token");
-    const fetchUserData = async () => {
-      try {
-        const decoded = jwtDecode(token);
-        const response = await fetch(`/api/user/get/${decoded.sub}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (!response.ok) throw new Error("Failed to fetch user data");
-        const userData = await response.json();
-        setUser(userData);
-      } catch (err) {
-        setError(
-          "An error occurred while fetching your profile. Please try again later."
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchUserData();
-  }, [navigate]);
+    document.title = "S&D - Profile";
+    if (user != null) {
+      setIsLoading(false);
+    }
+  }, [user]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     setIsSignedIn(false);
-    navigate("/login");
   };
 
   const recentActivity = [];

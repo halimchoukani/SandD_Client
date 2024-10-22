@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Clock } from "lucide-react";
 import { Button, Input } from "../components/ui/index";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import { useParams, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import { Context } from "../App";
 
 export default function Auction() {
   const { id } = useParams();
@@ -13,44 +14,12 @@ export default function Auction() {
   const [bidAmount, setBidAmount] = useState("");
   const [currentBid, setCurrentBid] = useState(1000);
   const [auctionEnd, setAuctionEnd] = useState(null);
-  const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [images, setImages] = useState([]);
-
+  const { user, setUser } = useContext(Context);
   useEffect(() => {
-    document.title = "AuctionMaster - Profile";
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-
-    const fetchUserData = async () => {
-      try {
-        const decoded = jwtDecode(token);
-        const response = await fetch(`/api/user/get/${decoded.sub}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (!response.ok) throw new Error("Failed to fetch user data");
-        const userData = await response.json();
-        setUser(userData);
-      } catch (err) {
-        setError(
-          "An error occurred while fetching your profile. Please try again later."
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchUserData();
-  }, [navigate]);
-
-  useEffect(() => {
-    document.title = "S&D - Product";
+    document.title = `S&D - Auction ${id}`;
     getProduct();
   }, [id]);
 
@@ -118,12 +87,13 @@ export default function Auction() {
     addBid();
   };
 
-  const getRemainingTime = () => {
+  const getRemainingTime = (auctionEnd) => {
     if (!auctionEnd) return "N/A";
     const now = new Date();
-    const remainingTime = auctionEnd - now;
+    const remainingTime = new Date(auctionEnd) - now;
 
     if (remainingTime <= 0) return "Auction has ended";
+
     const days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
     const hours = Math.floor(
       (remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
@@ -131,6 +101,7 @@ export default function Auction() {
     const minutes = Math.floor(
       (remainingTime % (1000 * 60 * 60)) / (1000 * 60)
     );
+
     return `${days} days, ${hours} hours, ${minutes} minutes`;
   };
 
@@ -202,7 +173,9 @@ export default function Auction() {
                   </div>
                   <div className="flex items-center text-sm text-gray-400">
                     <Clock className="h-4 w-4 mr-1" />
-                    <span>Auction ends in {getRemainingTime()}</span>
+                    <span>
+                      Auction ends in {getRemainingTime(Product.endTime)}
+                    </span>
                   </div>
                 </div>
                 <form

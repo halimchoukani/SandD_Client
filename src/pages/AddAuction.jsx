@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Upload, AlertCircle, Loader, Images, X } from "lucide-react";
 import {
   Button,
@@ -18,7 +18,9 @@ import { useNavigate } from "react-router-dom";
 
 export default function AddAuction() {
   const navigate = useNavigate();
-
+  useEffect(() => {
+    document.title = "S&D - Add Auction";
+  }, []);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -127,6 +129,7 @@ export default function AddAuction() {
   };
 
   const durations = [
+    { value: "0", label: "Select duration" },
     { value: "1", label: "1 Day" },
     { value: "3", label: "3 Days" },
     { value: "5", label: "5 Days" },
