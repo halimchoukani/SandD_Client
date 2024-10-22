@@ -12,7 +12,7 @@ import Auctions from "./pages/Auctions";
 import Lenis from "lenis";
 import Home from "./pages/home";
 import { useContext, useState, useEffect, createContext } from "react";
-
+import { jwtDecode } from "jwt-decode";
 export const Context = createContext();
 
 function App() {
@@ -24,22 +24,34 @@ function App() {
 
   requestAnimationFrame(raf);
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    checkSignInStatus();
-  }, []);
-
-  function checkSignInStatus() {
     const token = localStorage.getItem("token");
     if (token) {
       setIsSignedIn(true);
-    } else {
-      setIsSignedIn(false);
+      // Fetch user data if token is present
+      const fetchUserData = async () => {
+        try {
+          const decoded = jwtDecode(token);
+          const response = await fetch(`/api/user/get/${decoded.sub}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          if (!response.ok) throw new Error("Failed to fetch user data");
+          const userData = await response.json();
+          setUser(userData);
+        } catch (err) {
+          console.error("Failed to fetch user data", err);
+        }
+      };
+      fetchUserData();
     }
-  }
+  }, []);
 
   return (
-    <Context.Provider value={{ isSignedIn, setIsSignedIn }}>
+    <Context.Provider value={{ isSignedIn, setIsSignedIn, user, setUser }}>
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />

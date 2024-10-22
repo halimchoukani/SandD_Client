@@ -12,6 +12,8 @@ import {
   Avatar,
 } from "../components/ui/index";
 import { jwtDecode } from "jwt-decode"; // Correct import
+import Header from "../components/header";
+import Footer from "../components/footer";
 
 export default function EditProfile() {
   const getUser = async (id) => {
@@ -84,23 +86,9 @@ export default function EditProfile() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100">
+    <div className="min-h-screen bg-gray-950 text-gray-100">
       {/* Header */}
-      <header className="bg-gray-800 shadow">
-        <div className="container mx-auto px-4 py-6 flex items-center justify-between">
-          <Link to="/" className="flex items-center space-x-2">
-            <Gavel className="h-6 w-6 text-blue-400" />
-            <span className="text-xl font-bold text-blue-400">
-              AuctionMaster
-            </span>
-          </Link>
-          <nav>
-            <Link to="/profile" className="text-gray-300 hover:text-white">
-              Back to Profile
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <Header />
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
@@ -262,21 +250,7 @@ export default function EditProfile() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-800 text-white mt-12">
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex justify-between items-center">
-            <p>&copy; 2024 AuctionMaster. All rights reserved.</p>
-            <div className="flex space-x-4">
-              <Link to="/privacy" className="text-gray-400 hover:text-white">
-                Privacy Policy
-              </Link>
-              <Link to="/terms" className="text-gray-400 hover:text-white">
-                Terms of Service
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
