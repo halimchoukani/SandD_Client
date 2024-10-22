@@ -16,7 +16,7 @@ export default function ProductPage() {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [images,setImages] = useState(null);
+  const [images, setImages] = useState([]);
 
   useEffect(() => {
     document.title = "AuctionMaster - Profile";
@@ -39,13 +39,9 @@ export default function ProductPage() {
         );
         if (!response.ok) throw new Error("Failed to fetch user data");
         const userData = await response.json();
-
-
         setUser(userData);
       } catch (err) {
-        setError(
-          "An error occurred while fetching your profile. Please try again later."
-        );
+        setError("An error occurred while fetching your profile. Please try again later.");
       } finally {
         setIsLoading(false);
       }
@@ -69,9 +65,9 @@ export default function ProductPage() {
           setCurrentBid(data.currentPrice);
           setAuctionEnd(new Date(data.auctionEnd));
           const res2 = await fetch(`http://localhost:8089/api/images/auction/${id}`);
-          if(res2.ok){
+          if (res2.ok) {
             const d = await res2.json();
-            setImages(d);
+            setImages(d || []);
           }
         } else {
           console.error("Invalid response: product is not an object");
@@ -94,34 +90,24 @@ export default function ProductPage() {
     }
 
     try {
-      console.log("user", user.id);
-      console.log("auction", id);
-      console.log("amount", parseFloat(bidAmount));
-
       const res = await fetch(`http://localhost:8089/api/bid/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          auction: {
-            id: id,
-          },
-          buyer: {
-            id: user.id,
-          },
+          auction: { id },
+          buyer: { id: user.id },
           amount: parseFloat(bidAmount),
         }),
       });
 
       if (res.ok) {
-        const result = await res.json();
-        console.log("Bid placed:", result);
-        setCurrentBid(parseFloat(bidAmount)); // Update current bid state
-        setBidAmount(""); // Reset bid amount input
+        setCurrentBid(parseFloat(bidAmount));
+        setBidAmount("");
         alert("Bid placed successfully!");
       } else {
-        console.log();
+        alert("Error placing bid.");
       }
     } catch (error) {
       console.error("Error adding bid:", error);
@@ -129,29 +115,29 @@ export default function ProductPage() {
   };
 
   const handleBidSubmit = (e) => {
-    e.preventDefault(); // Prevent default form submission
-    addBid(); // Call the addBid function
+    e.preventDefault();
+    addBid();
   };
 
   const getRemainingTime = () => {
-    if (!Product?.endTime) return "N/A";
+    if (!auctionEnd) return "N/A";
     const now = new Date();
-
-    const auctionEnd = new Date(Product.endTime);
-    
     const remainingTime = auctionEnd - now;
 
     if (remainingTime <= 0) return "Auction has ended";
     const days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
-    const hours = Math.floor(
-      (remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-    );
-    const minutes = Math.floor(
-      (remainingTime % (1000 * 60 * 60)) / (1000 * 60)
-    );
+    const hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
     return `${days} days, ${hours} hours, ${minutes} minutes`;
   };
 
+  const [activeImage, setActiveImage] = useState(null);
+
+  useEffect(() => {
+    if (images.length > 0) {
+      setActiveImage(`http://localhost:8089/api/images/upload/auction/${images[0]?.url}`);
+    }
+  }, [images]);
   return (
     
     <div className="min-h-screen bg-gray-950 text-gray-100">
@@ -160,12 +146,37 @@ export default function ProductPage() {
       <main className="container mx-auto px-4 py-8">
         <div className="grid md:grid-cols-2 gap-8">
           <div className="bg-gray-800 p-4 rounded-lg shadow">
-            {Product && images && (
+            {/* {Product && images && (
               <img
                 src={`http://localhost:8089/api/images/upload/auction/${images[0].url}`}
                 alt={Product.title}
                 className="w-full h-auto object-cover rounded"
               />
+            )} */}
+            {activeImage ? (
+              <div className="grid gap-4">
+                <div>
+                  <img
+                    className="h-auto w-full max-w-full rounded-lg object-cover object-center md:h-[480px]"
+                    src={activeImage}
+                    alt="Auction Product"
+                  />
+                </div>
+                <div className="grid grid-cols-5 gap-4">
+                  {images.map(({ url }, index) => (
+                    <div key={index}>
+                      <img
+                        onClick={() => setActiveImage(`http://localhost:8089/api/images/upload/auction/${url}`)}
+                        src={`http://localhost:8089/api/images/upload/auction/${url}`}
+                        className="object-cover object-center h-20 max-w-full rounded-lg cursor-pointer"
+                        alt="gallery-image"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <p>Loading images...</p>
             )}
 
             
