@@ -11,8 +11,10 @@ import NotFound from "./pages/NotFound";
 import Auctions from "./pages/Auctions";
 import Lenis from "lenis";
 import Home from "./pages/home";
-import { useContext, useState, useEffect, createContext } from "react";
+import { useState, useEffect, createContext } from "react";
 import { jwtDecode } from "jwt-decode";
+import getUser from "./pages/hooks/getUser";
+
 export const Context = createContext();
 
 function App() {
@@ -27,27 +29,14 @@ function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setIsSignedIn(true);
-      // Fetch user data if token is present
-      const fetchUserData = async () => {
-        try {
-          const decoded = jwtDecode(token);
-          const response = await fetch(`/api/user/get/${decoded.sub}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          if (!response.ok) throw new Error("Failed to fetch user data");
-          const userData = await response.json();
-          setUser(userData);
-        } catch (err) {
-          console.error("Failed to fetch user data", err);
-        }
-      };
-      fetchUserData();
-    }
+    const fetchUser = async () => {
+      const userData = await getUser();
+      if (userData) {
+        setUser(userData);
+        setIsSignedIn(true);
+      }
+    };
+    fetchUser();
   }, []);
 
   return (

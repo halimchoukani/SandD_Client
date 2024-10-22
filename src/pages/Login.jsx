@@ -15,8 +15,7 @@ import { useGoogleLogin } from "@react-oauth/google";
 import { Context } from "../App";
 
 export default function Login() {
-  const { isSignedIn, setIsSignedIn } = useContext(Context);
-
+  const { isSignedIn, setIsSignedIn, setUser } = useContext(Context);
   const password = useRef(null);
   const email = useRef(null);
   const navigate = useNavigate();
@@ -27,6 +26,8 @@ export default function Login() {
   useEffect(() => {
     document.title = "S&D - Login";
     if (isSignedIn) {
+      console.log(isSignedIn);
+
       navigate("/");
     }
   }, [isSignedIn, navigate]);
@@ -63,6 +64,7 @@ export default function Login() {
           const backendData = await backendResponse.json();
           localStorage.setItem("token", backendData.jwt);
           setIsSignedIn(true);
+          setUser(userInfo); // Update user context
           navigate("/");
         } catch (e) {
           console.log(e.message);
@@ -102,6 +104,7 @@ export default function Login() {
         console.log("Login successful");
         localStorage.setItem("token", data.jwt);
         setIsSignedIn(true);
+        setUser(data.user); // Update user context
         navigate("/"); // Redirect after successful login
       }
     } catch (error) {

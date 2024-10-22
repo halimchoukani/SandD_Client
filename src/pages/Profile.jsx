@@ -1,15 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  User,
-  Settings,
-  Package,
-  LogOut,
-  Edit,
-  Camera,
-  Bell,
-  ChevronRight,
-} from "lucide-react";
+import { User, Package, LogOut, Edit, ChevronRight } from "lucide-react";
 import {
   Button,
   Card,
@@ -30,23 +21,33 @@ import Header from "../components/header";
 import Footer from "../components/footer";
 import { jwtDecode } from "jwt-decode";
 import { Context } from "../App";
+import getUser from "./hooks/getUser";
 
 export default function Profile() {
   const { isSignedIn, setIsSignedIn } = useContext(Context);
-  const { user, setUser } = useContext(Context);
+  const [user, setUser] = useState({});
+  console.log(user);
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
   useEffect(() => {
     document.title = "S&D - Profile";
-    if (user != null) {
-      setIsLoading(false);
-    }
+    const fetchUser = async () => {
+      const userData = await getUser();
+      if (userData) {
+        setUser(userData);
+        setIsLoading(false);
+      }
+    };
+    fetchUser();
   }, [user]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     setIsSignedIn(false);
+    navigate("/login");
   };
 
   const recentActivity = [];
