@@ -216,7 +216,7 @@ export default function MyAuctions() {
                           </h2>
                         </td>
                         <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-white">
-                          <span className="font-bold">
+                          <span className="font-bold overflow-hidden text-ellipsis whitespace-nowrap">
                             $
                             {auction.startPrice
                               ? auction.currentPrice.toLocaleString()

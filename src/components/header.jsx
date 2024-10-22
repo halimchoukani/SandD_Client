@@ -3,10 +3,13 @@ import { Button } from "./ui/index";
 import { Gavel, User, Bell, Menu } from "lucide-react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
+
 function Header() {
   const [toggleNotif, settoggleNotif] = useState(false);
   const [bids, setBids] = useState([]);
-  const notifRef = useRef(null); // Create a ref for the notification dropdown
+  const notifRef = useRef(null);
+  const buttonRef = useRef(null); // Ref for the Bell icon
+
   const getBids = async () => {
     try {
       const res = await fetch(`/api/bid/all`, {
@@ -16,12 +19,10 @@ function Header() {
         },
       });
       const data = await res.json();
-
       console.log("API Bids response:", data);
 
       if (Array.isArray(data)) {
         setBids(data);
-        console.log(data);
       } else {
         console.error("Invalid response: bids is not an array");
         setBids([]);
@@ -37,16 +38,22 @@ function Header() {
 
   useEffect(() => {
     if (toggleNotif) {
+      gsap.from("#notification", {
+        height: "0",
+        duration: 0.5,
+      });
       gsap.to("#notification", {
         opacity: 1,
         height: "300px",
         duration: 0.5,
+        display: "block",
       });
+
       gsap.from(".notifications-list", {
         opacity: 0,
         x: -20,
         duration: 0.2,
-        delay: 0.4,
+        delay: 0.1,
         stagger: 0.1,
       });
     } else {
@@ -54,6 +61,7 @@ function Header() {
         opacity: 0,
         height: 0,
         duration: 0.5,
+        display: "none",
       });
     }
   }, [toggleNotif]);
@@ -62,10 +70,33 @@ function Header() {
     getBids();
   }, []);
 
+  // Close notification when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        notifRef.current &&
+        !notifRef.current.contains(event.target) &&
+        !buttonRef.current.contains(event.target)
+      ) {
+        settoggleNotif(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   useEffect(() => {
     const handleWheel = (event) => {
-      if (notifRef.current && notifRef.current.contains(event.target)) {
-        event.preventDefault(); // Prevent the default scrolling
+      if (
+        notifRef.current &&
+        notifRef.current.scrollHeight > notifRef.current.clientHeight
+      ) {
+        // Allow scrolling only when content overflows
+        event.stopPropagation();
       }
     };
 
@@ -73,13 +104,12 @@ function Header() {
       notifRef.current.addEventListener("wheel", handleWheel);
     }
 
-    // Cleanup function to remove the event listener
     return () => {
       if (notifRef.current) {
         notifRef.current.removeEventListener("wheel", handleWheel);
       }
     };
-  }, [toggleNotif]); // Run this effect when toggleNotif changes
+  }, [toggleNotif]);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-800 bg-gray-900/95 backdrop-blur supports-[backdrop-filter]:bg-gray-900/60 box-content">
@@ -89,7 +119,6 @@ function Header() {
           <span className="font-bold text-blue-400">S&D</span>
         </Link>
 
-        {/* Navigation for larger screens */}
         <nav className="hidden md:flex gap-10">
           <Link
             className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
@@ -111,21 +140,21 @@ function Header() {
           </Link>
         </nav>
 
-        {/* Notification and User Actions */}
         <div className="flex items-center gap-3 ">
           <Button
+            ref={buttonRef} // Ref for the Bell icon button
             variant="ghost"
             size="icon"
             className="text-gray-300 hover:text-white relative"
+            onClick={toggleVisibility}
           >
-            <Bell className="h-6 w-6" onClick={toggleVisibility} />
+            <Bell className="h-6 w-6" />
             <span className="sr-only">Notifications</span>
             {toggleNotif && (
               <div
-                ref={notifRef} // Attach the ref to the notification dropdown
-                className="absolute lg:w-[400px] md:w-[300px] sm:w-[250px] w-[200px] top-12 p-4 right-0 opacity-0 origin-top-right rounded-md border border-gray-600 bg-gray-900 overflow-y-auto max-h-72"
+                ref={notifRef} // Attach ref to the notification dropdown
+                className="absolute lg:w-[400px] md:w-[300px] sm:w-[250px] w-[200px] top-12 p-4 right-0 origin-top-right rounded-md border border-gray-600 bg-gray-900 overflow-y-auto max-h-72"
                 id="notification"
-                onBlur={toggleVisibility}
               >
                 <h3 className="text-lg font-bold text-blue-400">
                   Notifications
@@ -145,7 +174,7 @@ function Header() {
                               <b>
                                 {bid.buyer.firstname + " " + bid.buyer.lastname}
                               </b>{" "}
-                              participated in :{bid.auction.title} with : $
+                              participated in: {bid.auction.title} with: $
                               {bid.amount}
                             </p>
                             <span className="text-xs text-gray-500">
@@ -171,7 +200,6 @@ function Header() {
             </Button>
           </Link>
 
-          {/* Hamburger Menu for smaller screens */}
           <Button
             variant="ghost"
             size="icon"

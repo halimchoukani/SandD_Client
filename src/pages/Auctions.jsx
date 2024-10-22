@@ -112,7 +112,7 @@ export default function Auctions() {
                 </h2>
                 <p className="text-gray-400 mb-2">{auction.category}</p>
                 <div className="flex justify-between items-center mb-2">
-                  <span className="font-bold text-green-400">
+                  <span className="font-bold text-green-400 overflow-hidden text-ellipsis whitespace-nowrap">
                     $
                     {auction.startPrice
                       ? auction.currentPrice.toLocaleString()

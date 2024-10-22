@@ -168,7 +168,7 @@ export default function Auction() {
                     <span className="font-semibold text-gray-300">
                       Current Bid:
                     </span>
-                    <span className="text-2xl font-bold text-green-400">
+                    <span className="text-2xl font-bold text-green-400 overflow-hidden text-ellipsis whitespace-nowrap">
                       ${currentBid.toLocaleString()}
                     </span>
                   </div>
