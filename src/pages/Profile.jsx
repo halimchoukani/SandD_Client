@@ -26,7 +26,6 @@ import getUser from "./hooks/getUser";
 export default function Profile() {
   const { isSignedIn, setIsSignedIn } = useContext(Context);
   const [user, setUser] = useState({});
-  console.log(user);
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);

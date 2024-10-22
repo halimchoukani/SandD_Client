@@ -80,7 +80,6 @@ export default function EditProfile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Updated user data:", user);
     await updateUser(user);
     alert("Profile updated successfully!");
   };

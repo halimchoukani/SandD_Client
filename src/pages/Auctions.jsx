@@ -34,8 +34,6 @@ export default function Auctions() {
           })
         );
 
-        console.log("API response:", newData); // Log the response data
-
         // Check if the data is an array
         setAuctions(newData);
       } else {

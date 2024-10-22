@@ -94,7 +94,7 @@ export default function AddAuction() {
         });
         if (res.ok) {
           const data = await res.json();
-          console.log(data);
+
           images.forEach(async (image) => {
             let ImageRequest = new FormData();
             ImageRequest.append("auctionId", data.id);

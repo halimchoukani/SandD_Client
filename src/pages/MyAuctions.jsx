@@ -57,8 +57,6 @@ export default function MyAuctions() {
           });
           const data = await res.json();
 
-          console.log("API response:", data); // Log the response data
-
           if (Array.isArray(data)) {
             const newData = await Promise.all(
               data.map(async (auction) => {
@@ -73,7 +71,6 @@ export default function MyAuctions() {
               })
             );
             setAuctions(newData);
-            console.log(data);
           } else {
             console.error("Invalid response: auctions is not an array");
             setAuctions([]);

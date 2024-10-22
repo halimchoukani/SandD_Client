@@ -26,8 +26,6 @@ export default function Login() {
   useEffect(() => {
     document.title = "S&D - Login";
     if (isSignedIn) {
-      console.log(isSignedIn);
-
       navigate("/");
     }
   }, [isSignedIn, navigate]);

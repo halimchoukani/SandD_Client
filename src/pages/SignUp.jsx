@@ -15,7 +15,6 @@ import { Context } from "../App";
 export default function SignUp() {
   const navigate = useNavigate();
   const { isSignedIn, setIsSignedIn } = useContext(Context);
-  console.log(isSignedIn);
 
   // Form states
   const [formData, setFormData] = useState({

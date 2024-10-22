@@ -21,7 +21,6 @@ export default function Auction() {
   useEffect(() => {
     document.title = `S&D - Auction ${id}`;
     getProduct();
-    console.log(user);
   }, [user, id]);
 
   const getProduct = async () => {

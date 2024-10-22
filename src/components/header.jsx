@@ -19,7 +19,6 @@ function Header() {
         },
       });
       const data = await res.json();
-      console.log("API Bids response:", data);
 
       if (Array.isArray(data)) {
         setBids(data);
