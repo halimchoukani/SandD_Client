@@ -1,93 +1,47 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Search, Clock, Trash2, Eye } from "lucide-react";
 import { Input, Card, CardContent } from "../components/ui";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import gsap from "gsap";
-import { jwtDecode } from "jwt-decode";
-import useGetUser from "./hooks/useGetUser";
+import useBids from "./hooks/useBids";
+import { Context } from "../App";
 
-export default function MyAuctions() {
+export default function MyBids() {
+  const { isSignedIn, user } = useContext(Context);
+
+  const [bids, setBids] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [auctions, setAuctions] = useState([]);
-  const [id, setId] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [userId, setUserId] = useState(null);
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
-  const { user: userData, loading, error: fetchError } = useGetUser();
 
-  // Set the user data and loading state when userData changes
   useEffect(() => {
-    if (userData) {
-      setUser(userData);
-      setId(userData.id);
-      setIsLoading(false);
+    if (user) {
+      console.log("User fromcontext :", user); // Debugging user value
+      setUserId(user.id);
+    } else {
+      console.log("User is null, userId not set");
     }
-    if (fetchError) {
-      setError(fetchError.message);
-      setIsLoading(false);
-    }
-  }, [userData, fetchError]);
+  }, [user]);
+
+  // Always call useBids, passing userId only when it exists
+  const { bids: bidsByUser, loading: isLoading, error } = useBids(userId);
 
   useEffect(() => {
-    if (id) {
-      const getAuctions = async () => {
-        try {
-          const res = await fetch(`/api/auction/user/${id}`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-          const data = await res.json();
-
-          if (Array.isArray(data)) {
-            const newData = await Promise.all(
-              data.map(async (auction) => {
-                const res2 = await fetch(`/api/images/auction/${auction.id}`);
-                if (res2.ok) {
-                  const imageData = await res2.json();
-                  if (imageData.length > 0) {
-                    return { ...auction, url: imageData[0].url };
-                  }
-                }
-                return auction;
-              })
-            );
-            setAuctions(newData);
-          } else {
-            console.error("Invalid response: auctions is not an array");
-            setAuctions([]);
-          }
-        } catch (error) {
-          console.error("Error fetching auctions:", error);
-        }
-      };
-
-      getAuctions();
-    }
-  }, [id]); // Trigger fetching auctions only after `id` is set
-
-  useEffect(() => {
-    document.title = "S&D - My Auctions"; // Change the page title
-  }, []);
-
-  useEffect(() => {
-    if (auctions.length > 0) {
+    if (bidsByUser?.length > 0) {
       gsap.fromTo(
         ".card",
         { opacity: 0, y: 20 },
         { opacity: 1, y: 0, duration: 0.5, stagger: 0.1 }
       );
     }
-  }, [auctions]);
+  }, [bidsByUser]);
 
-  // Filtering auctions by search term
-  const filteredAuctions = auctions.filter((auction) =>
-    auction.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
+  const filtredBids =
+    bidsByUser?.filter((bid) =>
+      bid.auction.title.toLowerCase().includes(searchTerm.toLowerCase())
+    ) || [];
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
       {/* Header */}
@@ -95,7 +49,7 @@ export default function MyAuctions() {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8 text-blue-500">My Auctions</h1>
+        <h1 className="text-3xl font-bold mb-8 text-blue-500">My Bids</h1>
 
         {/* Search Section */}
         <Card className="mb-8 bg-transparent border-none">
@@ -107,7 +61,7 @@ export default function MyAuctions() {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-full pl-10 bg-gray-800 border-gray-700 text-white placeholder-gray-400"
-                    placeholder="Search auctions..."
+                    placeholder="Search bids..."
                   />
                   <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
                 </div>
@@ -115,7 +69,7 @@ export default function MyAuctions() {
             </div>
           </CardContent>
         </Card>
-        {/* Auctions Grid */}
+        {/* Bids Grid */}
         <div className="flex flex-col">
           <div className=" overflow-x-auto pb-3">
             <div className="min-w-full inline-block align-middle">
@@ -135,14 +89,28 @@ export default function MyAuctions() {
                         className="p-5 text-left text-sm leading-6 font-semibold text-white capitalize"
                       >
                         {" "}
-                        Image{" "}
+                        Auction id{" "}
+                      </th>
+                      <th
+                        scope="col"
+                        className="p-5 text-left text-sm leading-6 font-semibold text-white capitalize"
+                      >
+                        {" "}
+                        Auction Title{" "}
                       </th>
                       <th
                         scope="col"
                         className="p-5 text-left text-sm leading-6 font-semibold text-white capitalize "
                       >
                         {" "}
-                        Title{" "}
+                        Auction State{" "}
+                      </th>
+                      <th
+                        scope="col"
+                        className="p-5 text-left text-sm leading-6 font-semibold text-white capitalize"
+                      >
+                        {" "}
+                        Price{" "}
                       </th>
                       <th
                         scope="col"
@@ -156,77 +124,61 @@ export default function MyAuctions() {
                         className="p-5 text-left text-sm leading-6 font-semibold text-white capitalize"
                       >
                         {" "}
-                        Status{" "}
-                      </th>
-                      <th
-                        scope="col"
-                        className="p-5 text-left text-sm leading-6 font-semibold text-white capitalize"
-                      >
-                        {" "}
-                        End Time{" "}
-                      </th>
-                      <th
-                        scope="col"
-                        className="p-5 text-left text-sm leading-6 font-semibold text-white capitalize"
-                      >
-                        {" "}
-                        Actions{" "}
+                        Auction End Time{" "}
                       </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-300 ">
-                    {filteredAuctions.map((auction) => (
+                    {filtredBids.map((bid) => (
                       <tr
-                        key={auction.id}
+                        key={bid.id}
                         className="bg-gray-900 hover:bg-gray-700 cursor-pointer card"
+                        onClick={() => navigate(`/auction/${bid.auction.id}`)}
                       >
                         <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-white ">
                           <span className="text-sm text-gray-400 flex items-center">
-                            {auction.id}
+                            {bid.id}
                           </span>
-                        </td>
-                        <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-white">
-                          <img
-                            src={`/api/images/upload/auction/${auction.url}`}
-                            alt={auction.title}
-                            className="w-[50px] h-[50px] object-cover rounded-full"
-                          />
                         </td>
                         <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-white">
                           <h2 className="text-xl font-semibold mb-2 text-white">
-                            {auction.title}
+                            {bid.auction.id}
                           </h2>
                         </td>
                         <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-white">
-                          <span className="font-bold overflow-hidden text-ellipsis whitespace-nowrap">
-                            $
-                            {auction.startPrice
-                              ? auction.currentPrice.toLocaleString()
-                              : "N/A"}
-                          </span>
+                          <h2 className="text-xl font-semibold mb-2 text-white">
+                            {bid.auction.title}
+                          </h2>
                         </td>
                         <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-white">
                           <span
                             className={`font-bold ${
-                              auction.status === "OPEN"
+                              bid.auction.status === "OPEN"
                                 ? "text-green-400"
                                 : "text-red-400"
                             }`}
                           >
-                            {auction.status === "OPEN" ? "OPEN" : "CLOSE"}
+                            {bid.auction.status === "OPEN" ? "OPEN" : "CLOSE"}
+                          </span>
+                        </td>
+                        <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-white">
+                          <span className="font-bold overflow-hidden text-ellipsis whitespace-nowrap">
+                            ${bid.amount ? bid.amount.toLocaleString() : "N/A"}
+                          </span>
+                        </td>
+                        <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-white">
+                          <span className="font-bold overflow-hidden text-ellipsis whitespace-nowrap">
+                            $
+                            {bid.auction.currentPrice
+                              ? bid.auction.currentPrice.toLocaleString()
+                              : "N/A"}
                           </span>
                         </td>
                         <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-white">
                           <span className="text-sm text-gray-400 flex items-center">
                             <Clock className="h-4 w-4 mr-1" />
-                            {new Date(auction.endTime).toLocaleString()}
+                            {new Date(bid.auction.endTime).toLocaleString()}
                           </span>
-                        </td>
-                        <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-white flex flex-row items-center justify-evenly">
-                          <Link to={`/auction/${auction.id}`}>
-                            <Eye color="#2bbfe3" />
-                          </Link>
-                          <Trash2 color="rgb(255,76,76)" />
                         </td>
                       </tr>
                     ))}
@@ -242,17 +194,17 @@ export default function MyAuctions() {
           </div>
         </div>
 
-        {filteredAuctions.length === 0 && !isLoading && (
+        {filtredBids.length === 0 && !isLoading && (
           <div className="text-center py-12">
             <p className="text-xl text-gray-400">
-              No auctions found matching your criteria.
+              No Bids found matching your criteria.
             </p>
           </div>
         )}
 
         {isLoading && (
           <div className="text-center py-12">
-            <p className="text-xl text-gray-400">Loading auctions...</p>
+            <p className="text-xl text-gray-400">Loading bids...</p>
           </div>
         )}
       </main>

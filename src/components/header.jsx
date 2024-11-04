@@ -12,7 +12,7 @@ function Header() {
 
   const getBids = async () => {
     try {
-      const res = await fetch(`/api/bid/all`, {
+      const res = await fetch(`/api/bids/all`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

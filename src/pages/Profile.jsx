@@ -21,28 +21,17 @@ import Header from "../components/header";
 import Footer from "../components/footer";
 import { jwtDecode } from "jwt-decode";
 import { Context } from "../App";
-import getUser from "./hooks/getUser";
+import useGetUser from "./hooks/useGetUser";
 
 export default function Profile() {
-  const { isSignedIn, setIsSignedIn } = useContext(Context);
-  const [user, setUser] = useState({});
-
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { isSignedIn, setIsSignedIn, user, setUser } = useContext(Context);
 
   useEffect(() => {
     document.title = "S&D - Profile";
-    const fetchUser = async () => {
-      const userData = await getUser();
-      if (userData) {
-        setUser(userData);
-        setIsLoading(false);
-      }
-    };
-    fetchUser();
-  }, [user]);
-
+  }, []);
   const handleLogout = () => {
     localStorage.removeItem("token");
     setIsSignedIn(false);

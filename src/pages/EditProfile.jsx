@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Gavel, Camera, Eye, EyeOff } from "lucide-react";
 import {
@@ -11,60 +11,60 @@ import {
   Label,
   Avatar,
 } from "../components/ui/index";
-import { jwtDecode } from "jwt-decode"; // Correct import
 import Header from "../components/header";
 import Footer from "../components/footer";
+import { Context } from "../App";
 
 export default function EditProfile() {
-  const getUser = async (id) => {
-    const res = await fetch(`/api/user/get/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    return res.json();
-  };
-
-  const updateUser = async (user) => {
-    const res = await fetch(`/api/user/update/${user.id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        firstname: user.firstname,
-        lastname: user.lastname,
-        phoneNumber: user.phoneNumber,
-      }),
-    });
-    return res.json();
-  };
-
-  const [user, setUser] = useState({});
+  const [newUser, setNewUser] = useState({});
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const { isSignedIn, setIsSignedIn, user, setUser } = useContext(Context);
+
+  // Function to update user info on server
+  const updateUser = async (updatedUser) => {
+    try {
+      const res = await fetch(`/api/user/update/${updatedUser.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstname: updatedUser.firstname,
+          lastname: updatedUser.lastname,
+          phoneNumber: updatedUser.phoneNumber,
+          imageUrl: updatedUser.imageUrl,
+          password: newPassword || undefined, // Only send password if changed
+        }),
+      });
+      if (!res.ok) throw new Error("Failed to update user data.");
+      return await res.json();
+    } catch (error) {
+      console.error(error);
+      alert("Error updating profile. Please try again.");
+    }
+  };
 
   useEffect(() => {
     document.title = "S&D - Profile";
-    const token = localStorage.getItem("token");
-    if (token) {
-      const decoded = jwtDecode(token);
-      getUser(decoded.sub).then((data) => setUser(data));
+    if (user) {
+      setNewUser(user);
+      setLoading(false);
     }
-  }, []);
+  }, [user]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setUser((prevUser) => ({ ...prevUser, [name]: value }));
+    setNewUser((prevUser) => ({ ...prevUser, [name]: value }));
   };
 
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
-    if (name === "newPassword") {
-      setNewPassword(value);
-    } else if (name === "confirmPassword") {
-      setConfirmPassword(value);
-    }
+    if (name === "newPassword") setNewPassword(value);
+    else if (name === "confirmPassword") setConfirmPassword(value);
   };
 
   const handleAvatarChange = (e) => {
@@ -72,7 +72,7 @@ export default function EditProfile() {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setUser((prevUser) => ({ ...prevUser, image: reader.result }));
+        setNewUser((prevUser) => ({ ...prevUser, imageUrl: reader.result }));
       };
       reader.readAsDataURL(file);
     }
@@ -80,16 +80,28 @@ export default function EditProfile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await updateUser(user);
-    alert("Profile updated successfully!");
+    if (newPassword && newPassword !== confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+    const updatedUser = await updateUser(newUser);
+    if (updatedUser) {
+      setUser(updatedUser); // Update context with new user data
+      alert("Profile updated successfully!");
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-950 text-gray-100 flex items-center justify-center">
+        Loading...
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
-      {/* Header */}
       <Header />
-
-      {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8 text-blue-400">Edit Profile</h1>
         <form onSubmit={handleSubmit}>
@@ -104,7 +116,7 @@ export default function EditProfile() {
               <CardContent className="flex flex-col items-center">
                 <div className="relative">
                   <Avatar
-                    src={`/api/user/upload/avatar/${user.imageUrl}`}
+                    src={newUser.imageUrl || `/default-avatar.png`}
                     alt="Profile Avatar"
                     size="large"
                     className="w-32 h-32"
@@ -144,7 +156,7 @@ export default function EditProfile() {
                   <Input
                     id="firstname"
                     name="firstname"
-                    value={user.firstname || ""}
+                    value={newUser.firstname || ""}
                     onChange={handleInputChange}
                     required
                     className="bg-gray-700 text-white border-gray-600 focus:border-blue-500 focus:ring-blue-500"
@@ -157,7 +169,7 @@ export default function EditProfile() {
                   <Input
                     id="lastname"
                     name="lastname"
-                    value={user.lastname || ""}
+                    value={newUser.lastname || ""}
                     onChange={handleInputChange}
                     required
                     className="bg-gray-700 text-white border-gray-600 focus:border-blue-500 focus:ring-blue-500"
@@ -170,7 +182,7 @@ export default function EditProfile() {
                   <Input
                     id="phonenumber"
                     name="phoneNumber"
-                    value={user.phoneNumber || ""}
+                    value={newUser.phoneNumber || ""}
                     onChange={handleInputChange}
                     required
                     className="bg-gray-700 text-white border-gray-600 focus:border-blue-500 focus:ring-blue-500"
@@ -197,6 +209,8 @@ export default function EditProfile() {
                         id="newPassword"
                         name="newPassword"
                         type={showPassword ? "text" : "password"}
+                        value={newPassword}
+                        onChange={handlePasswordChange}
                         className="bg-gray-700 text-white border-gray-600 focus:border-blue-500 focus:ring-blue-500"
                       />
                       <button
@@ -220,6 +234,8 @@ export default function EditProfile() {
                       id="confirmPassword"
                       name="confirmPassword"
                       type="password"
+                      value={confirmPassword}
+                      onChange={handlePasswordChange}
                       className="bg-gray-700 text-white border-gray-600 focus:border-blue-500 focus:ring-blue-500"
                     />
                   </FormGroup>
@@ -247,8 +263,6 @@ export default function EditProfile() {
           </div>
         </form>
       </main>
-
-      {/* Footer */}
       <Footer />
     </div>
   );

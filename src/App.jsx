@@ -12,8 +12,8 @@ import Auctions from "./pages/Auctions";
 import Lenis from "lenis";
 import Home from "./pages/home";
 import { useState, useEffect, createContext } from "react";
-import { jwtDecode } from "jwt-decode";
-import getUser from "./pages/hooks/getUser";
+import useGetUser from "./pages/hooks/useGetUser";
+import MyBids from "./pages/MyBids";
 
 export const Context = createContext();
 
@@ -23,24 +23,23 @@ function App() {
     lenis.raf(time);
     requestAnimationFrame(raf);
   }
-
   requestAnimationFrame(raf);
+
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [user, setUser] = useState(null);
+  const { user: userData, loading, error: fetchError } = useGetUser();
 
+  // Set the user data and loading state when userData changes
   useEffect(() => {
-    const fetchUser = async () => {
-      const userData = await getUser();
-      if (userData) {
-        setUser(userData);
-        setIsSignedIn(true);
-      }
-    };
-    fetchUser();
-  }, []);
+    if (userData) {
+      setUser(userData);
+    }
+  }, [userData, fetchError]);
 
   return (
-    <Context.Provider value={{ isSignedIn, setIsSignedIn, user, setUser }}>
+    <Context.Provider
+      value={{ isSignedIn, setIsSignedIn, user: userData, setUser }}
+    >
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -49,6 +48,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/sell" element={<AddAuction />} />
             <Route path="/myauctions" element={<MyAuctions />} />
+            <Route path="/mybids" element={<MyBids />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/auction/:id" element={<Auction />} />
