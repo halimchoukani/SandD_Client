@@ -1,15 +1,16 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Button } from "./ui/index";
 import { Gavel, User, Bell, Menu } from "lucide-react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
+import { Context } from "../App";
 
 function Header() {
   const [toggleNotif, settoggleNotif] = useState(false);
   const [bids, setBids] = useState([]);
   const notifRef = useRef(null);
   const buttonRef = useRef(null); // Ref for the Bell icon
-
+  const { isSignedIn, setIsSignedIn, user, setUser } = useContext(Context);
   const getBids = async () => {
     try {
       const res = await fetch(`/api/bids/all`, {
@@ -194,7 +195,15 @@ function Header() {
               size="icon"
               className="text-gray-300 hover:text-white"
             >
-              <User className="h-6 w-6" />
+              {user && user.imageUrl ? (
+                <img
+                  src={`/api/user/upload/avatar/${user.imageUrl}`}
+                  alt={user.firstname}
+                  className="w-6 h-6 rounded-full"
+                />
+              ) : (
+                <User className="h-6 w-6" />
+              )}
               <span className="sr-only">Account</span>
             </Button>
           </Link>
