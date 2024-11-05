@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Use useNavigate here
 import { Gavel, Camera, Eye, EyeOff } from "lucide-react";
 import {
   Button,
@@ -16,15 +16,20 @@ import Footer from "../components/footer";
 import { Context } from "../App";
 
 export default function EditProfile() {
-  const [newUser, setNewUser] = useState({});
+  const [newUser, setNewUser] = useState({
+    firstname: "",
+    lastname: "",
+    phoneNumber: "",
+    imageUrl: "",
+  });
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(true);
-
+  const navigate = useNavigate(); // Use the hook to get navigate
   const { isSignedIn, setIsSignedIn, user, setUser } = useContext(Context);
 
-  // Function to update user info on server
+  // Update user profile function
   const updateUser = async (updatedUser) => {
     try {
       const res = await fetch(`/api/user/update/${updatedUser.id}`, {
@@ -37,7 +42,7 @@ export default function EditProfile() {
           lastname: updatedUser.lastname,
           phoneNumber: updatedUser.phoneNumber,
           imageUrl: updatedUser.imageUrl,
-          password: newPassword || undefined, // Only send password if changed
+          password: newPassword || undefined,
         }),
       });
       if (!res.ok) throw new Error("Failed to update user data.");
@@ -48,6 +53,7 @@ export default function EditProfile() {
     }
   };
 
+  // Load user data
   useEffect(() => {
     document.title = "S&D - Profile";
     if (user) {
@@ -56,17 +62,20 @@ export default function EditProfile() {
     }
   }, [user]);
 
+  // Handle input changes for personal information
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewUser((prevUser) => ({ ...prevUser, [name]: value }));
   };
 
+  // Handle password input changes
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
     if (name === "newPassword") setNewPassword(value);
     else if (name === "confirmPassword") setConfirmPassword(value);
   };
 
+  // Handle avatar file upload
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -78,6 +87,7 @@ export default function EditProfile() {
     }
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (newPassword && newPassword !== confirmPassword) {
@@ -86,11 +96,12 @@ export default function EditProfile() {
     }
     const updatedUser = await updateUser(newUser);
     if (updatedUser) {
-      setUser(updatedUser); // Update context with new user data
-      alert("Profile updated successfully!");
+      setUser(updatedUser);
+      navigate("/profile");
     }
   };
 
+  // Conditional loading view
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-950 text-gray-100 flex items-center justify-center">
@@ -98,13 +109,12 @@ export default function EditProfile() {
       </div>
     );
   }
-
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
       <Header />
       <main className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8 text-blue-400">Edit Profile</h1>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} method="post">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Avatar Section */}
             <Card className="md:col-span-1 bg-gray-800 border border-gray-700">
@@ -116,7 +126,10 @@ export default function EditProfile() {
               <CardContent className="flex flex-col items-center">
                 <div className="relative">
                   <Avatar
-                    src={newUser.imageUrl || `/default-avatar.png`}
+                    src={
+                      `/api/user/upload/avatar/` + newUser.imageUrl ||
+                      `/default-avatar.png`
+                    }
                     alt="Profile Avatar"
                     size="large"
                     className="w-32 h-32"

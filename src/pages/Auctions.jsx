@@ -35,7 +35,7 @@ export default function Auctions() {
         );
 
         // Check if the data is an array
-        setAuctions(newData);
+        setAuctions(newData.reverse());
       } else {
         console.error("Invalid response: auctions is not an array");
         setAuctions([]); // Reset auctions to an empty array if response is invalid

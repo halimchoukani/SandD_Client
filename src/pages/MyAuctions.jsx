@@ -55,7 +55,7 @@ export default function MyAuctions() {
                 return auction;
               })
             );
-            setAuctions(newData);
+            setAuctions(newData.reverse());
           } else {
             console.error("Invalid response: auctions is not an array");
             setAuctions([]);

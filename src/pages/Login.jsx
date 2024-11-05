@@ -13,11 +13,12 @@ import { Gavel, Mail } from "lucide-react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import { Context } from "../App";
+import useGetUser from "./hooks/useGetUser";
 
 export default function Login() {
-  const { isSignedIn, setIsSignedIn, setUser } = useContext(Context);
-  const password = useRef(null);
-  const email = useRef(null);
+  const { isSignedIn, setIsSignedIn, user, setUser } = useContext(Context);
+  const passwordRef = useRef(null);
+  const emailRef = useRef(null);
   const navigate = useNavigate();
 
   const [errorMessage, setErrorMessage] = useState("");
@@ -42,31 +43,30 @@ export default function Login() {
             },
           }
         );
+
+        if (!userInfoResponse.ok) throw new Error("Failed to fetch user info.");
+
         const userInfo = await userInfoResponse.json();
         console.log("Google user info:", userInfo);
 
         // Send user information and token to backend
-        try {
-          const backendResponse = await fetch("/api/user/google-login", {
-            method: "GET", // POST request to match backend
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${tokenResponse.access_token}`,
-            },
-          });
+        const backendResponse = await fetch("/api/user/google-login", {
+          method: "POST", // Use POST request as intended by the backend
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenResponse.access_token}`,
+          },
+        });
 
-          if (!backendResponse.ok) {
-            throw new Error("Google login failed");
-          }
-
-          const backendData = await backendResponse.json();
-          localStorage.setItem("token", backendData.jwt);
-          setIsSignedIn(true);
-          setUser(userInfo); // Update user context
-          navigate("/");
-        } catch (e) {
-          console.log(e.message);
+        if (!backendResponse.ok) {
+          throw new Error("Google login failed");
         }
+
+        const backendData = await backendResponse.json();
+        localStorage.setItem("token", backendData.jwt);
+        setIsSignedIn(true);
+        setUser(userInfo); // Update user context
+        navigate("/"); // Redirect after successful login
       } catch (error) {
         setErrorMessage(error.message);
       }
@@ -78,8 +78,9 @@ export default function Login() {
     e.preventDefault(); // Prevent page reload on form submission
     setLoading(true);
     setErrorMessage("");
-    const input = email.current.value; // Assuming email.current.value contains the input
+    const input = emailRef.current.value; // Using emailRef
     const isEmail = /\S+@\S+\.\S+/.test(input); // Simple regex to check if input is an email
+
     try {
       const response = await fetch("/api/user/login", {
         method: "POST",
@@ -88,7 +89,7 @@ export default function Login() {
         },
         body: JSON.stringify({
           [isEmail ? "email" : "username"]: input,
-          password: password.current.value,
+          password: passwordRef.current.value, // Using passwordRef
         }),
       });
 
@@ -102,8 +103,8 @@ export default function Login() {
         console.log("Login successful");
         localStorage.setItem("token", data.jwt);
         setIsSignedIn(true);
-        setUser(data.user); // Update user context
-        navigate("/"); // Redirect after successful login
+        setUser(data.user);
+        navigate("/");
       }
     } catch (error) {
       console.log(error.message);
@@ -128,39 +129,38 @@ export default function Login() {
         </CardHeader>
 
         <CardContent className="space-y-4">
-          <FormGroup method="post">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email or Username</Label>
-              <Input
-                id="email"
-                placeholder="m@example.com or username"
-                required
-                type="text"
-                ref={email}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                required
-                type="password"
-                placeholder="******************"
-                ref={password}
-              />
-            </div>
-            {errorMessage && (
-              <p className="text-red-500 text-sm">{errorMessage}</p>
-            )}
-            <Button
-              className="w-full"
-              type="submit"
-              onClick={loginUser}
-              disabled={loading}
-            >
-              {loading ? "Signing In..." : "Sign In"}
-            </Button>
-          </FormGroup>
+          <form onSubmit={loginUser} method="post">
+            {" "}
+            {/* Add onSubmit here */}
+            <FormGroup>
+              <div className="space-y-2">
+                <Label htmlFor="email">Email or Username</Label>
+                <Input
+                  id="email"
+                  placeholder="m@example.com or username"
+                  required
+                  type="text"
+                  ref={emailRef} // Using emailRef
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  required
+                  type="password"
+                  placeholder="******************"
+                  ref={passwordRef} // Using passwordRef
+                />
+              </div>
+              {errorMessage && (
+                <p className="text-red-500 text-sm">{errorMessage}</p>
+              )}
+              <Button className="w-full" type="submit" disabled={loading}>
+                {loading ? "Signing In..." : "Sign In"}
+              </Button>
+            </FormGroup>
+          </form>
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t" />

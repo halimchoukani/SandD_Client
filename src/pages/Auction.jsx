@@ -58,7 +58,7 @@ export default function Auction() {
     }
 
     try {
-      const res = await fetch(`/api/bid/add`, {
+      const res = await fetch(`/api/bids/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -92,7 +92,13 @@ export default function Auction() {
     const now = new Date();
     const remainingTime = new Date(auctionEnd) - now;
 
-    if (remainingTime <= 0) return "Auction has ended";
+    if (remainingTime <= 0)
+      return (
+        <>
+          <Clock className="h-4 w-4 mr-1 text-red-200" />
+          <span className="text-red-200">Auction has ended</span>
+        </>
+      );
 
     const days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
     const hours = Math.floor(
@@ -102,7 +108,14 @@ export default function Auction() {
       (remainingTime % (1000 * 60 * 60)) / (1000 * 60)
     );
 
-    return `${days} days, ${hours} hours, ${minutes} minutes`;
+    return (
+      <>
+        <Clock className="h-4 w-4 mr-1" />
+        <span className="">
+          Auction ends in : {days} days, {hours} hours, {minutes} minutes
+        </span>
+      </>
+    );
   };
 
   const [activeImage, setActiveImage] = useState(null);
@@ -172,31 +185,37 @@ export default function Auction() {
                     </span>
                   </div>
                   <div className="flex items-center text-sm text-gray-400">
-                    <Clock className="h-4 w-4 mr-1" />
-                    <span>
-                      Auction ends in {getRemainingTime(Product.endTime)}
-                    </span>
+                    {getRemainingTime(Product.endTime)}
                   </div>
                 </div>
-                <form
-                  className="flex space-x-4 mb-6"
-                  onSubmit={handleBidSubmit}
-                >
-                  <Input
-                    value={bidAmount}
-                    onChange={handleBidChange}
-                    className="flex-grow bg-gray-700 text-white border-gray-600"
-                    placeholder="Enter your bid"
-                    type="number" // Ensure it's a number input
-                  />
-                  <Button
-                    type="submit"
-                    disabled={!bidAmount || parseFloat(bidAmount) <= currentBid}
-                    className="bg-blue-500 hover:bg-blue-600 text-white disabled:bg-gray-600 disabled:text-gray-400"
-                  >
-                    Place Bid
-                  </Button>
-                </form>
+                {user &&
+                  user.id !== Product.seller.id &&
+                  new Date(Product.endTime) > new Date() && (
+                    <form
+                      className="flex space-x-4 mb-6"
+                      onSubmit={handleBidSubmit}
+                    >
+                      <Input
+                        value={bidAmount}
+                        onChange={handleBidChange}
+                        className="flex-grow bg-gray-700 text-white border-gray-600"
+                        placeholder="Enter your bid"
+                        type="number" // Ensure it's a number input
+                        min={currentBid + 1} // Prevent bids lower than the current bid
+                        required // Make sure the field is required
+                      />
+                      <Button
+                        type="submit"
+                        disabled={
+                          !bidAmount || parseFloat(bidAmount) <= currentBid
+                        }
+                        className="bg-blue-500 hover:bg-blue-600 text-white disabled:bg-gray-600 disabled:text-gray-400"
+                      >
+                        Place Bid
+                      </Button>
+                    </form>
+                  )}
+
                 <div className="border-t border-gray-700 pt-6">
                   <h2 className="text-xl font-semibold mb-4 text-blue-400">
                     Seller Information

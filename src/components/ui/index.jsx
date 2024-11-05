@@ -204,12 +204,7 @@ export const AlertDescription = forwardRef(({ className, ...props }, ref) => (
 AlertDescription.displayName = "AlertDescription";
 
 export const FormGroup = forwardRef(({ className, method, ...props }, ref) => (
-  <form
-    ref={ref}
-    method={method}
-    className={`space-y-2 ${className}`}
-    {...props}
-  />
+  <div ref={ref} className={`space-y-2 ${className}`} {...props} />
 ));
 
 FormGroup.displayName = "FormGroup";

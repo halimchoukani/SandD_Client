@@ -15,7 +15,7 @@ function useBids(userId) {
         if (!response.ok) throw new Error("Failed to fetch bids");
 
         const data = await response.json();
-        setBids(data);
+        setBids(data.reverse());
       } catch (err) {
         console.error("Failed to fetch bids", err);
         setError("Failed to fetch bids");

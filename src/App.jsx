@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import ProtectedRoutes from "./utils/protectedroutes";
 import EditProfile from "./pages/EditProfile";
 import Login from "./pages/Login";
@@ -18,28 +23,31 @@ import MyBids from "./pages/MyBids";
 export const Context = createContext();
 
 function App() {
-  const lenis = new Lenis();
-  function raf(time) {
-    lenis.raf(time);
+  useEffect(() => {
+    const lenis = new Lenis();
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
     requestAnimationFrame(raf);
-  }
-  requestAnimationFrame(raf);
+  }, []);
 
   const [isSignedIn, setIsSignedIn] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({});
   const { user: userData, loading, error: fetchError } = useGetUser();
 
   // Set the user data and loading state when userData changes
   useEffect(() => {
     if (userData) {
       setUser(userData);
+      setIsSignedIn(true);
     }
   }, [userData, fetchError]);
 
+  if (loading) return <div>Loading...</div>;
+  if (fetchError) return <div>Error loading user data.</div>;
   return (
-    <Context.Provider
-      value={{ isSignedIn, setIsSignedIn, user: userData, setUser }}
-    >
+    <Context.Provider value={{ isSignedIn, setIsSignedIn, user, setUser }}>
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -55,7 +63,7 @@ function App() {
           <Route path="/auctions" element={<Auctions />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/404" element={<NotFound />} />
-          <Route path="*" element={<NotFound />} />
+          <Route path="*" element={<Navigate to="/404" />} />
         </Routes>
       </Router>
     </Context.Provider>
