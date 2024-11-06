@@ -19,7 +19,9 @@ import Home from "./pages/home";
 import { useState, useEffect, createContext } from "react";
 import useGetUser from "./pages/hooks/useGetUser";
 import MyBids from "./pages/MyBids";
-
+import Transactions from "./pages/transactions";
+import Payment from "./pages/Payment";
+import PaymentHistory from "./pages/PaymentHistory";
 export const Context = createContext();
 
 function App() {
@@ -57,6 +59,9 @@ function App() {
             <Route path="/sell" element={<AddAuction />} />
             <Route path="/myauctions" element={<MyAuctions />} />
             <Route path="/mybids" element={<MyBids />} />
+            <Route path="/transaction" element={<Transactions />} />
+            <Route path="/payment/history" element={<PaymentHistory />} />
+            <Route path="/payment" element={<Payment />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/auction/:id" element={<Auction />} />
