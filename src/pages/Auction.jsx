@@ -72,10 +72,12 @@ export default function Auction() {
 
       if (res.ok) {
         setCurrentBid(parseFloat(bidAmount));
+        setUser({ ...user, amount: user.amount - parseFloat(bidAmount) });
         setBidAmount("");
         alert("Bid placed successfully!");
       } else {
-        alert("Error placing bid.");
+        const error = await res.json();
+        alert("Error: " + error.error);
       }
     } catch (error) {
       console.error("Error adding bid:", error);
