@@ -141,7 +141,7 @@ function Header() {
         </nav>
 
         <div className="flex items-center gap-3 ">
-          {user && <span>{user.amount.toFixed(2)} DT</span>}
+          {user && <span>{user.amount} DT</span>}
           <Button
             ref={buttonRef} // Ref for the Bell icon button
             variant="ghost"

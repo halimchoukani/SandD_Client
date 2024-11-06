@@ -40,7 +40,7 @@ export default function Transaction() {
                 <h1 className="text-2xl font-bold">Transaction</h1>
                 <div className="text-right">
                 <p className="text-sm text-slate-400">Current Balance</p>
-                <p className="text-xl font-bold">{currentBalance.toFixed(2)}  TND</p>
+                <p className="text-xl font-bold">{currentBalance}  TND</p>
                 </div>
             </div>
 
@@ -85,7 +85,7 @@ export default function Transaction() {
                 </div>
                 {amount && (
                     <p className="mt-2 text-sm text-slate-400">
-                    Fees: ${fees.toFixed(2)} | Total: ${total.toFixed(2)}
+                    Fees: ${fees} | Total: ${total}
                     </p>
                 )}
                 </div>

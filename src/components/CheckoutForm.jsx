@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js';
 import { useNavigate } from 'react-router-dom';
+import { Context } from '../App';
 
 const CheckoutForm = ({ clientSecret }) => {
     const [error, setError] = useState(null);
@@ -10,6 +11,7 @@ const CheckoutForm = ({ clientSecret }) => {
     const elements = useElements();
     const navigate = useNavigate();
     const amount = localStorage.getItem('paymentAmount');
+    const { isSignedIn, setIsSignedIn, user, setUser } = useContext(Context);
     const handleSubmit = async (event) => {
         event.preventDefault();
         setProcessing(true);
@@ -45,11 +47,11 @@ const CheckoutForm = ({ clientSecret }) => {
                 },
                 body: JSON.stringify({ amount: payload.paymentIntent.amount })
             })
-                .then(res => res.json())
-                .then(data => console.log(data))
+                .then(res => setUser({...user,amount:( user.amount + payload.paymentIntent.amount/100 ) }) )
                 .catch(err => console.error('Error completing payment:', err));
         }
         // rounded-lg border border-gray-700 bg-gray-800 text-gray-100 shadow-sm lg:col-span-2
+        
         navigate("/transaction");
     };
     return (

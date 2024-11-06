@@ -8,6 +8,7 @@ import {
   ChevronRight,
   Gavel,
   CreditCard,
+  History,
 } from "lucide-react";
 import {
   Button,
@@ -201,6 +202,16 @@ export default function Profile() {
                     <div className="flex items-center space-x-2">
                       <CreditCard size={20} />
                       <span>Paiement</span>
+                    </div>
+                    <ChevronRight size={16} />
+                  </Link>
+                  <Link
+                    to="/payment/history"
+                    className="flex items-center justify-between p-2 hover:bg-gray-800 rounded"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <History size={20} />
+                      <span>Paiement History</span>
                     </div>
                     <ChevronRight size={16} />
                   </Link>
