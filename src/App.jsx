@@ -46,7 +46,8 @@ function App() {
     }
   }, [userData, fetchError]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading)
+    return <div className="w-full h-full text-3xl text-white">Loading...</div>;
   if (fetchError) return <div>Error loading user data.</div>;
   return (
     <Context.Provider value={{ isSignedIn, setIsSignedIn, user, setUser }}>
