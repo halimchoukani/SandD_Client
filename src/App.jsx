@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import ProtectedRoutes from "./utils/protectedroutes";
 import EditProfile from "./pages/EditProfile";
 import Login from "./pages/Login";
@@ -14,32 +19,37 @@ import Home from "./pages/home";
 import { useState, useEffect, createContext } from "react";
 import useGetUser from "./pages/hooks/useGetUser";
 import MyBids from "./pages/MyBids";
-
+import Transactions from "./pages/transactions";
+import Payment from "./pages/Payment";
+import PaymentHistory from "./pages/PaymentHistory";
 export const Context = createContext();
 
 function App() {
-  const lenis = new Lenis();
-  function raf(time) {
-    lenis.raf(time);
+  useEffect(() => {
+    const lenis = new Lenis();
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
     requestAnimationFrame(raf);
-  }
-  requestAnimationFrame(raf);
+  }, []);
 
   const [isSignedIn, setIsSignedIn] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({});
   const { user: userData, loading, error: fetchError } = useGetUser();
 
   // Set the user data and loading state when userData changes
   useEffect(() => {
     if (userData) {
       setUser(userData);
+      setIsSignedIn(true);
     }
   }, [userData, fetchError]);
 
+  if (loading) return <div>Loading...</div>;
+  if (fetchError) return <div>Error loading user data.</div>;
   return (
-    <Context.Provider
-      value={{ isSignedIn, setIsSignedIn, user: userData, setUser }}
-    >
+    <Context.Provider value={{ isSignedIn, setIsSignedIn, user, setUser }}>
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -49,13 +59,16 @@ function App() {
             <Route path="/sell" element={<AddAuction />} />
             <Route path="/myauctions" element={<MyAuctions />} />
             <Route path="/mybids" element={<MyBids />} />
+            <Route path="/transaction" element={<Transactions />} />
+            <Route path="/payment/history" element={<PaymentHistory />} />
+            <Route path="/payment" element={<Payment />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/auction/:id" element={<Auction />} />
           <Route path="/auctions" element={<Auctions />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/404" element={<NotFound />} />
-          <Route path="*" element={<NotFound />} />
+          <Route path="*" element={<Navigate to="/404" />} />
         </Routes>
       </Router>
     </Context.Provider>
