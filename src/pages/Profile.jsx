@@ -9,6 +9,7 @@ import {
   Gavel,
   CreditCard,
   History,
+  ShoppingCart,
 } from "lucide-react";
 import {
   Button,
@@ -212,6 +213,26 @@ export default function Profile() {
                     <div className="flex items-center space-x-2">
                       <History size={20} />
                       <span>Paiement History</span>
+                    </div>
+                    <ChevronRight size={16} />
+                  </Link>
+                  <Link
+                    to="/auctions/bought"
+                    className="flex items-center justify-between p-2 hover:bg-gray-800 rounded"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <ShoppingCart size={20} />
+                      <span>Bought Auctions</span>
+                    </div>
+                    <ChevronRight size={16} />
+                  </Link>
+                  <Link
+                    to="/auctions/sold"
+                    className="flex items-center justify-between p-2 hover:bg-gray-800 rounded"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <Gavel size={20} />
+                      <span>Sold Auctions</span>
                     </div>
                     <ChevronRight size={16} />
                   </Link>

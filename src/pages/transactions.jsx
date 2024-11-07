@@ -11,7 +11,7 @@ export default function Transaction() {
   const [agreeTerms, setAgreeTerms] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
   const [currentBalance, setCurrentBalance] = useState(0);
-  const { isSignedIn, setIsSignedIn, user, setUser } = useContext(Context);
+  const { user } = useContext(Context);
   const navigate = useNavigate();
   useEffect(() => {
     if(user){

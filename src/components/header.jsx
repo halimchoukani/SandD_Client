@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { Button } from "./ui/index";
-import { Gavel, User, Bell, Menu } from "lucide-react";
+import { Gavel, User, Bell, Menu, Landmark } from "lucide-react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { Context } from "../App";
@@ -141,7 +141,15 @@ function Header() {
         </nav>
 
         <div className="flex items-center gap-3 ">
-          {user && <span>{user.amount} DT</span>}
+
+          { isSignedIn && user && (
+            <Link to="/transaction" className="relative text-gray-900 dark:text-gray-400 hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700 rounded-lg py-2 px-3 flex items-center justify-center bg-white border border-gray-200">
+                <span className="inline-flex items-center">
+                <Landmark size={20} />
+                  <span className="text-xs font-semibold">{user.amount} TND</span>
+                </span>
+            </Link>
+            )}
           <Button
             ref={buttonRef} // Ref for the Bell icon button
             variant="ghost"

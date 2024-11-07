@@ -22,6 +22,8 @@ import MyBids from "./pages/MyBids";
 import Transactions from "./pages/transactions";
 import Payment from "./pages/Payment";
 import PaymentHistory from "./pages/PaymentHistory";
+import BoughtAuctions from "./pages/BoughtAuctions";
+import SoldAuctions from "./pages/SoldAuctions";
 export const Context = createContext();
 
 function App() {
@@ -63,6 +65,8 @@ function App() {
             <Route path="/transaction" element={<Transactions />} />
             <Route path="/payment/history" element={<PaymentHistory />} />
             <Route path="/payment" element={<Payment />} />
+            <Route path="/auctions/bought" element={<BoughtAuctions/>} />
+            <Route path="/auctions/sold" element={<SoldAuctions/>} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/auction/:id" element={<Auction />} />
