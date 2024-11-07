@@ -6,53 +6,53 @@ import Footer from "../components/footer";
 import gsap from "gsap";
 import { Context } from "../App";
 
-const AS = [
-    
-];
+const AS = [];
 
 export default function AuctionBought() {
   const [boughtAuctions, setBoughtAuctions] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const { user } = useContext(Context);
-  const [mockBoughtAuctions , Initialise ] = useState(AS);
-  const [filteredAuctions , setFilteredAuctions ] = useState([]);
+  const [mockBoughtAuctions, Initialise] = useState(AS);
+  const [filteredAuctions, setFilteredAuctions] = useState([]);
   useEffect(() => {
     document.title = "S&D - Bought Auctions";
     setTimeout(() => {
       setBoughtAuctions(mockBoughtAuctions);
     }, 500);
 
-    const fetchBoughtUser = async() =>  {
-        const res = await fetch(`/api/transaction/bought/user/${user.id}`, {
-            method: "GET",
-            headers: {
-            "Content-Type": "application/json",
-            },
-        });
-        const data = await res.json();
-        if (Array.isArray(data)) {
-            const newData = await Promise.all(
-              data.map(async (transaction) => {
-                const res2 = await fetch(`/api/images/auction/${transaction.auction.id}`);
-                if (res2.ok) {
-                  const imageData = await res2.json();
-                  if (imageData.length > 0) {
-                    return { ...transaction, auctionImageUrl: imageData[0].url };
-                  }
-                }
-                return transaction;
-              })
+    const fetchBoughtUser = async () => {
+      const res = await fetch(`/api/transaction/bought/user/${user.id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        const newData = await Promise.all(
+          data.map(async (transaction) => {
+            const res2 = await fetch(
+              `/api/images/auction/${transaction.auction.id}`
             );
-            Initialise(newData);
-            setBoughtAuctions(newData);
-            setFilteredAuctions(newData);
-            console.log(newData);
-        }
+            if (res2.ok) {
+              const imageData = await res2.json();
+              if (imageData.length > 0) {
+                return { ...transaction, auctionImageUrl: imageData[0].url };
+              }
+            }
+            return transaction;
+          })
+        );
+        Initialise(newData);
+        setBoughtAuctions(newData.reverse());
+        setFilteredAuctions(newData);
+        console.log(newData);
+      }
+    };
+    if (user.id) {
+      fetchBoughtUser();
     }
-    if(user.id){
-        fetchBoughtUser();
-    }
-  },[user]);
+  }, [user]);
 
   useEffect(() => {
     if (boughtAuctions.length > 0) {
@@ -64,14 +64,19 @@ export default function AuctionBought() {
     }
   }, [boughtAuctions]);
 
-  useEffect(()=>{
+  useEffect(() => {
     setFilteredAuctions(
-    boughtAuctions.filter( transaction =>
-        transaction.auction.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        transaction.auction.description.toLowerCase().includes(searchTerm.toLowerCase()))
+      boughtAuctions.filter(
+        (transaction) =>
+          transaction.auction.title
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          transaction.auction.description
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase())
+      )
     );
-  },[searchTerm]);
-
+  }, [searchTerm]);
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
@@ -97,7 +102,10 @@ export default function AuctionBought() {
 
         <div className="space-y-6">
           {filteredAuctions.map((transaction) => (
-            <Card key={transaction.auction.id} className="bg-gray-800 overflow-hidden auction-card">
+            <Card
+              key={transaction.auction.id}
+              className="bg-gray-800 overflow-hidden auction-card"
+            >
               <CardContent className="p-6">
                 <div className="flex flex-col md:flex-row">
                   <div className="md:w-1/3 mb-4 md:mb-0 md:mr-6">
@@ -123,7 +131,9 @@ export default function AuctionBought() {
                       </div>
                     </div>
                     <div className="bg-gray-700 p-4 rounded-lg">
-                      <h3 className="text-lg font-semibold mb-2 text-blue-400">Seller Information</h3>
+                      <h3 className="text-lg font-semibold mb-2 text-blue-400">
+                        Seller Information
+                      </h3>
                       <div className="flex items-center space-x-4">
                         <img
                           src={`/api/user/upload/avatar/${transaction.seller.imageUrl}`}
@@ -132,10 +142,14 @@ export default function AuctionBought() {
                         />
                         <div>
                           <p className="font-semibold text-gray-200">
-                            {transaction.auction.seller.firstname} {transaction.auction.seller.lastname}
+                            {transaction.auction.seller.firstname}{" "}
+                            {transaction.auction.seller.lastname}
                           </p>
                           <p className="text-sm text-gray-400">
-                            Member since {new Date(transaction.auction.seller.createdAt).toLocaleString()}
+                            Member since{" "}
+                            {new Date(
+                              transaction.auction.seller.createdAt
+                            ).toLocaleString()}
                           </p>
                         </div>
                       </div>

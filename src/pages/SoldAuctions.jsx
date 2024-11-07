@@ -45,7 +45,7 @@ export default function SoldAuctions() {
           })
         );
         setMockSoldAuctions(newData);
-        setSoldAuctions(newData);
+        setSoldAuctions(newData.reverse());
         setFilteredAuctions(newData);
         console.log(newData);
       }
@@ -183,7 +183,6 @@ export default function SoldAuctions() {
                         </div>
                       </div>
                     </div>
-                    
                   </div>
                 </div>
               </CardContent>
