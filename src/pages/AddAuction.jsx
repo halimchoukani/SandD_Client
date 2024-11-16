@@ -25,6 +25,7 @@ export default function AddAuction() {
     title: "",
     description: "",
     startPrice: "",
+    participationPrice: "",
     duration: "",
   });
 
@@ -70,6 +71,8 @@ export default function AddAuction() {
       newErrors.startPrice = "Valid starting price is required";
     if (formData.startPrice < 1)
       newErrors.startPrice = "Starting price must be at least $1.00";
+    if (!formData.participationPrice || isNaN(formData.startPrice))
+      newErrors.participationPrice = "Participation price is required";
     if (!formData.duration) newErrors.duration = "Duration is required";
 
     if (Object.keys(newErrors).length > 0) {
@@ -198,7 +201,7 @@ export default function AddAuction() {
                     htmlFor="startPrice"
                     className="block text-sm font-medium text-gray-300"
                   >
-                    Starting Price ($)
+                    Starting Price (TDN)
                   </label>
                   <Input
                     id="startPrice"
@@ -215,37 +218,55 @@ export default function AddAuction() {
                     </p>
                   )}
                 </div>
-
                 <div>
                   <label
-                    htmlFor="duration"
+                    htmlFor="paricipationPrice"
                     className="block text-sm font-medium text-gray-300"
                   >
-                    Auction Duration
+                    Participating Price (TDN)
                   </label>
-                  <Select
-                    id="duration"
-                    name="duration"
-                    value={formData.duration}
-                    onChange={(value) =>
-                      handleChange({
-                        target: {
-                          name: "duration",
-                          value: value.currentTarget.value,
-                        },
-                      })
-                    }
-                    options={durations}
+                  <Input
+                    id="participationPrice"
+                    name="participationPrice"
+                    type="number"
+                    value={formData.participationPrice}
+                    onChange={handleChange}
                     className="mt-1 bg-gray-800 border-gray-700 text-white"
+                    placeholder="0.00"
                   />
-                  {errors.duration && (
+                  {errors.participationPrice && (
                     <p className="mt-1 text-sm text-red-500">
-                      {errors.duration}
+                      {errors.participationPrice}
                     </p>
                   )}
                 </div>
               </div>
-
+              <div className="flex flex-col">
+                <label
+                  htmlFor="duration"
+                  className="block text-sm font-medium text-gray-300"
+                >
+                  Auction Duration
+                </label>
+                <Select
+                  id="duration"
+                  name="duration"
+                  value={formData.duration}
+                  onChange={(value) =>
+                    handleChange({
+                      target: {
+                        name: "duration",
+                        value: value.currentTarget.value,
+                      },
+                    })
+                  }
+                  options={durations}
+                  className="mt-1 bg-gray-800 border-gray-700 text-white"
+                />
+                {errors.duration && (
+                  <p className="mt-1 text-sm text-red-500">{errors.duration}</p>
+                )}
+              </div>
               <div>
                 <label
                   htmlFor="image"
