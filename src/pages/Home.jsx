@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Footer from "../components/footer";
 import Header from "../components/header";
 import { Button } from "../components/ui/index";
@@ -11,10 +11,48 @@ import {
 } from "../components/ui/index";
 import Hero from "../components/hero";
 import { Link } from "react-router-dom";
+import { Clock } from "lucide-react";
 
 export default function Home() {
+  const [auctions, setAuctions] = useState([]);
+
+  const getAuctions = async () => {
+    try {
+      const res = await fetch(`/api/auction/all`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+
+      if (Array.isArray(data)) {
+        const newData = await Promise.all(
+          data.map(async (auction) => {
+            const res2 = await fetch(`/api/images/auction/${auction.id}`);
+            if (res2.ok) {
+              const imageData = await res2.json();
+              if (imageData.length > 0) {
+                return { ...auction, url: imageData[0].url };
+              }
+            }
+            return auction;
+          })
+        );
+
+        // Check if the data is an array
+        setAuctions(newData.reverse());
+      } else {
+        console.error("Invalid response: auctions is not an array");
+        setAuctions([]); // Reset auctions to an empty array if response is invalid
+      }
+    } catch (error) {
+      console.error("Error fetching auctions:", error);
+    }
+  };
   useEffect(() => {
     document.title = "S&D - Home"; // Change the page title
+    getAuctions();
   }, []);
   return (
     <div className="flex flex-col min-h-screen bg-gray-900 text-gray-100">
@@ -27,35 +65,39 @@ export default function Home() {
               Featured Auctions
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <Card
-                  key={i}
-                  className="overflow-hidden bg-gray-800 border-gray-700"
-                >
-                  <CardHeader className="p-0">
-                    <img
-                      src={`https://www.bobswatches.com/rolex-blog/wp-content/uploads/2020/12/Rolex_Submariner_5513_5D3_9227-2-1.jpg`}
-                      alt={`Featured auction ${i}`}
-                      className="object-cover w-full h-48"
-                      width={400}
-                      height={200}
-                    />
-                  </CardHeader>
-                  <CardContent className="p-4">
-                    <CardTitle className="text-xl mb-2 text-blue-400">
-                      Vintage Watch Collection
-                    </CardTitle>
-                    <p className="text-sm text-gray-400 mb-2">
-                      Current Bid: $1,500
-                    </p>
-                    <p className="text-sm text-gray-300">Ends in 2 days</p>
-                  </CardContent>
-                  <CardFooter className="p-4">
-                    <Button className="w-full bg-blue-500 hover:bg-blue-600">
-                      Place Bid
+              {auctions.map((auction) => (
+                <Card key={auction.id} className="bg-gray-800 overflow-hidden card">
+                <img
+                  src={`/api/images/upload/auction/${auction.url}`}
+                  alt={auction.title}
+                  className="w-full h-48 object-cover"
+                />
+                <CardContent className="p-4">
+                  <h2 className="text-xl font-semibold mb-2 text-white">
+                    {auction.title}
+                  </h2>
+                  <p className="text-gray-400 mb-2">{auction.category}</p>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-bold text-green-400 overflow-hidden text-ellipsis whitespace-nowrap">
+                      $
+                      {auction.startPrice
+                        ? auction.currentPrice.toLocaleString()
+                        : "N/A"}
+                    </span>
+                    <span className="text-sm text-gray-400 flex items-center">
+                      <Clock className="h-4 w-4 mr-1" />
+                      {new Date(auction.endTime).toLocaleString()}
+                    </span>
+                  </div>
+                </CardContent>
+                <CardFooter>
+                  <Link to={`/auction/${auction.id}`} className="w-full">
+                    <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                      View Auction
                     </Button>
-                  </CardFooter>
-                </Card>
+                  </Link>
+                </CardFooter>
+              </Card>
               ))}
             </div>
             <div className="mt-12 text-center">

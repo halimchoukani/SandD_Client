@@ -11,6 +11,11 @@ function Header() {
   const notifRef = useRef(null);
   const buttonRef = useRef(null); // Ref for the Bell icon
   const { isSignedIn, setIsSignedIn, user, setUser } = useContext(Context);
+
+
+  const holdMobileMenu = ()=>{
+    document.getElementById("mobile-menu").classList.toggle("hidden");
+  }
   const getBids = async () => {
     try {
       const res = await fetch(`/api/bids/all`, {
@@ -221,10 +226,33 @@ function Header() {
             variant="ghost"
             size="icon"
             className="md:hidden text-gray-300 hover:text-white"
+            onClick={holdMobileMenu}
           >
             <Menu className="h-5 w-5" />
             <span className="sr-only">Menu</span>
           </Button>
+          <nav className="w-[60vw] bg-gray-900 absolute top-[110%] right-4 flex gap-5 text-center flex-col p-5 rounded-md overflow-hidden md:hidden" id="mobile-menu">
+            <Link
+              className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
+              to="/auctions"
+            >
+              Auctions
+            </Link>
+            <Link
+              className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
+              to="/sell"
+              
+            >
+              Sell
+            </Link>
+            <Link
+              className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
+              to="/about"
+              
+            >
+              About
+            </Link>
+          </nav>
         </div>
       </div>
     </header>
