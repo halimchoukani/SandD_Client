@@ -207,7 +207,7 @@ export default function AddAuction() {
                     htmlFor="startPrice"
                     className="block text-sm font-medium text-gray-300"
                   >
-                    Starting Price (TDN)
+                    Starting Price (TND)
                   </label>
                   <Input
                     id="startPrice"
@@ -229,7 +229,7 @@ export default function AddAuction() {
                     htmlFor="paricipationPrice"
                     className="block text-sm font-medium text-gray-300"
                   >
-                    Participating Price (TDN)
+                    Participating Price (TND)
                   </label>
                   <Input
                     id="participationPrice"
