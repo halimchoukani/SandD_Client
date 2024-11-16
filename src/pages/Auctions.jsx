@@ -111,14 +111,23 @@ export default function Auctions() {
                 <p className="text-gray-400 mb-2">{auction.category}</p>
                 <div className="flex justify-between items-center mb-2">
                   <span className="font-bold text-green-400 overflow-hidden text-ellipsis whitespace-nowrap">
-                    $
                     {auction.startPrice
-                      ? auction.currentPrice.toLocaleString()
+                      ? auction.currentPrice.toLocaleString() + " TND"
                       : "N/A"}
                   </span>
                   <span className="text-sm text-gray-400 flex items-center">
                     <Clock className="h-4 w-4 mr-1" />
                     {new Date(auction.endTime).toLocaleString()}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className=" text-white overflow-hidden text-ellipsis whitespace-nowrap">
+                    Participation
+                  </span>
+                  <span className="font-bold text-green-400 overflow-hidden text-ellipsis whitespace-nowrap">
+                    {auction.participationPrice > 0
+                      ? auction.participationPrice.toLocaleString() + "TND"
+                      : "Free"}
                   </span>
                 </div>
               </CardContent>

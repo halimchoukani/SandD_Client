@@ -13,6 +13,7 @@ export default function Auction() {
   const [Product, setProduct] = useState(null);
   const [bidAmount, setBidAmount] = useState("");
   const [currentBid, setCurrentBid] = useState(1000);
+  const [participationPrice, setParticipationPrice] = useState(0);
   const [auctionEnd, setAuctionEnd] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -22,7 +23,7 @@ export default function Auction() {
     document.title = `S&D - Auction ${id}`;
     getProduct();
   }, [user, id]);
-
+  const context = useContext(Context);
   const getProduct = async () => {
     try {
       const res = await fetch(`/api/auction/${id}`);
@@ -31,6 +32,7 @@ export default function Auction() {
         if (typeof data === "object") {
           setProduct(data);
           setCurrentBid(data.currentPrice);
+          setParticipationPrice(data.participationPrice);
           setAuctionEnd(new Date(data.auctionEnd));
           const res2 = await fetch(`/api/images/auction/${id}`);
           if (res2.ok) {
@@ -183,14 +185,27 @@ export default function Auction() {
                       Current Bid:
                     </span>
                     <span className="text-2xl font-bold text-green-400 overflow-hidden text-ellipsis whitespace-nowrap">
-                      ${currentBid.toLocaleString()}
+                      {currentBid.toLocaleString() + " TND"}
                     </span>
                   </div>
                   <div className="flex items-center text-sm text-gray-400">
                     {getRemainingTime(Product.endTime)}
                   </div>
                 </div>
+                <div className="bg-gray-700 p-4 rounded-lg mb-6">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-semibold text-gray-300">
+                      Participation Price
+                    </span>
+                    <span className="text-2xl font-bold text-green-400 overflow-hidden text-ellipsis whitespace-nowrap">
+                      {participationPrice > 0
+                        ? participationPrice.toLocaleString() + "TND"
+                        : "Free"}
+                    </span>
+                  </div>
+                </div>
                 {user &&
+                  context.isSignedIn &&
                   user.id !== Product.seller.id &&
                   new Date(Product.endTime) > new Date() && (
                     <form

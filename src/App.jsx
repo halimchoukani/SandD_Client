@@ -65,8 +65,8 @@ function App() {
             <Route path="/transaction" element={<Transactions />} />
             <Route path="/payment/history" element={<PaymentHistory />} />
             <Route path="/payment" element={<Payment />} />
-            <Route path="/auctions/bought" element={<BoughtAuctions/>} />
-            <Route path="/auctions/sold" element={<SoldAuctions/>} />
+            <Route path="/auctions/bought" element={<BoughtAuctions />} />
+            <Route path="/auctions/sold" element={<SoldAuctions />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/auction/:id" element={<Auction />} />
