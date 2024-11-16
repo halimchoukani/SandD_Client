@@ -50,7 +50,11 @@ function App() {
 
   if (loading)
     return <div className="w-full h-full text-3xl text-white">Loading...</div>;
-  if (fetchError) return <div>Error loading user data.</div>;
+  if (fetchError) {
+    localStorage.removeItem("token");
+    setIsSignedIn(false);
+    return <div>Error loading user data.</div>;
+  }
   return (
     <Context.Provider value={{ isSignedIn, setIsSignedIn, user, setUser }}>
       <Router>

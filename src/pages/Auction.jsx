@@ -6,6 +6,7 @@ import Footer from "../components/footer";
 import { useParams, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { Context } from "../App";
+import useGetUser from "./hooks/useGetUser";
 
 export default function Auction() {
   const { id } = useParams();
@@ -74,7 +75,8 @@ export default function Auction() {
 
       if (res.ok) {
         setCurrentBid(parseFloat(bidAmount));
-        setUser({ ...user, amount: user.amount - parseFloat(bidAmount) });
+        const { user: userData, loading, error: fetchError } = useGetUser();
+        setUser(userData);
         setBidAmount("");
         alert("Bid placed successfully!");
       } else {
@@ -82,6 +84,8 @@ export default function Auction() {
         alert("Error: " + error.error);
       }
     } catch (error) {
+      console.log();
+
       console.error("Error adding bid:", error);
     }
   };
