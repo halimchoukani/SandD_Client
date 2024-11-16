@@ -124,6 +124,7 @@ export default function AddAuction() {
         title: "",
         description: "",
         startPrice: "",
+        participationPrice: "",
         duration: "",
         image: null,
       });
