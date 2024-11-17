@@ -1,5 +1,3 @@
-
-
 export default function Footer() {
   return (
     <footer className="w-full py-6 bg-[#111827] text-gray-300">

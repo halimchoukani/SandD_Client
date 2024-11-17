@@ -150,9 +150,6 @@ export default function Auctions() {
           </div>
         )}
       </main>
-
-      {/* Footer */}
-      <Footer />
     </div>
   );
 }
