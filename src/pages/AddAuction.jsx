@@ -71,7 +71,7 @@ export default function AddAuction() {
       newErrors.startPrice = "Valid starting price is required";
     if (formData.startPrice < 1)
       newErrors.startPrice = "Starting price must be at least $1.00";
-    if (!formData.participationPrice || isNaN(formData.startPrice))
+    if (!formData.participationPrice || isNaN(formData.participationPrice))
       newErrors.participationPrice = "Participation price is required";
     if (
       formData.participationPrice > formData.startPrice ||
