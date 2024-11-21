@@ -9,6 +9,7 @@ import { Context } from "../App";
 import useGetUser from "./hooks/useGetUser";
 
 export default function Auction() {
+  const { user: userData, loading, error: fetchError } = useGetUser();
   const { id } = useParams();
   const navigate = useNavigate();
   const [Product, setProduct] = useState(null);
@@ -75,7 +76,6 @@ export default function Auction() {
 
       if (res.ok) {
         setCurrentBid(parseFloat(bidAmount));
-        const { user: userData, loading, error: fetchError } = useGetUser();
         setUser(userData);
         setBidAmount("");
         alert("Bid placed successfully!");
