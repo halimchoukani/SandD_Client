@@ -57,7 +57,6 @@ export default function Auction() {
 
   const addBid = async () => {
     if (parseFloat(bidAmount) <= currentBid) {
-      alert("Bid must be higher than the current bid.");
       return;
     }
 
@@ -78,10 +77,8 @@ export default function Auction() {
         setCurrentBid(parseFloat(bidAmount));
         setUser(userData);
         setBidAmount("");
-        alert("Bid placed successfully!");
       } else {
         const error = await res.json();
-        alert("Error: " + error.error);
       }
     } catch (error) {
       console.log();

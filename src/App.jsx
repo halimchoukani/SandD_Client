@@ -30,6 +30,7 @@ import AdminTransactions from "./pages/AdminTransactions";
 import TransporterInterface from "./pages/TransporterInterface";
 import ProtectedRoutesAdmin from "./utils/protectedroutesAdmin";
 import ProtectedRoutesTransporter from "./utils/protectedroutesTransporter";
+import TransporterInterfaceMyTransactions from "./pages/TransporterInterfaceMyTransactions";
 
 export const Context = createContext();
 
@@ -97,7 +98,8 @@ function App() {
             <Route
               element={<ProtectedRoutesTransporter role={userData?.role} />}
             >
-              <Route path="/transporter" element={<TransporterInterface />} />
+              <Route path="/transporter/all" element={<TransporterInterface />} />
+              <Route path="/transporter" element={<TransporterInterfaceMyTransactions />} />
             </Route>
           </Route>
           <Route path="/login" element={<Login />} />

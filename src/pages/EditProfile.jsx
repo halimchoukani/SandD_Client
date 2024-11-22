@@ -49,7 +49,6 @@ export default function EditProfile() {
       return await res.json();
     } catch (error) {
       console.error(error);
-      alert("Error updating profile. Please try again.");
     }
   };
 
@@ -91,7 +90,6 @@ export default function EditProfile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (newPassword && newPassword !== confirmPassword) {
-      alert("Passwords do not match!");
       return;
     }
     const updatedUser = await updateUser(newUser);

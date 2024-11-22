@@ -125,24 +125,66 @@ function Header() {
         </Link>
 
         <nav className="hidden md:flex gap-10">
-          <Link
-            className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
-            to="/auctions"
-          >
-            Auctions
-          </Link>
-          <Link
-            className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
-            to="/sell"
-          >
-            Sell
-          </Link>
-          <Link
-            className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
-            to="/about"
-          >
-            About
-          </Link>
+          {user.role === 'USER' && (
+            <>
+              <Link
+                className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
+                to="/auctions"
+              >
+                Auctions
+              </Link>
+              <Link
+                className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
+                to="/sell"
+              >
+                Sell
+              </Link>
+              <Link
+                className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
+                to="/about"
+              >
+                About
+              </Link>
+            </>
+          )}
+          {user.role === 'TRANSPORTER' && (
+            <>
+              <Link
+                className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
+                to="/transporter/all"
+              >
+                All
+              </Link>
+              <Link
+                className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
+                to="/transporter"
+              >
+                My Transactions
+              </Link>
+            </>
+          )}
+          {user.role === 'ADMIN' && (
+            <>
+              <Link
+                className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
+                to="/admin"
+              >
+                User List
+              </Link>
+              <Link
+                className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
+                to="/admin/transporter/add"
+              >
+                Add Transporter
+              </Link>
+              <Link
+                className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
+                to="/admin/transactions"
+              >
+                Transactions
+              </Link>
+            </>
+          )}
         </nav>
 
         <div className="flex items-center gap-3 ">

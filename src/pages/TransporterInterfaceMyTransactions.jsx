@@ -9,13 +9,14 @@ import {
   Badge,
 } from "../components/ui";
 import Header from "../components/header";
-import useGetTransactions from "./hooks/useGetTransactions";
 import { Context } from "../App";
+import useGetMyTransactions from "./hooks/useGetMyTransactions";
 
-const TransporterInterface = () => {
+const TransporterInterfaceMyTransactions = () => {
   const { user } = useContext(Context);
-  const { transactions, setTransactions, loading, error } =
-    useGetTransactions();
+  const { transactions, setTransactions, loading, error } = useGetMyTransactions();
+  console.log(transactions);
+  
   const [actionLoading, setActionLoading] = useState(null); // Track which transaction is being acted upon
 
   const createTransaction = async (id) => {
@@ -102,7 +103,7 @@ const TransporterInterface = () => {
           <CardContent>
             <div>
               <h3 className="text-xl font-semibold mb-4">
-                Available Transactions
+                My Transactions
               </h3>
               {loading && <p>Loading transactions...</p>}
               {error && <p className="text-red-400">{error}</p>}
@@ -210,4 +211,4 @@ const TransporterInterface = () => {
   );
 };
 
-export default TransporterInterface;
+export default TransporterInterfaceMyTransactions;
