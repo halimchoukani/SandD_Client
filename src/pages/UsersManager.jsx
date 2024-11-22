@@ -38,7 +38,7 @@ export default function UserManager() {
   const fetchUsers = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/user/get/all`);
+      const response = await fetch(`/api/user/get/all/exceptadmins`);
       const data = await response.json();
       setUsers(data);
     } catch (error) {
