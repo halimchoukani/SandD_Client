@@ -22,8 +22,7 @@ const TransporterInterfaceMyTransactions = () => {
   const createTransaction = async (id) => {
     setActionLoading(id);
     try {
-      const response = await fetch(
-        `/api/transaction/${id}/started/${user.id}`,
+      const response = await fetch(`/api/transaction/${id}/started/${user.id}`,
         {
           method: "PUT",
         }

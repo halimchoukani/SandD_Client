@@ -11,6 +11,8 @@ import {
 import { Gavel } from "lucide-react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { Context } from "../App";
+import Footer from "../components/footer";
+import Header from "../components/header";
 
 export default function AddTransporter() {
   const navigate = useNavigate();
@@ -127,6 +129,8 @@ export default function AddTransporter() {
   };
 
   return (
+    <div className="min-h-screen bg-gray-950 text-gray-100">
+      <Header />
     <div
       className={`min-h-screen flex items-center justify-center bg-[#111827]`}
     >
@@ -310,6 +314,8 @@ export default function AddTransporter() {
           </CardContent>
         </form>
       </Card>
+    </div>
+    <Footer />
     </div>
   );
 }
