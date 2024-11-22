@@ -24,6 +24,9 @@ import Payment from "./pages/Payment";
 import PaymentHistory from "./pages/PaymentHistory";
 import BoughtAuctions from "./pages/BoughtAuctions";
 import SoldAuctions from "./pages/SoldAuctions";
+import UsersManager from "./pages/UsersManager";
+import AddTransporter from "./pages/AddTransporter";
+import AdminTransactions from "./pages/AdminTransactions";
 export const Context = createContext();
 
 function App() {
@@ -71,6 +74,9 @@ function App() {
             <Route path="/payment" element={<Payment />} />
             <Route path="/auctions/bought" element={<BoughtAuctions />} />
             <Route path="/auctions/sold" element={<SoldAuctions />} />
+            <Route path="/admin" element={<UsersManager/>} />
+            <Route path="/admin/transporter/add" element={<AddTransporter/>} />
+            <Route path="/admin/transactions" element={<AdminTransactions/>} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/auction/:id" element={<Auction />} />
