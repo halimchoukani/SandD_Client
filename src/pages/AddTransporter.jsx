@@ -38,7 +38,7 @@ export default function AddTransporter() {
   useEffect(() => {
     document.title = "S&D - SignUp"; // Change the page title
     if (isSignedIn) {
-      navigate("/");
+      //navigate("/");
     }
   }, [isSignedIn, navigate]);
   const closeAlert = () => {
