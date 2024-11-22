@@ -28,6 +28,9 @@ import UsersManager from "./pages/UsersManager";
 import AddTransporter from "./pages/AddTransporter";
 import AdminTransactions from "./pages/AdminTransactions";
 import TransporterInterface from "./pages/TransporterInterface";
+import ProtectedRoutesAdmin from "./utils/protectedroutesAdmin";
+import ProtectedRoutesTransporter from "./utils/protectedroutesTransporter";
+
 export const Context = createContext();
 
 function App() {
@@ -41,10 +44,11 @@ function App() {
   }, []);
 
   const [isSignedIn, setIsSignedIn] = useState(false);
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState({}); // Default role as "guest"
   const { user: userData, loading, error: fetchError } = useGetUser();
+  console.log("User Data:", userData);
 
-  // Set the user data and loading state when userData changes
+  // Update user data and signed-in state
   useEffect(() => {
     if (userData) {
       setUser(userData);
@@ -54,11 +58,13 @@ function App() {
 
   if (loading)
     return <div className="w-full h-full text-3xl text-white">Loading...</div>;
+
   if (fetchError) {
     localStorage.removeItem("token");
     setIsSignedIn(false);
     return <div>Error loading user data.</div>;
   }
+
   return (
     <Context.Provider value={{ isSignedIn, setIsSignedIn, user, setUser }}>
       <Router>
@@ -67,7 +73,6 @@ function App() {
           <Route element={<ProtectedRoutes />}>
             <Route path="/profile/edit" element={<EditProfile />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/transporter" element={<TransporterInterface />} />
             <Route path="/sell" element={<AddAuction />} />
             <Route path="/myauctions" element={<MyAuctions />} />
             <Route path="/mybids" element={<MyBids />} />
@@ -76,9 +81,24 @@ function App() {
             <Route path="/payment" element={<Payment />} />
             <Route path="/auctions/bought" element={<BoughtAuctions />} />
             <Route path="/auctions/sold" element={<SoldAuctions />} />
-            <Route path="/admin" element={<UsersManager/>} />
-            <Route path="/admin/transporter/add" element={<AddTransporter/>} />
-            <Route path="/admin/transactions" element={<AdminTransactions/>} />
+            {/* Admin Routes */}
+            <Route element={<ProtectedRoutesAdmin role={userData?.role} />}>
+              <Route path="/admin" element={<UsersManager />} />
+              <Route
+                path="/admin/transporter/add"
+                element={<AddTransporter />}
+              />
+              <Route
+                path="/admin/transactions"
+                element={<AdminTransactions />}
+              />
+            </Route>
+            {/* Transporter Routes */}
+            <Route
+              element={<ProtectedRoutesTransporter role={userData?.role} />}
+            >
+              <Route path="/transporter" element={<TransporterInterface />} />
+            </Route>
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/auction/:id" element={<Auction />} />
