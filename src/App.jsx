@@ -27,6 +27,7 @@ import SoldAuctions from "./pages/SoldAuctions";
 import UsersManager from "./pages/UsersManager";
 import AddTransporter from "./pages/AddTransporter";
 import AdminTransactions from "./pages/AdminTransactions";
+import TransporterInterface from "./pages/TransporterInterface";
 export const Context = createContext();
 
 function App() {
@@ -66,6 +67,7 @@ function App() {
           <Route element={<ProtectedRoutes />}>
             <Route path="/profile/edit" element={<EditProfile />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/transporter" element={<TransporterInterface />} />
             <Route path="/sell" element={<AddAuction />} />
             <Route path="/myauctions" element={<MyAuctions />} />
             <Route path="/mybids" element={<MyBids />} />
