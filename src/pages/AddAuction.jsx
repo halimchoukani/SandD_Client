@@ -25,6 +25,7 @@ export default function AddAuction() {
     title: "",
     description: "",
     startPrice: "",
+    weight: "",
     participationPrice: "",
     duration: "",
   });
@@ -131,6 +132,7 @@ export default function AddAuction() {
         startPrice: "",
         participationPrice: "",
         duration: "",
+        weight: "",
         image: null,
       });
       setErrors({});
@@ -200,7 +202,26 @@ export default function AddAuction() {
                   </p>
                 )}
               </div>
-
+              <div>
+                <label
+                  htmlFor="weight"
+                  className="block text-sm font-medium text-gray-300"
+                >
+                  Weight (KG)
+                </label>
+                <Input
+                  id="weight"
+                  name="weight"
+                  type="number"
+                  value={formData.weight}
+                  onChange={handleChange}
+                  className="mt-1 bg-gray-800 border-gray-700 text-white"
+                  placeholder="0.00"
+                />
+                {errors.weight && (
+                  <p className="mt-1 text-sm text-red-500">{errors.weight}</p>
+                )}
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label
