@@ -14,15 +14,17 @@ import useGetMyTransactions from "./hooks/useGetMyTransactions";
 
 const TransporterInterfaceMyTransactions = () => {
   const { user } = useContext(Context);
-  const { transactions, setTransactions, loading, error } = useGetMyTransactions();
+  const { transactions, setTransactions, loading, error } =
+    useGetMyTransactions();
   console.log(transactions);
-  
+
   const [actionLoading, setActionLoading] = useState(null); // Track which transaction is being acted upon
 
   const createTransaction = async (id) => {
     setActionLoading(id);
     try {
-      const response = await fetch(`/api/transaction/${id}/started/${user.id}`,
+      const response = await fetch(
+        `/api/transaction/${id}/started/${user.id}`,
         {
           method: "PUT",
         }
@@ -45,26 +47,7 @@ const TransporterInterfaceMyTransactions = () => {
   };
 
   const cancelTransaction = async (id) => {
-    setActionLoading(id);
-    try {
-      const response = await fetch(`/api/transaction/cancel/${id}`, {
-        method: "PUT",
-      });
-      if (!response.ok) throw new Error("Failed to cancel transaction");
-      const data = await response.json();
-      console.log(data);
-      setTransactions((prevTransactions) =>
-        prevTransactions.map((transaction) =>
-          transaction.id === id
-            ? { ...transaction, status: "NotStarted" }
-            : transaction
-        )
-      );
-    } catch (err) {
-      console.error("Error canceling transaction:", err);
-    } finally {
-      setActionLoading(null);
-    }
+    console.log(id);
   };
 
   const getStatusBadge = (status) => {
@@ -101,9 +84,7 @@ const TransporterInterfaceMyTransactions = () => {
           </CardHeader>
           <CardContent>
             <div>
-              <h3 className="text-xl font-semibold mb-4">
-                My Transactions
-              </h3>
+              <h3 className="text-xl font-semibold mb-4">My Transactions</h3>
               {loading && <p>Loading transactions...</p>}
               {error && <p className="text-red-400">{error}</p>}
               {!loading && !error && transactions && (

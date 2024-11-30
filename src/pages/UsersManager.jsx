@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Search, Edit, Trash2, UserPlus, UnlockIcon, LockIcon } from "lucide-react";
+import {
+  Search,
+  Edit,
+  Trash2,
+  UserPlus,
+  UnlockIcon,
+  LockIcon,
+} from "lucide-react";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import { User, Truck, Phone, MapPin, Calendar, DollarSign } from "lucide-react";
@@ -23,12 +30,17 @@ export default function UserManager() {
         body: d,
       });
       if (response.ok) {
-        setUsers(prevUsers => prevUsers.map(user => {
-          if (user.id === userId) {
-            return { ...user, status: user.status === 'ACTIVE' ? 'BLOCKED' : 'ACTIVE' };
-          }
-          return user;
-        }));
+        setUsers((prevUsers) =>
+          prevUsers.map((user) => {
+            if (user.id === userId) {
+              return {
+                ...user,
+                status: user.status === "ACTIVE" ? "BLOCKED" : "ACTIVE",
+              };
+            }
+            return user;
+          })
+        );
       }
     } catch (error) {
       console.error("Error changing user status:", error);
@@ -55,7 +67,13 @@ export default function UserManager() {
   const formatDate = (dateString) => {
     if (!dateString) return "Invalid date";
     const date = new Date(dateString);
-    return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
+    return `${String(date.getDate()).padStart(2, "0")}/${String(
+      date.getMonth() + 1
+    ).padStart(2, "0")}/${date.getFullYear()} ${String(
+      date.getHours()
+    ).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}:${String(
+      date.getSeconds()
+    ).padStart(2, "0")}`;
   };
 
   const filteredUsers = users.filter(
@@ -153,12 +171,12 @@ export default function UserManager() {
                         <button
                           onClick={() => changeStatus(user.id)}
                           className={`flex items-center px-3 py-1 rounded-full text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
-                            user.status === 'ACTIVE'
-                              ? 'bg-green-500 hover:bg-green-600 text-white'
-                              : 'bg-red-500 hover:bg-red-600 text-white'
+                            user.status === "ACTIVE"
+                              ? "bg-green-500 hover:bg-green-600 text-white"
+                              : "bg-red-500 hover:bg-red-600 text-white"
                           }`}
                         >
-                          {user.status === 'ACTIVE' ? (
+                          {user.status === "ACTIVE" ? (
                             <UnlockIcon className="w-4 h-4 mr-1" />
                           ) : (
                             <LockIcon className="w-4 h-4 mr-1" />
@@ -178,4 +196,3 @@ export default function UserManager() {
     </div>
   );
 }
-

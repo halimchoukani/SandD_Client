@@ -45,26 +45,7 @@ const TransporterInterface = () => {
   };
 
   const cancelTransaction = async (id) => {
-    setActionLoading(id);
-    try {
-      const response = await fetch(`/api/transaction/cancel/${id}`, {
-        method: "PUT",
-      });
-      if (!response.ok) throw new Error("Failed to cancel transaction");
-      const data = await response.json();
-      console.log(data);
-      setTransactions((prevTransactions) =>
-        prevTransactions.map((transaction) =>
-          transaction.id === id
-            ? { ...transaction, status: "NotStarted" }
-            : transaction
-        )
-      );
-    } catch (err) {
-      console.error("Error canceling transaction:", err);
-    } finally {
-      setActionLoading(null);
-    }
+    console.log(id);
   };
 
   const getStatusBadge = (status) => {
