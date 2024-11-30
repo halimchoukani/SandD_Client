@@ -44,8 +44,27 @@ const TransporterInterface = () => {
     }
   };
 
-  const cancelTransaction = async (id) => {
-    console.log(id);
+  const deliverTransaction = async (id) => {
+    setActionLoading(id);
+    try {
+      const response = await fetch(`/api/transaction/delivered/${id}`, {
+        method: "PUT",
+      });
+      if (!response.ok) throw new Error("Failed to deliver transaction");
+      const data = await response.json();
+      console.log(data);
+      setTransactions((prevTransactions) =>
+        prevTransactions.map((transaction) =>
+          transaction.id === id
+            ? { ...transaction, status: "DELIVERED" }
+            : transaction
+        )
+      );
+    } catch (err) {
+      console.error("Error finishing transaction:", err);
+    } finally {
+      setActionLoading(null);
+    }
   };
 
   const getStatusBadge = (status) => {
@@ -163,16 +182,16 @@ const TransporterInterface = () => {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="text-red-400 hover:text-red-300"
+                                className="text-green-400 hover:text-green-300"
                                 onClick={() =>
-                                  cancelTransaction(transaction.id)
+                                  deliverTransaction(transaction.id)
                                 } // Use function reference
                                 disabled={actionLoading === transaction.id} // Disable button when action is in progress
                               >
                                 {actionLoading === transaction.id ? (
                                   <Loader className="h-8 w-8 animate-spin" />
                                 ) : (
-                                  <X className="h-8 w-8" />
+                                  <p>Done</p>
                                 )}
                               </Button>
                             )}
