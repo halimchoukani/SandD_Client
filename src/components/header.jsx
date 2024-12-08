@@ -10,12 +10,11 @@ function Header() {
   const [bids, setBids] = useState([]);
   const notifRef = useRef(null);
   const buttonRef = useRef(null); // Ref for the Bell icon
-  const { isSignedIn, setIsSignedIn, user, setUser } = useContext(Context);
+  const { isSignedIn, setIsSignedIn, user } = useContext(Context);
 
-
-  const holdMobileMenu = ()=>{
+  const holdMobileMenu = () => {
     document.getElementById("mobile-menu").classList.toggle("hidden");
-  }
+  };
   const getBids = async () => {
     try {
       const res = await fetch(`/api/bids/all`, {
@@ -125,78 +124,86 @@ function Header() {
         </Link>
 
         <nav className="hidden md:flex gap-10">
-          {user.role === 'USER' && (
-            <>
-              <Link
-                className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
-                to="/auctions"
-              >
-                Auctions
-              </Link>
-              <Link
-                className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
-                to="/sell"
-              >
-                Sell
-              </Link>
-              <Link
-                className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
-                to="/about"
-              >
-                About
-              </Link>
-            </>
-          )}
-          {user.role === 'TRANSPORTER' && (
-            <>
-              <Link
-                className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
-                to="/transporter/all"
-              >
-                All
-              </Link>
-              <Link
-                className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
-                to="/transporter"
-              >
-                My Transactions
-              </Link>
-            </>
-          )}
-          {user.role === 'ADMIN' && (
-            <>
-              <Link
-                className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
-                to="/admin"
-              >
-                User List
-              </Link>
-              <Link
-                className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
-                to="/admin/transporter/add"
-              >
-                Add Transporter
-              </Link>
-              <Link
-                className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
-                to="/admin/transactions"
-              >
-                Transactions
-              </Link>
-            </>
-          )}
+          {(() => {
+            if (user && user.role === "ADMIN") {
+              return (
+                <>
+                  <Link
+                    className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
+                    to="/admin"
+                  >
+                    User List
+                  </Link>
+                  <Link
+                    className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
+                    to="/admin/transporter/add"
+                  >
+                    Add Transporter
+                  </Link>
+                  <Link
+                    className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
+                    to="/admin/transactions"
+                  >
+                    Transactions
+                  </Link>
+                </>
+              );
+            } else if (user && user.role === "TRANSPORTER") {
+              return (
+                <>
+                  <Link
+                    className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
+                    to="/transporter/all"
+                  >
+                    All
+                  </Link>
+                  <Link
+                    className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
+                    to="/transporter"
+                  >
+                    My Transactions
+                  </Link>
+                </>
+              );
+            } else {
+              return (
+                <>
+                  <Link
+                    className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
+                    to="/auctions"
+                  >
+                    Auctions
+                  </Link>
+                  <Link
+                    className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
+                    to="/sell"
+                  >
+                    Sell
+                  </Link>
+                  <Link
+                    className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
+                    to="/about"
+                  >
+                    About
+                  </Link>
+                </>
+              );
+            }
+          })()}
         </nav>
 
         <div className="flex items-center gap-3 ">
-
-          { isSignedIn && user && (
-            <Link to="/transaction" className="relative text-gray-900 dark:text-gray-400 hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700 rounded-lg py-2 px-3 flex items-center justify-center bg-white border border-gray-200">
-                <span className="inline-flex items-center">
+          {isSignedIn && user && (
+            <Link
+              to="/transaction"
+              className="relative text-gray-900 dark:text-gray-400 hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700 rounded-lg py-2 px-3 flex items-center justify-center bg-white border border-gray-200"
+            >
+              <span className="inline-flex items-center">
                 <Landmark size={20} />
-                  <span className="text-xs font-semibold">{user.amount} TND</span>
-                </span>
+                <span className="text-xs font-semibold">{user.amount} TND</span>
+              </span>
             </Link>
-            )}
+          )}
           <Button
             ref={buttonRef} // Ref for the Bell icon button
             variant="ghost"
@@ -221,7 +228,7 @@ function Header() {
                       <li className="notifications-list hover:bg-gray-800 p-2 rounded-md">
                         <div className="flex flex-row justify-between items-start">
                           <img
-                            src={`/api/user/upload/avatar/${bid.buyer.imageUrl}`}
+                            src={bid.buyer.imageUrl || `/default-avatar.png`}
                             className="rounded-full w-[40px] h-[40px]"
                             alt={`${bid.buyer.firstname} ${bid.buyer.lastname}`}
                           />
@@ -253,7 +260,7 @@ function Header() {
             >
               {user && user.imageUrl ? (
                 <img
-                  src={`/api/user/upload/avatar/${user.imageUrl}`}
+                  src={user.imageUrl || `/default-avatar.png`}
                   alt={user.firstname}
                   className="w-6 h-6 rounded-full"
                 />
@@ -273,7 +280,10 @@ function Header() {
             <Menu className="h-5 w-5" />
             <span className="sr-only">Menu</span>
           </Button>
-          <nav className="w-[60vw] bg-gray-900 absolute top-[110%] right-4 flex gap-5 text-center flex-col p-5 rounded-md overflow-hidden md:hidden" id="mobile-menu">
+          <nav
+            className="w-[60vw] bg-gray-900 absolute top-[110%] right-4 flex gap-5 text-center flex-col p-5 rounded-md overflow-hidden md:hidden"
+            id="mobile-menu"
+          >
             <Link
               className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
               to="/auctions"
@@ -283,14 +293,12 @@ function Header() {
             <Link
               className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
               to="/sell"
-              
             >
               Sell
             </Link>
             <Link
               className="text-base font-medium text-white hover:text-blue-400 hover:underline underline-offset-4"
               to="/about"
-              
             >
               About
             </Link>

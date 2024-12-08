@@ -142,7 +142,9 @@ export default function SoldAuctions() {
                       </h3>
                       <div className="flex items-center space-x-4">
                         <img
-                          src={`/api/user/upload/avatar/${transaction.buyer.imageUrl}`}
+                          src={
+                            transaction.buyer.imageUrl || `/default-avatar.png`
+                          }
                           alt="Buyer Avatar"
                           className="w-12 h-12 rounded-full"
                         />

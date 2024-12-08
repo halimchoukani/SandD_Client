@@ -133,7 +133,7 @@ export default function UserManager() {
                       <td className="p-3">
                         <div className="flex items-center space-x-3">
                           <img
-                            src={`/api/user/upload/avatar/${user.imageUrl}`}
+                            src={user.imageUrl || `/default-avatar.png`}
                             alt={`${user.firstname} ${user.lastname}`}
                             className="w-10 h-10 rounded-full"
                           />

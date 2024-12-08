@@ -13,9 +13,8 @@ const CheckoutForm = ({ clientSecret }) => {
   const [succeeded, setSucceeded] = useState(false);
   const stripe = useStripe();
   const elements = useElements();
-  const navigate = useNavigate();
   const amount = localStorage.getItem("paymentAmount");
-  const { isSignedIn, setIsSignedIn, user, setUser } = useContext(Context);
+  const { isSignedIn, setIsSignedIn, user } = useContext(Context);
   const handleSubmit = async (event) => {
     event.preventDefault();
     setProcessing(true);
@@ -28,9 +27,7 @@ const CheckoutForm = ({ clientSecret }) => {
 
     const payload = await stripe.confirmPayment({
       elements,
-      confirmParams: {
-        return_url: "http://localhost:5173/transaction", // Optional redirect URL after successful payment
-      },
+
       redirect: "if_required",
     });
     console.log(payload.paymentIntent);
@@ -43,7 +40,7 @@ const CheckoutForm = ({ clientSecret }) => {
       setProcessing(false);
       setSucceeded(true);
       // Call your backend to complete the payment
-      fetch("http://localhost:8089/api/payment/secure/payment-complete", {
+      fetch("/api/payment/secure/payment-complete", {
         method: "PUT",
         headers: {
           Authorization: token,
@@ -51,17 +48,11 @@ const CheckoutForm = ({ clientSecret }) => {
         },
         body: JSON.stringify({ amount: payload.paymentIntent.amount }),
       })
-        .then((res) =>
-          setUser({
-            ...user,
-            amount: user.amount + payload.paymentIntent.amount / 100,
-          })
-        )
+        .then()
         .catch((err) => console.error("Error completing payment:", err));
     }
     // rounded-lg border border-gray-700 bg-gray-800 text-gray-100 shadow-sm lg:col-span-2
-
-    navigate("/transaction");
+    window.location.href = "/";
   };
   return (
     <form

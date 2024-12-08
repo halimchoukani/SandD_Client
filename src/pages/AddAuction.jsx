@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Upload, AlertCircle, Loader, Images, X } from "lucide-react";
+import { Upload, AlertCircle, X } from "lucide-react";
 import {
   Button,
   Input,
@@ -14,10 +14,8 @@ import {
 import Header from "../components/header";
 import Footer from "../components/footer";
 import { jwtDecode } from "jwt-decode";
-import { useNavigate } from "react-router-dom";
 
 export default function AddAuction() {
-  const navigate = useNavigate();
   useEffect(() => {
     document.title = "S&D - Add Auction";
   }, []);
@@ -114,7 +112,7 @@ export default function AddAuction() {
                 body: ImageRequest,
               });
               if (res.ok) {
-                navigate("/auction/" + data.id);
+                window.location.href = "/auction/" + data.id;
               }
             } catch (e) {
               console.log(e);

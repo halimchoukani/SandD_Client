@@ -14,7 +14,6 @@ export default function MyBids() {
   const [bids, setBids] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [userId, setUserId] = useState(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
@@ -133,7 +132,9 @@ export default function MyBids() {
                       <tr
                         key={bid.id}
                         className="bg-gray-900 hover:bg-gray-700 cursor-pointer card"
-                        onClick={() => navigate(`/auction/${bid.auction.id}`)}
+                        onClick={() => {
+                          window.location.href = `/auction/${bid.auction.id}`;
+                        }}
                       >
                         <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-white ">
                           <span className="text-sm text-gray-400 flex items-center">

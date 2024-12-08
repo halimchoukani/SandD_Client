@@ -36,17 +36,15 @@ import useGetUser from "./hooks/useGetUser";
 export default function Profile() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
-  const { isSignedIn, setIsSignedIn, user, setUser } = useContext(Context);
+  const { isSignedIn, setIsSignedIn, user } = useContext(Context);
 
   useEffect(() => {
     document.title = "S&D - Profile";
   }, []);
   const handleLogout = () => {
     localStorage.removeItem("token");
-    setUser({});
     setIsSignedIn(false);
-    navigate("/login");
+    window.location.href = "/login";
   };
 
   const recentActivity = [];
@@ -103,7 +101,7 @@ export default function Profile() {
               <div className="flex flex-col items-center space-y-4">
                 <div className="relative">
                   <Avatar
-                    src={`/api/user/upload/avatar/${user.imageUrl}`}
+                    src={user.imageUrl || `/default-avatar.png`}
                     alt={user.firstname}
                     className="w-32 h-32"
                   />

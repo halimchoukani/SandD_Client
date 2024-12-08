@@ -26,8 +26,7 @@ export default function EditProfile() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate(); // Use the hook to get navigate
-  const { isSignedIn, setIsSignedIn, user, setUser } = useContext(Context);
+  const { isSignedIn, setIsSignedIn, user } = useContext(Context);
 
   // Update user profile function
   const updateUser = async (updatedUser) => {
@@ -94,8 +93,7 @@ export default function EditProfile() {
     }
     const updatedUser = await updateUser(newUser);
     if (updatedUser) {
-      setUser(updatedUser);
-      navigate("/profile");
+      window.location.href = "/profile";
     }
   };
 
@@ -124,10 +122,7 @@ export default function EditProfile() {
               <CardContent className="flex flex-col items-center">
                 <div className="relative">
                   <Avatar
-                    src={
-                      `/api/user/upload/avatar/` + newUser.imageUrl ||
-                      `/default-avatar.png`
-                    }
+                    src={newUser.imageUrl || `/default-avatar.png`}
                     alt="Profile Avatar"
                     size="large"
                     className="w-32 h-32"

@@ -13,7 +13,6 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { Context } from "../App";
 
 export default function SignUp() {
-  const navigate = useNavigate();
   const { isSignedIn, setIsSignedIn } = useContext(Context);
 
   // Form states
@@ -38,9 +37,9 @@ export default function SignUp() {
   useEffect(() => {
     document.title = "S&D - SignUp"; // Change the page title
     if (isSignedIn) {
-      navigate("/");
+      window.location.href = "/";
     }
-  }, [isSignedIn, navigate]);
+  }, [isSignedIn]);
   const closeAlert = () => {
     errorAlert.current.style.display = "none";
   };
@@ -120,7 +119,7 @@ export default function SignUp() {
         setError(data.message);
         return;
       }
-      navigate("/login");
+      window.location.href = "/login";
     } catch (error) {
       console.log(error.message);
     }

@@ -22,12 +22,14 @@ export default function Transactions() {
   const fetchTransactions = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/transaction/all');
+      const response = await fetch("/api/transaction/all");
       const data = await response.json();
       if (Array.isArray(data)) {
         const transactionsWithImages = await Promise.all(
           data.map(async (transaction) => {
-            const imageRes = await fetch(`/api/images/auction/${transaction.auction.id}`);
+            const imageRes = await fetch(
+              `/api/images/auction/${transaction.auction.id}`
+            );
             if (imageRes.ok) {
               const imageData = await imageRes.json();
               if (imageData.length > 0) {
@@ -59,19 +61,35 @@ export default function Transactions() {
 
   useEffect(() => {
     const filtered = transactions.filter((transaction) => {
-      const matchesSearch = 
-        transaction.auction.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        transaction.auction.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        transaction.buyer.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        transaction.seller.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (transaction.transportor && (
-          transaction.transportor.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          transaction.transportor.firstname.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          transaction.transportor.lastname.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          transaction.transportor.email.toLowerCase().includes(searchTerm.toLowerCase())
-        ));
-      
-      const matchesStatus = statusFilter === "ALL" || transaction.status === statusFilter;
+      const matchesSearch =
+        transaction.auction.title
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        transaction.auction.description
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        transaction.buyer.username
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        transaction.seller.username
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        (transaction.transportor &&
+          (transaction.transportor.username
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+            transaction.transportor.firstname
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase()) ||
+            transaction.transportor.lastname
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase()) ||
+            transaction.transportor.email
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())));
+
+      const matchesStatus =
+        statusFilter === "ALL" || transaction.status === statusFilter;
 
       return matchesSearch && matchesStatus;
     });
@@ -80,19 +98,25 @@ export default function Transactions() {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "COMPLETED": return "text-green-500";
-      case "INPROGRESS": return "text-yellow-500";
-      case "CANCELLED": return "text-red-500";
-      default: return "text-gray-500";
+      case "COMPLETED":
+        return "text-green-500";
+      case "INPROGRESS":
+        return "text-yellow-500";
+      case "CANCELLED":
+        return "text-red-500";
+      default:
+        return "text-gray-500";
     }
   };
 
   const renderUserInfo = (user, role) => (
     <div className="bg-gray-700 p-4 rounded-lg">
-      <h3 className="text-lg font-semibold mb-2 text-blue-400">{role} Information</h3>
+      <h3 className="text-lg font-semibold mb-2 text-blue-400">
+        {role} Information
+      </h3>
       <div className="flex items-center space-x-4">
         <img
-          src={`/api/user/upload/avatar/${user.imageUrl}`}
+          src={user.imageUrl || `/default-avatar.png`}
           alt={`${role} Avatar`}
           className="w-12 h-12 rounded-full"
         />
@@ -112,7 +136,9 @@ export default function Transactions() {
       <Header />
 
       <main className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8 text-blue-500">Admin Transactions</h1>
+        <h1 className="text-3xl font-bold mb-8 text-blue-500">
+          Admin Transactions
+        </h1>
 
         <div className="mb-6 flex flex-col md:flex-row gap-4">
           <div className="relative flex-grow">
@@ -165,7 +191,11 @@ export default function Transactions() {
                         <span className="font-bold text-green-400 text-xl mb-2 md:mb-0">
                           Amount: {transaction.amount.toLocaleString()}TND
                         </span>
-                        <div className={`flex items-center ${getStatusColor(transaction.status)}`}>
+                        <div
+                          className={`flex items-center ${getStatusColor(
+                            transaction.status
+                          )}`}
+                        >
                           <CheckCircle className="h-5 w-5 mr-2" />
                           <span>Status: {transaction.status}</span>
                         </div>
@@ -176,27 +206,44 @@ export default function Transactions() {
                       </div>
                       {transaction.transportor && (
                         <div className="mt-4">
-                          {renderUserInfo(transaction.transportor, "Transporter")}
+                          {renderUserInfo(
+                            transaction.transportor,
+                            "Transporter"
+                          )}
                         </div>
                       )}
                       <div className="mt-4 p-4 bg-gray-600 rounded-lg shadow-sm">
                         <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center space-y-4 sm:space-y-0">
                           <div className="flex items-center text-sm text-gray-100 space-x-2">
                             <Clock className="w-4 h-4 text-blue-500" />
-                            <span className="font-medium">Transaction Date:</span>
-                            <span>{new Date(transaction.transaction_date).toLocaleString()}</span>
+                            <span className="font-medium">
+                              Transaction Date:
+                            </span>
+                            <span>
+                              {new Date(
+                                transaction.transaction_date
+                              ).toLocaleString()}
+                            </span>
                           </div>
                           <div className="flex items-center text-sm text-gray-100 space-x-2">
                             <Truck className="w-4 h-4 text-yellow-500" />
-                            <span className="font-medium">Delivery Status:</span>
-                            <span>{transaction.delivery_status || "Pending"}</span>
+                            <span className="font-medium">
+                              Delivery Status:
+                            </span>
+                            <span>
+                              {transaction.delivery_status || "Pending"}
+                            </span>
                           </div>
                         </div>
                       </div>
                       {transaction.delivery_adress && (
                         <div className="mt-4 p-4 bg-gray-700 rounded-lg">
-                          <h4 className="font-semibold text-blue-400 mb-2">Delivery Address:</h4>
-                          <p className="text-gray-300">{transaction.delivery_adress}</p>
+                          <h4 className="font-semibold text-blue-400 mb-2">
+                            Delivery Address:
+                          </h4>
+                          <p className="text-gray-300">
+                            {transaction.delivery_adress}
+                          </p>
                         </div>
                       )}
                     </div>
@@ -220,4 +267,3 @@ export default function Transactions() {
     </div>
   );
 }
-

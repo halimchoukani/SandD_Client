@@ -13,7 +13,6 @@ const stripePromise = loadStripe(
 
 export default function Payment() {
   const [clientSecret, setClientSecret] = useState("");
-  const navigate = useNavigate();
   const appearance = {
     theme: "flat", // or another theme if you prefer
     variables: {
@@ -56,7 +55,7 @@ export default function Payment() {
       },
       currency: "usd",
     };
-    fetch("http://localhost:8089/api/payment/secure/payment-intent", {
+    fetch("/api/payment/secure/payment-intent", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data), // Convert to cents

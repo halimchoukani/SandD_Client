@@ -13,7 +13,6 @@ export default function MyAuctions() {
   const [auctions, setAuctions] = useState([]);
   const [id, setId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const { user: userData, loading, error: fetchError } = useGetUser();
 

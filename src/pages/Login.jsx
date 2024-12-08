@@ -16,10 +16,9 @@ import { Context } from "../App";
 import useGetUser from "./hooks/useGetUser";
 
 export default function Login() {
-  const { isSignedIn, setIsSignedIn, user, setUser } = useContext(Context);
+  const { isSignedIn, setIsSignedIn, user } = useContext(Context);
   const passwordRef = useRef(null);
   const emailRef = useRef(null);
-  const navigate = useNavigate();
 
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -27,14 +26,13 @@ export default function Login() {
   useEffect(() => {
     document.title = "S&D - Login";
     if (isSignedIn) {
-      navigate("/");
+      window.location.href = "/";
     }
-  }, [isSignedIn, navigate]);
+  }, [isSignedIn]);
 
   const loginGoogle = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
-        // Use the access token to fetch the user's Google profile
         const userInfoResponse = await fetch(
           "https://www.googleapis.com/oauth2/v3/userinfo",
           {
@@ -45,28 +43,35 @@ export default function Login() {
         );
 
         if (!userInfoResponse.ok) throw new Error("Failed to fetch user info.");
-
         const userInfo = await userInfoResponse.json();
         console.log("Google user info:", userInfo);
 
-        // Send user information and token to backend
+        // Send user information to backend
         const backendResponse = await fetch("/api/user/google-login", {
-          method: "POST", // Use POST request as intended by the backend
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${tokenResponse.access_token}`,
           },
+          body: JSON.stringify({
+            email: userInfo.email,
+            firstname: userInfo.given_name,
+            lastname: userInfo.family_name,
+            username: userInfo.email.split("@")[0],
+            imageUrl: userInfo.picture,
+          }),
         });
 
         if (!backendResponse.ok) {
-          throw new Error("Google login failed");
+          throw new Error(backendResponse.statusText);
         }
 
-        const backendData = await backendResponse.json();
-        localStorage.setItem("token", backendData.jwt);
-        setIsSignedIn(true);
-        setUser(userInfo); // Update user context
-        navigate("/"); // Redirect after successful login
+        const data = await backendResponse.json();
+        if (data.jwt) {
+          console.log("Login successful");
+          localStorage.setItem("token", data.jwt);
+          setIsSignedIn(true);
+          window.location.href = "/";
+        }
       } catch (error) {
         setErrorMessage(error.message);
       }
@@ -103,8 +108,7 @@ export default function Login() {
         console.log("Login successful");
         localStorage.setItem("token", data.jwt);
         setIsSignedIn(true);
-        setUser(data.user);
-        navigate("/");
+        window.location.href = "/";
       }
     } catch (error) {
       console.log(error.message);

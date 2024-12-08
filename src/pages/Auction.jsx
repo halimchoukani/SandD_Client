@@ -11,7 +11,6 @@ import useGetUser from "./hooks/useGetUser";
 export default function Auction() {
   const { user: userData, loading, error: fetchError } = useGetUser();
   const { id } = useParams();
-  const navigate = useNavigate();
   const [Product, setProduct] = useState(null);
   const [bidAmount, setBidAmount] = useState("");
   const [currentBid, setCurrentBid] = useState(1000);
@@ -20,7 +19,7 @@ export default function Auction() {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [images, setImages] = useState([]);
-  const { user, setUser } = useContext(Context);
+  const { user } = useContext(Context);
   useEffect(() => {
     document.title = `S&D - Auction ${id}`;
     getProduct();
@@ -46,7 +45,7 @@ export default function Auction() {
           setProduct(null);
         }
       } else {
-        navigate("/404");
+        window.location.href = "/404";
       }
     } catch (error) {
       console.error("Error fetching product:", error);
@@ -75,7 +74,8 @@ export default function Auction() {
 
       if (res.ok) {
         setCurrentBid(parseFloat(bidAmount));
-        setUser(userData);
+        window.location.reload();
+
         setBidAmount("");
       } else {
         const error = await res.json();
@@ -241,7 +241,7 @@ export default function Auction() {
                   {Product.seller && (
                     <div className="flex items-center space-x-4">
                       <img
-                        src={`/api/user/upload/avatar/${Product.seller.imageUrl}`}
+                        src={Product.seller.imageUrl || `/default-avatar.png`}
                         alt="Seller Avatar"
                         className="w-12 h-12 rounded-full"
                       />
