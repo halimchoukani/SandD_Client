@@ -17,32 +17,31 @@ import { Context } from "../App";
 
 export default function EditProfile() {
   const [newUser, setNewUser] = useState({
-    firstname: "",
-    lastname: "",
+    username: "",
+    email: "",
     phoneNumber: "",
-    imageUrl: "",
+    imageUrl: null,
+    address: "",
   });
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(true);
   const { isSignedIn, setIsSignedIn, user } = useContext(Context);
-
+  const [image, setImage] = useState(null);
   // Update user profile function
   const updateUser = async (updatedUser) => {
     try {
+      const formData = new FormData();
+      formData.append("username", updatedUser.username);
+      formData.append("email", updatedUser.email);
+      formData.append("phoneNumber", updatedUser.phoneNumber);
+      formData.append("address", updatedUser.address);
+      formData.append("password", newPassword);
+      formData.append("image", image);
       const res = await fetch(`/api/user/update/${updatedUser.id}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          firstname: updatedUser.firstname,
-          lastname: updatedUser.lastname,
-          phoneNumber: updatedUser.phoneNumber,
-          imageUrl: updatedUser.imageUrl,
-          password: newPassword || undefined,
-        }),
+        body: formData,
       });
       if (!res.ok) throw new Error("Failed to update user data.");
       return await res.json();
@@ -80,6 +79,7 @@ export default function EditProfile() {
       const reader = new FileReader();
       reader.onloadend = () => {
         setNewUser((prevUser) => ({ ...prevUser, imageUrl: reader.result }));
+        setImage(file);
       };
       reader.readAsDataURL(file);
     }
@@ -156,26 +156,27 @@ export default function EditProfile() {
               </CardHeader>
               <CardContent>
                 <FormGroup>
-                  <Label htmlFor="firstname" className="text-gray-300">
-                    First Name
+                  <Label htmlFor="username" className="text-gray-300">
+                    Username
                   </Label>
                   <Input
-                    id="firstname"
-                    name="firstname"
-                    value={newUser.firstname || ""}
+                    id="username"
+                    name="username"
+                    value={newUser.username || ""}
                     onChange={handleInputChange}
                     required
                     className="bg-gray-700 text-white border-gray-600 focus:border-blue-500 focus:ring-blue-500"
                   />
                 </FormGroup>
                 <FormGroup>
-                  <Label htmlFor="lastname" className="text-gray-300">
-                    Last Name
+                  <Label htmlFor="email" className="text-gray-300">
+                    Email
                   </Label>
                   <Input
-                    id="lastname"
-                    name="lastname"
-                    value={newUser.lastname || ""}
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={newUser.email || ""}
                     onChange={handleInputChange}
                     required
                     className="bg-gray-700 text-white border-gray-600 focus:border-blue-500 focus:ring-blue-500"
