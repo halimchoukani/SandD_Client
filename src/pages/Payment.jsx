@@ -82,7 +82,6 @@ export default function Payment() {
               </Elements>
             </div>
           </main>
-          <Footer />
         </div>
       )}
     </>

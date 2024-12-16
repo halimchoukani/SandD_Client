@@ -132,7 +132,9 @@ export default function SoldAuctions() {
                       <div className="flex items-center text-yellow-500">
                         <Truck className="h-5 w-5 mr-2" />
                         <span>
-                          Status: {transaction.delivery_status || "Pending"}
+                          Status:{" "}
+                          {(transaction.status == "DELIVERED" && "Delivered") ||
+                            "Pending"}
                         </span>
                       </div>
                     </div>

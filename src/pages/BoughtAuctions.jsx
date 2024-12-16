@@ -193,8 +193,6 @@ export default function AuctionBought() {
           </div>
         )}
       </main>
-
-      <Footer />
     </div>
   );
 }

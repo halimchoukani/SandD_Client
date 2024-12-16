@@ -10,6 +10,7 @@ import {
   FormGroup,
   Label,
   Avatar,
+  Textarea,
 } from "../components/ui/index";
 import Header from "../components/header";
 import Footer from "../components/footer";
@@ -180,6 +181,18 @@ export default function EditProfile() {
                     onChange={handleInputChange}
                     required
                     className="bg-gray-700 text-white border-gray-600 focus:border-blue-500 focus:ring-blue-500"
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="address">Address</Label>
+                  <Textarea
+                    id="address"
+                    name="address"
+                    className=" resize-none"
+                    placeholder="Address"
+                    value={newUser.address}
+                    onChange={handleInputChange}
+                    required
                   />
                 </FormGroup>
                 <FormGroup>

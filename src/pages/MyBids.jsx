@@ -209,9 +209,6 @@ export default function MyBids() {
           </div>
         )}
       </main>
-
-      {/* Footer */}
-      <Footer />
     </div>
   );
 }
