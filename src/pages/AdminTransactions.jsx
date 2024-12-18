@@ -231,7 +231,9 @@ export default function Transactions() {
                               Delivery Status:
                             </span>
                             <span>
-                              {transaction.delivery_status || "Pending"}
+                              {(transaction.status == "DELIVERED" &&
+                                "Delivered") ||
+                                "Pending"}
                             </span>
                           </div>
                         </div>
