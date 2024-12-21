@@ -31,6 +31,8 @@ import TransporterInterface from "./pages/TransporterInterface";
 import TransporterInterfaceMyTransactions from "./pages/TransporterInterfaceMyTransactions";
 import Auction from "./pages/Auction";
 import Auctions from "./pages/Auctions";
+import ForgotPassword from "./pages/forgot-password";
+import ResetPassword from "./pages/reset-password";
 
 export const Context = createContext();
 
@@ -70,6 +72,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:code" element={<ResetPassword />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/auction/:id" element={<Auction />} />
           <Route path="/auctions" element={<Auctions />} />

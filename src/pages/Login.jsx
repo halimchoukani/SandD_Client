@@ -156,6 +156,9 @@ export default function Login() {
                   placeholder="******************"
                   ref={passwordRef} // Using passwordRef
                 />
+                <Link to="/forgot-password" className=" underline">
+                  Forgot password
+                </Link>
               </div>
               {errorMessage && (
                 <p className="text-red-500 text-sm">{errorMessage}</p>
